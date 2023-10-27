@@ -22,6 +22,7 @@ function activate_venv() {
 
     echo Activating "$NILLION_VENV"
     pyenv activate "$NILLION_VENV"
+    pyenv exec python -m pip install --upgrade pip
 }
 
 function deactivate_venv() {
