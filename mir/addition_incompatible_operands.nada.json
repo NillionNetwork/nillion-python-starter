@@ -1,0 +1,120 @@
+{
+  "functions": [],
+  "parties": [
+    {
+      "name": "Party1",
+      "source_ref": {
+        "file": "addition_incompatible_operands.py",
+        "lineno": 5,
+        "offset": 42,
+        "length": 33
+      }
+    }
+  ],
+  "inputs": [
+    {
+      "type": {
+        "Secret": {
+          "Integer": null
+        }
+      },
+      "party": "Party1",
+      "name": "my_int1",
+      "doc": "",
+      "source_ref": {
+        "file": "addition_incompatible_operands.py",
+        "lineno": 6,
+        "offset": 76,
+        "length": 64
+      }
+    },
+    {
+      "type": {
+        "Secret": {
+          "Rational": {
+            "digits": 5
+          }
+        }
+      },
+      "party": "Party1",
+      "name": "my_int2",
+      "doc": "",
+      "source_ref": {
+        "file": "addition_incompatible_operands.py",
+        "lineno": 7,
+        "offset": 141,
+        "length": 75
+      }
+    }
+  ],
+  "literals": [],
+  "outputs": [
+    {
+      "name": "my_output",
+      "inner": {
+        "Addition": {
+          "left": {
+            "InputReference": {
+              "refers_to": "my_int1",
+              "type": {
+                "Secret": {
+                  "Integer": null
+                }
+              },
+              "source_ref": {
+                "file": "addition_incompatible_operands.py",
+                "lineno": 6,
+                "offset": 76,
+                "length": 64
+              }
+            }
+          },
+          "right": {
+            "InputReference": {
+              "refers_to": "my_int2",
+              "type": {
+                "Secret": {
+                  "Rational": {
+                    "digits": 5
+                  }
+                }
+              },
+              "source_ref": {
+                "file": "addition_incompatible_operands.py",
+                "lineno": 7,
+                "offset": 141,
+                "length": 75
+              }
+            }
+          },
+          "type": {
+            "Secret": {
+              "Integer": null
+            }
+          },
+          "source_ref": {
+            "file": "addition_incompatible_operands.py",
+            "lineno": 9,
+            "offset": 207,
+            "length": 31
+          }
+        }
+      },
+      "party": "Party1",
+      "type": {
+        "Secret": {
+          "Integer": null
+        }
+      },
+      "source_ref": {
+        "file": "addition_incompatible_operands.py",
+        "lineno": 11,
+        "offset": 0,
+        "length": 0
+      }
+    }
+  ],
+  "source_files": {
+    "addition_incompatible_operands.py": "from nada_dsl import *\n\n\ndef nada_main():\n    party1 = Party(name=\"Party1\")\n    my_int1 = SecretInteger(Input(name=\"my_int1\", party=party1))\n    my_int2 = SecretRational(Input(name=\"my_int2\", party=party1), digits=5)\n\n    new_int = my_int1 + my_int2\n\n    return [Output(new_int, \"my_output\", party1)]\n"
+  }
+}

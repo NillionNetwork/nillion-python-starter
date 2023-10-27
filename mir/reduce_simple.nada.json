@@ -1,0 +1,171 @@
+{
+  "functions": [
+    {
+      "id": 4381350144,
+      "args": [
+        {
+          "name": "a",
+          "type": { "Secret": { "Integer": null } },
+          "source_ref": {
+            "file": "reduce_simple.py",
+            "lineno": 10,
+            "offset": 291,
+            "length": 65
+          }
+        },
+        {
+          "name": "b",
+          "type": { "Secret": { "Integer": null } },
+          "source_ref": {
+            "file": "reduce_simple.py",
+            "lineno": 10,
+            "offset": 291,
+            "length": 65
+          }
+        }
+      ],
+      "function": "add",
+      "body": {
+        "Addition": {
+          "left": {
+            "NadaFunctionArgRef": {
+              "function_id": 4381350144,
+              "refers_to": "a",
+              "type": { "Secret": { "Integer": null } },
+              "source_ref": {
+                "file": "reduce_simple.py",
+                "lineno": 10,
+                "offset": 291,
+                "length": 65
+              }
+            }
+          },
+          "right": {
+            "NadaFunctionArgRef": {
+              "function_id": 4381350144,
+              "refers_to": "b",
+              "type": { "Secret": { "Integer": null } },
+              "source_ref": {
+                "file": "reduce_simple.py",
+                "lineno": 10,
+                "offset": 291,
+                "length": 65
+              }
+            }
+          },
+          "type": { "Secret": { "Integer": null } },
+          "source_ref": {
+            "file": "reduce_simple.py",
+            "lineno": 11,
+            "offset": 357,
+            "length": 20
+          }
+        }
+      },
+      "return_type": { "Secret": { "Integer": null } },
+      "source_ref": {
+        "file": "reduce_simple.py",
+        "lineno": 10,
+        "offset": 291,
+        "length": 65
+      }
+    }
+  ],
+  "parties": [
+    {
+      "name": "Party1",
+      "source_ref": {
+        "file": "reduce_simple.py",
+        "lineno": 5,
+        "offset": 92,
+        "length": 33
+      }
+    }
+  ],
+  "inputs": [
+    {
+      "type": {
+        "Array": { "inner_type": { "Secret": { "Integer": null } }, "size": 4 }
+      },
+      "party": "Party1",
+      "name": "my_array_1",
+      "doc": "",
+      "source_ref": {
+        "file": "reduce_simple.py",
+        "lineno": 6,
+        "offset": 126,
+        "length": 85
+      }
+    },
+    {
+      "type": { "Secret": { "Integer": null } },
+      "party": "Party1",
+      "name": "my_int1",
+      "doc": "",
+      "source_ref": {
+        "file": "reduce_simple.py",
+        "lineno": 7,
+        "offset": 212,
+        "length": 64
+      }
+    }
+  ],
+  "literals": [],
+  "outputs": [
+    {
+      "name": "reduce.addition",
+      "inner": {
+        "Reduce": {
+          "fn": 4381350144,
+          "inner": {
+            "InputReference": {
+              "refers_to": "my_array_1",
+              "type": {
+                "Array": {
+                  "inner_type": { "Secret": { "Integer": null } },
+                  "size": 4
+                }
+              },
+              "source_ref": {
+                "file": "reduce_simple.py",
+                "lineno": 6,
+                "offset": 126,
+                "length": 85
+              }
+            }
+          },
+          "initial": {
+            "InputReference": {
+              "refers_to": "my_int1",
+              "type": { "Secret": { "Integer": null } },
+              "source_ref": {
+                "file": "reduce_simple.py",
+                "lineno": 7,
+                "offset": 212,
+                "length": 64
+              }
+            }
+          },
+          "type": { "Secret": { "Integer": null } },
+          "source_ref": {
+            "file": "reduce_simple.py",
+            "lineno": 13,
+            "offset": 379,
+            "length": 46
+          }
+        }
+      },
+      "party": "Party1",
+      "type": { "Secret": { "Integer": null } },
+      "source_ref": {
+        "file": "reduce_simple.py",
+        "lineno": 15,
+        "offset": 427,
+        "length": 54
+      }
+    }
+  ],
+  "source_files": {
+    "reduce_simple.py": "from nada_dsl import Array, Party, SecretInteger, Output, Input, nada_fn\n\n\ndef nada_main():\n    party1 = Party(name=\"Party1\")\n    my_array_1 = Array(SecretInteger(Input(name=\"my_array_1\", party=party1)), size=4)\n    my_int1 = SecretInteger(Input(name=\"my_int1\", party=party1))\n\n    @nada_fn\n    def add(a: SecretInteger, b: SecretInteger) -> SecretInteger:\n        return a + b\n\n    addition = my_array_1.reduce(add, my_int1)\n\n    out2 = Output(addition, \"reduce.addition\", party1)\n\n    return [out2]\n"
+  }
+}

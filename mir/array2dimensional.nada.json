@@ -1,0 +1,404 @@
+{
+  "functions": [
+    {
+      "id": 139757260542384,
+      "args": [
+        {
+          "name": "a",
+          "type": {
+            "Array": {
+              "inner_type": { "Secret": { "Integer": null } },
+              "size": null
+            }
+          },
+          "source_ref": {
+            "file": "array2dimensional.py",
+            "lineno": 10,
+            "offset": 156,
+            "length": 24
+          }
+        },
+        {
+          "name": "b",
+          "type": {
+            "Array": {
+              "inner_type": { "Secret": { "Integer": null } },
+              "size": null
+            }
+          },
+          "source_ref": {
+            "file": "array2dimensional.py",
+            "lineno": 10,
+            "offset": 156,
+            "length": 24
+          }
+        }
+      ],
+      "function": "matrix_addition",
+      "body": {
+        "Reduce": {
+          "fn": 139757260541664,
+          "inner": {
+            "Map": {
+              "fn": 139757260541664,
+              "inner": {
+                "Zip": {
+                  "left": {
+                    "NadaFunctionArgRef": {
+                      "function_id": 139757260542384,
+                      "refers_to": "a",
+                      "type": {
+                        "Array": {
+                          "inner_type": { "Secret": { "Integer": null } },
+                          "size": null
+                        }
+                      },
+                      "source_ref": {
+                        "file": "array2dimensional.py",
+                        "lineno": 10,
+                        "offset": 156,
+                        "length": 24
+                      }
+                    }
+                  },
+                  "right": {
+                    "NadaFunctionArgRef": {
+                      "function_id": 139757260542384,
+                      "refers_to": "b",
+                      "type": {
+                        "Array": {
+                          "inner_type": { "Secret": { "Integer": null } },
+                          "size": null
+                        }
+                      },
+                      "source_ref": {
+                        "file": "array2dimensional.py",
+                        "lineno": 10,
+                        "offset": 156,
+                        "length": 24
+                      }
+                    }
+                  },
+                  "type": {
+                    "Array": {
+                      "inner_type": {
+                        "NadaTuple": {
+                          "left_type": { "Secret": { "Integer": null } },
+                          "right_type": { "Secret": { "Integer": null } }
+                        }
+                      },
+                      "size": null
+                    }
+                  },
+                  "source_ref": {
+                    "file": "array2dimensional.py",
+                    "lineno": 13,
+                    "offset": 262,
+                    "length": 44
+                  }
+                }
+              },
+              "type": {
+                "Array": {
+                  "inner_type": { "Secret": { "Integer": null } },
+                  "size": null
+                }
+              },
+              "source_ref": {
+                "file": "array2dimensional.py",
+                "lineno": 13,
+                "offset": 262,
+                "length": 44
+              }
+            }
+          },
+          "initial": {
+            "InputReference": {
+              "refers_to": "my_int1",
+              "type": { "Secret": { "Integer": null } },
+              "source_ref": {
+                "file": "reduce_simple.py",
+                "lineno": 7,
+                "offset": 212,
+                "length": 64
+              }
+            }
+          },
+          "type": { "Secret": { "Integer": null } },
+          "source_ref": {
+            "file": "array2dimensional.py",
+            "lineno": 13,
+            "offset": 262,
+            "length": 44
+          }
+        }
+      },
+      "return_type": { "Secret": { "Integer": null } },
+      "source_ref": {
+        "file": "array2dimensional.py",
+        "lineno": 10,
+        "offset": 156,
+        "length": 24
+      }
+    },
+    {
+      "id": 139757260541664,
+      "args": [
+        {
+          "name": "a",
+          "type": { "Secret": { "Integer": null } },
+          "source_ref": {
+            "file": "array2dimensional.py",
+            "lineno": 6,
+            "offset": 55,
+            "length": 65
+          }
+        },
+        {
+          "name": "b",
+          "type": { "Secret": { "Integer": null } },
+          "source_ref": {
+            "file": "array2dimensional.py",
+            "lineno": 6,
+            "offset": 55,
+            "length": 65
+          }
+        }
+      ],
+      "function": "add",
+      "body": {
+        "Addition": {
+          "left": {
+            "NadaFunctionArgRef": {
+              "function_id": 139757260541664,
+              "refers_to": "a",
+              "type": { "Secret": { "Integer": null } },
+              "source_ref": {
+                "file": "array2dimensional.py",
+                "lineno": 6,
+                "offset": 55,
+                "length": 65
+              }
+            }
+          },
+          "right": {
+            "NadaFunctionArgRef": {
+              "function_id": 139757260541664,
+              "refers_to": "b",
+              "type": { "Secret": { "Integer": null } },
+              "source_ref": {
+                "file": "array2dimensional.py",
+                "lineno": 6,
+                "offset": 55,
+                "length": 65
+              }
+            }
+          },
+          "type": { "Secret": { "Integer": null } },
+          "source_ref": {
+            "file": "array2dimensional.py",
+            "lineno": 7,
+            "offset": 121,
+            "length": 20
+          }
+        }
+      },
+      "return_type": { "Secret": { "Integer": null } },
+      "source_ref": {
+        "file": "array2dimensional.py",
+        "lineno": 6,
+        "offset": 55,
+        "length": 65
+      }
+    }
+  ],
+  "parties": [
+    {
+      "name": "Party1",
+      "source_ref": {
+        "file": "array2dimensional.py",
+        "lineno": 15,
+        "offset": 308,
+        "length": 33
+      }
+    },
+    {
+      "name": "Party2",
+      "source_ref": {
+        "file": "array2dimensional.py",
+        "lineno": 16,
+        "offset": 342,
+        "length": 33
+      }
+    }
+  ],
+  "inputs": [
+    {
+      "type": {
+        "Array": {
+          "inner_type": {
+            "Array": {
+              "inner_type": { "Secret": { "Integer": null } },
+              "size": 10
+            }
+          },
+          "size": 10
+        }
+      },
+      "party": "Party1",
+      "name": "my_array_1",
+      "doc": "",
+      "source_ref": {
+        "file": "array2dimensional.py",
+        "lineno": 19,
+        "offset": 401,
+        "length": 86
+      }
+    },
+    {
+      "type": {
+        "Array": {
+          "inner_type": {
+            "Array": {
+              "inner_type": { "Secret": { "Integer": null } },
+              "size": 10
+            }
+          },
+          "size": 10
+        }
+      },
+      "party": "Party2",
+      "name": "my_array_2",
+      "doc": "",
+      "source_ref": {
+        "file": "array2dimensional.py",
+        "lineno": 22,
+        "offset": 518,
+        "length": 86
+      }
+    },
+    {
+      "type": { "Secret": { "Integer": null } },
+      "party": "Party1",
+      "name": "my_int1",
+      "doc": "",
+      "source_ref": {
+        "file": "array2dimensional.py",
+        "lineno": 7,
+        "offset": 212,
+        "length": 64
+      }
+    }
+  ],
+  "literals": [],
+  "outputs": [
+    {
+      "name": "output",
+      "inner": {
+        "Map": {
+          "fn": 139757260542384,
+          "inner": {
+            "Zip": {
+              "left": {
+                "InputReference": {
+                  "refers_to": "my_array_1",
+                  "type": {
+                    "Array": {
+                      "inner_type": {
+                        "Array": {
+                          "inner_type": { "Secret": { "Integer": null } },
+                          "size": 10
+                        }
+                      },
+                      "size": 10
+                    }
+                  },
+                  "source_ref": {
+                    "file": "array2dimensional.py",
+                    "lineno": 19,
+                    "offset": 401,
+                    "length": 86
+                  }
+                }
+              },
+              "right": {
+                "InputReference": {
+                  "refers_to": "my_array_2",
+                  "type": {
+                    "Array": {
+                      "inner_type": {
+                        "Array": {
+                          "inner_type": { "Secret": { "Integer": null } },
+                          "size": 10
+                        }
+                      },
+                      "size": 10
+                    }
+                  },
+                  "source_ref": {
+                    "file": "array2dimensional.py",
+                    "lineno": 22,
+                    "offset": 518,
+                    "length": 86
+                  }
+                }
+              },
+              "type": {
+                "Array": {
+                  "inner_type": {
+                    "NadaTuple": {
+                      "left_type": {
+                        "Array": {
+                          "inner_type": { "Secret": { "Integer": null } },
+                          "size": 10
+                        }
+                      },
+                      "right_type": {
+                        "Array": {
+                          "inner_type": { "Secret": { "Integer": null } },
+                          "size": 10
+                        }
+                      }
+                    }
+                  },
+                  "size": 10
+                }
+              },
+              "source_ref": {
+                "file": "array2dimensional.py",
+                "lineno": 25,
+                "offset": 612,
+                "length": 60
+              }
+            }
+          },
+          "type": {
+            "Array": {
+              "inner_type": { "Secret": { "Integer": null } },
+              "size": 10
+            }
+          },
+          "source_ref": {
+            "file": "array2dimensional.py",
+            "lineno": 25,
+            "offset": 612,
+            "length": 60
+          }
+        }
+      },
+      "party": "Party1",
+      "type": {
+        "Array": { "inner_type": { "Secret": { "Integer": null } }, "size": 10 }
+      },
+      "source_ref": {
+        "file": "array2dimensional.py",
+        "lineno": 27,
+        "offset": 0,
+        "length": 0
+      }
+    }
+  ],
+  "source_files": {
+    "array2dimensional.py": "from nada_dsl import *\n\n\ndef nada_main():\n    @nada_fn\n    def add(a: SecretInteger, b: SecretInteger) -> SecretInteger:\n        return a + b\n\n    @nada_fn\n    def matrix_addition(\n        a: Array[SecretInteger], b: Array[SecretInteger]\n    ) -> SecretInteger:\n        return a.zip(b).map(add).reduce(add)\n\n    party1 = Party(name=\"Party1\")\n    party2 = Party(name=\"Party2\")\n\n    my_array_1 = Array(\n        Array(SecretInteger(Input(name=\"my_array_1\", party=party1)), size=10), size=10\n    )\n    my_array_2 = Array(\n        Array(SecretInteger(Input(name=\"my_array_2\", party=party2)), size=10), size=10\n    )\n\n    output = my_array_1.zip(my_array_2).map(matrix_addition)\n\n    return [Output(output, \"output\", party1)]\n"
+  }
+}
