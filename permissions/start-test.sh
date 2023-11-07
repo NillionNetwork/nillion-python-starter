@@ -15,11 +15,10 @@ install_nada_dsl
 install_py_nillion_client
 
 RUN_LOCAL_CLUSTER="$(discover_sdk_bin_path run-local-cluster)"
-NIL_CLI="$(discover_sdk_bin_path nil-cli)"
 USER_KEYGEN=$(discover_sdk_bin_path user-keygen)
 NODE_KEYGEN=$(discover_sdk_bin_path node-keygen)
 
-for var in RUN_LOCAL_CLUSTER NIL_CLI USER_KEYGEN NODE_KEYGEN; do
+for var in RUN_LOCAL_CLUSTER USER_KEYGEN NODE_KEYGEN; do
   printf "ℹ️ found bin %-18s -> [${!var:?Failed to discover $var}]\n" "$var"
 done
 
@@ -28,7 +27,6 @@ PIDFILE=$(mktemp);
 
 trap 'kill $(pidof $RUN_LOCAL_CLUSTER)' SIGINT SIGTERM SIGQUIT EXIT
 
-PROGRAMINFO=$(mktemp);
 NODEKEYFILE=$(mktemp);
 READERKEYFILE=$(mktemp);
 WRITERKEYFILE=$(mktemp);
@@ -59,7 +57,6 @@ done
 
 CLUSTER_ID=$(grep -oP 'cluster id is \K.*' "$OUTFILE");
 BOOT_MULTIADDR=$(grep -oP 'bootnode is at \K.*' "$OUTFILE");
-WS_MULTIADDR=$(grep -oP 'websocket: \K.*' "$OUTFILE");
 
 echo "ℹ️ Cluster has been STARTED"
 cat "$OUTFILE"
