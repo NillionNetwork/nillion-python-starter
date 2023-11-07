@@ -1,8 +1,19 @@
 #!/usr/bin/env bash
+function __echo_red_bold {
+  echo -e "\033[1;31m${1}\033[0m"
+}
+
+function __nillion_pip_install() {
+  WHLPATH=$(find "$NILLION_SDK_ROOT" -iname "$1" -type f -print | head -n1)
+  pip install "${WHLPATH:?could not find $1 in $NILLION_SDK_ROOT}"
+}
+
+function install_py_nillion_client() {
+  __nillion_pip_install "py_nillion_client-*$(uname -s)*_$(uname -m).whl"
+}
 
 function install_nada_dsl() {
-  WHLPATH=$(find "$NILLION_SDK_ROOT" -name "nada_dsl-*-any.whl" -type f -print | head -n1)
-  pip install "$WHLPATH"
+  __nillion_pip_install "nada_dsl-*-any.whl"
 }
 
 function discover_sdk_bin_path() {
