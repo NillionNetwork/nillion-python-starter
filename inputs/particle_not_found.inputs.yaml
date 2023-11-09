@@ -1,0 +1,17 @@
+---
+program_id: simple
+store_secrets:
+  I03:
+    UnsignedInteger:
+      value: "2877"
+  I04:
+    UnsignedInteger:
+      value: "2564"
+compute_secrets:
+  I00:
+    UnsignedInteger:
+      value: "17517"
+  I02:
+    UnsignedInteger:
+      value: "15981"
+public_variables: {}

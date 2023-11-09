@@ -1,0 +1,28 @@
+---
+program_id: array_simple
+store_secrets:
+  I00:
+    Array:
+      values:
+        - Integer:
+            value: "1"
+        - Integer:
+            value: "2"
+        - Integer:
+            value: "3"
+        - Integer:
+            value: "4"
+        - Integer:
+            value: "5"
+        - Integer:
+            value: "6"
+        - Integer:
+            value: "7"
+        - Integer:
+            value: "8"
+        - Integer:
+            value: "9"
+        - Integer:
+            value: "10"
+compute_secrets: {}
+public_variables: {}

@@ -1,0 +1,17 @@
+---
+program_id: less_than
+store_secrets:
+  A:
+    Integer:
+      value: "1"
+  B:
+    Integer:
+      value: "2"
+compute_secrets:
+  C:
+    Integer:
+      value: "3"
+  D:
+    Integer:
+      value: "3"
+public_variables: {}

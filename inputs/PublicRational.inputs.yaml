@@ -1,0 +1,21 @@
+---
+program_id: ~
+store_secrets: {}
+compute_secrets: {}
+public_variables:
+  A:
+    Rational:
+      value: "159.81"
+      digits: 2
+  B:
+    Rational:
+      value: "125.58"
+      digits: 2
+  C:
+    Rational:
+      value: "68.54"
+      digits: 2
+  D:
+    Rational:
+      value: "32.87"
+      digits: 2

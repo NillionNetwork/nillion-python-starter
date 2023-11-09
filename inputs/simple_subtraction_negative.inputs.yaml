@@ -1,0 +1,11 @@
+---
+program_id: simple_subtraction_negative
+store_secrets: {}
+compute_secrets:
+  I00:
+    Integer:
+      value: "17517"
+  I01:
+    Integer:
+      value: "25981"
+public_variables: {}

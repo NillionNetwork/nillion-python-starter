@@ -1,0 +1,20 @@
+---
+program_id: greater_than
+store_secrets:
+  A:
+    Integer:
+      value: "1"
+      encoding: Integer
+  B:
+    Integer:
+      value: "2"
+      encoding: Integer
+compute_secrets:
+  C:
+    Integer:
+      value: "3"
+      encoding: Integer
+  D:
+    Integer:
+      value: "3"
+      encoding: Integer

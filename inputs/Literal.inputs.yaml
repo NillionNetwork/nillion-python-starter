@@ -1,0 +1,8 @@
+---
+program_id: ~
+store_secrets: {}
+compute_secrets:
+  I00:
+    Integer:
+      value: "-7517"
+public_variables: {}

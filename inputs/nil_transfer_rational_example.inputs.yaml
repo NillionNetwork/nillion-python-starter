@@ -1,0 +1,9 @@
+---
+program_id: ~
+store_secrets:
+  9bDUejSCS9xH4sYyqQ3ihPJWvIwMGN:
+    Rational:
+      value: "-42.00"
+      digits: 2
+compute_secrets: {}
+public_variables: {}
