@@ -5,7 +5,7 @@ function __echo_red_bold {
 
 function __nillion_pip_install() {
   WHLPATH=$(find "$NILLION_SDK_ROOT" -iname "$1" -type f -print | head -n1)
-  pip install "${WHLPATH:?could not find $1 in $NILLION_SDK_ROOT}"
+  pip install --force-reinstall "${WHLPATH:?could not find $1 in $NILLION_SDK_ROOT}"
 }
 
 function install_py_nillion_client() {

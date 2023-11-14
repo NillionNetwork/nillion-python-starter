@@ -38,7 +38,7 @@ if pidof "$RUN_LOCAL_CLUSTER" > /dev/null; then
   __echo_red_bold "⚠️ $RUN_LOCAL_CLUSTER is already running! It is unlikely you want this, consider terminating that process and re-running this test."
 fi
 
-"$RUN_LOCAL_CLUSTER" --seed "$SEED_PHRASE" 2>/dev/null >"$OUTFILE" & echo $! >"$PIDFILE";
+RUST_LOG='debug' "$RUN_LOCAL_CLUSTER" --seed "$SEED_PHRASE" 2>/tmp/run-local-cluster.err >"$OUTFILE" & echo $! >"$PIDFILE";
 
 time_limit=40
 while true; do
@@ -58,7 +58,7 @@ done
 CLUSTER_ID=$(grep -oP 'cluster id is \K.*' "$OUTFILE");
 BOOT_MULTIADDR=$(grep -oP 'bootnode is at \K.*' "$OUTFILE");
 
-echo "ℹ️ Cluster has been STARTED"
+echo "ℹ️ Cluster has been STARTED (see $OUTFILE)"
 cat "$OUTFILE"
 
 "$NODE_KEYGEN" "$NODEKEYFILE"
@@ -86,10 +86,15 @@ jq -n \
 echo "ℹ️  injected program, bootnode and cluster_id into config: [$NILLION_TEST_CONFIG]";
 
 echo "ℹ️  starting python test";
+
 PEER_USERID=$(python3 01-fetch-reader-userid.py)
 echo "ℹ️  got reader PEER_USERID: [$PEER_USERID]"
+
 STORE_ID=$(python3 02-store-secret.py --reader_user_id "$PEER_USERID")
 echo "ℹ️  got secret STORE_ID: [$STORE_ID]"
+
 python3 03-retrieve-secret.py --store_id "$STORE_ID"
+python3 04-revoke-read-permissions.py --store_id "$STORE_ID" --reader_user_id "$PEER_USERID"
+python3 05-revoked-permissions-test.py --store_id "$STORE_ID"
 
 exit 0
