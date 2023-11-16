@@ -1,36 +1,27 @@
 #!/usr/bin/env bash
 
-set -e
-
-NILLION_VENV="nillion-venv"
-
-export PYENV_ROOT="$HOME/.pyenv"
-
-if [ ! -d "$PYENV_ROOT" ]; then
-    curl https://pyenv.run | bash > /dev/null
-fi
-
-set +e
-if ! command -v pyenv &>/dev/null; then
-  export PATH="${PYENV_ROOT}/bin:${PATH}"
-fi
-set -e
-
-function activate_venv() {
-    echo Initializing pyenv
-    eval "$(pyenv init -)"
-
-    echo Activating "$NILLION_VENV"
-    pyenv activate "$NILLION_VENV"
-    pyenv exec python -m pip install --upgrade pip
+function deactivate_venv() {
+    echo "Deactivating virtualenv"
+    deactivate
 }
 
-function deactivate_venv() {
-    echo Deactivating "$NILLION_VENV"
-    pyenv deactivate "$NILLION_VENV"
+function activate_venv () {
+  if [[ ! -z "${VIRTUAL_ENV:-}" ]]; then
+    echo "Virtualenv is active!"
+    return 0
+  fi
+
+  echo "Init virtualenv"
+  pip install --user virtualenv==20.24.6
+
+  echo "Build virtualenv"
+  NILLION_VENV=$(mktemp -d --suffix '-virtualenv')
+  virtualenv -p python3 "$NILLION_VENV"
+
+  echo "Activate virtualenv"
+  source "$NILLION_VENV/bin/activate"
+
+  echo "Virtualenv READY"
 }
 
 activate_venv
-
-# Deactivate on exit
-trap deactivate_venv EXIT

@@ -10,6 +10,7 @@ Please make sure you first unpack your target `nillion-sdk-bins-*` archive to yo
 
 ```shell
 export NILLION_SDK_ROOT=/path/to/your/sdk/v2023-10-26-eca385ef
+source ../activate_venv.sh
 ./start-test.sh
 ```
 
