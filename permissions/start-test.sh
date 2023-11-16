@@ -7,9 +7,6 @@ trap "kill 0" SIGINT SIGTERM SIGQUIT EXIT
 # shellcheck source=../utils.sh
 source "$THIS_SCRIPT_DIR/../utils.sh"
 
-# shellcheck source=../activate_venv.sh
-source "$THIS_SCRIPT_DIR/../activate_venv.sh"
-
 check_for_sdk_root
 install_nada_dsl
 install_py_nillion_client
@@ -30,7 +27,8 @@ trap 'kill $(pidof $RUN_LOCAL_CLUSTER)' SIGINT SIGTERM SIGQUIT EXIT
 NODEKEYFILE=$(mktemp);
 READERKEYFILE=$(mktemp);
 WRITERKEYFILE=$(mktemp);
-NILLION_TEST_CONFIG="$THIS_SCRIPT_DIR/.nillion-config.json"
+NILLION_CONFIG=$(mktemp);
+export NILLION_CONFIG
 
 SEED_PHRASE="$0";
 
@@ -38,7 +36,7 @@ if pidof "$RUN_LOCAL_CLUSTER" > /dev/null; then
   __echo_red_bold "⚠️ $RUN_LOCAL_CLUSTER is already running! It is unlikely you want this, consider terminating that process and re-running this test."
 fi
 
-RUST_LOG='debug' "$RUN_LOCAL_CLUSTER" --seed "$SEED_PHRASE" 2>/tmp/run-local-cluster.err >"$OUTFILE" & echo $! >"$PIDFILE";
+"$RUN_LOCAL_CLUSTER" --seed "$SEED_PHRASE" 2>/dev/null >"$OUTFILE" & echo $! >"$PIDFILE";
 
 time_limit=40
 while true; do
@@ -82,8 +80,8 @@ jq -n \
         YOUR_WRITERKEY_PATH_HERE: $writerkey,
         YOUR_READERKEY_PATH_HERE: $readerkey,
         YOUR_NODEKEY_PATH_HERE: $nodekey
-    }' >"$NILLION_TEST_CONFIG"
-echo "ℹ️  injected program, bootnode and cluster_id into config: [$NILLION_TEST_CONFIG]";
+    }' >"$NILLION_CONFIG"
+echo "ℹ️  injected program, bootnode and cluster_id into config: [$NILLION_CONFIG]";
 
 echo "ℹ️  starting python test";
 

@@ -3,6 +3,7 @@ import argparse
 import asyncio
 import json
 import py_nillion_client as nillion
+import os
 import sys
 
 parser = argparse.ArgumentParser(
@@ -24,7 +25,7 @@ args = parser.parse_args()
 
 
 async def main():
-    with open(".nillion-config.json", "r") as fh:
+    with open(os.environ["NILLION_CONFIG"], "r") as fh:
         config = json.load(fh)
 
     # Path to the user keys
