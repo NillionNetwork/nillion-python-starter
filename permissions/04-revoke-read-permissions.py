@@ -40,6 +40,14 @@ async def main():
     # This is the cluster id from run-local-cluster output
     cluster_id = config["YOUR_CLUSTER_ID_HERE"]
 
+    payments_config = nillion.PaymentsConfig(
+        config["YOUR_BLOCKCHAIN_RPC_ENDPOINT"],
+        config["YOUR_WALLET_PRIVATE_KEY"],
+        int(config["YOUR_CHAIN_ID"]),
+        config["YOUR_PAYMENTS_SC_ADDRESS"],
+        config["YOUR_BLINDING_FACTORS_MANAGER_SC_ADDRESS"],
+    )
+
     nodekey = nillion.NodeKey.from_file(nodekey_path)
 
     writer = nillion.NillionClient(
@@ -47,6 +55,7 @@ async def main():
         bootnodes,
         nillion.ConnectionMode.relay(),
         nillion.UserKey.from_file(writer_userkey_path),
+        payments_config
     )
 
     print(f"ℹ️  revoking permissions for [{args.reader_user_id}]", file=sys.stderr)

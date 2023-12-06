@@ -36,7 +36,7 @@ if pidof "$RUN_LOCAL_CLUSTER" > /dev/null; then
   __echo_red_bold "⚠️ $RUN_LOCAL_CLUSTER is already running! It is unlikely you want this, consider terminating that process and re-running this test."
 fi
 
-"$RUN_LOCAL_CLUSTER" --seed "$SEED_PHRASE" 2>/dev/null >"$OUTFILE" & echo $! >"$PIDFILE";
+"$RUN_LOCAL_CLUSTER" --seed "$SEED_PHRASE" >"$OUTFILE" & echo $! >"$PIDFILE";
 
 time_limit=40
 while true; do
@@ -55,6 +55,15 @@ done
 
 CLUSTER_ID=$(grep -oP 'cluster id is \K.*' "$OUTFILE");
 BOOT_MULTIADDR=$(grep -oP 'bootnode is at \K.*' "$OUTFILE");
+PAYMENTS_CONFIG_FILE=$(grep -oP 'payments configuration written to \K.*' "$OUTFILE");
+WALLET_KEYS_FILE=$(grep -oP 'wallet keys written to \K.*' "$OUTFILE");
+
+PAYMENTS_RPC=$(grep -oP 'blockchain_rpc_endpoint: \K.*' "$PAYMENTS_CONFIG_FILE");
+PAYMENTS_CHAIN=$(grep -oP 'chain_id: \K.*' "$PAYMENTS_CONFIG_FILE");
+PAYMENTS_SC_ADDR=$(grep -oP 'payments_sc_address: \K.*' "$PAYMENTS_CONFIG_FILE");
+PAYMENTS_BF_ADDR=$(grep -oP 'blinding_factors_manager_sc_address: \K.*' "$PAYMENTS_CONFIG_FILE");
+
+WALLET_PRIVATE_KEY=$(tail -n1 "$WALLET_KEYS_FILE")
 
 echo "ℹ️ Cluster has been STARTED (see $OUTFILE)"
 cat "$OUTFILE"
@@ -74,12 +83,22 @@ jq -n \
     --arg writerkey "$WRITERKEYFILE" \
     --arg readerkey "$READERKEYFILE" \
     --arg nodekey "$NODEKEYFILE" \
+    --arg blockchain_rpc_endpoint "$PAYMENTS_RPC" \
+    --arg chain_id "$PAYMENTS_CHAIN" \
+    --arg payments_sc_address "$PAYMENTS_SC_ADDR" \
+    --arg blinding_factors_manager_sc_address "$PAYMENTS_BF_ADDR" \
+    --arg wallet_private_key "$WALLET_PRIVATE_KEY" \
     '{
         YOUR_BOOTNODE_MULTIADDRESS_HERE: $bootnode,
         YOUR_CLUSTER_ID_HERE: $cluster,
         YOUR_WRITERKEY_PATH_HERE: $writerkey,
         YOUR_READERKEY_PATH_HERE: $readerkey,
-        YOUR_NODEKEY_PATH_HERE: $nodekey
+        YOUR_NODEKEY_PATH_HERE: $nodekey,
+        YOUR_BLOCKCHAIN_RPC_ENDPOINT: $blockchain_rpc_endpoint,
+        YOUR_CHAIN_ID: $chain_id,
+        YOUR_PAYMENTS_SC_ADDRESS: $payments_sc_address,
+        YOUR_BLINDING_FACTORS_MANAGER_SC_ADDRESS: $blinding_factors_manager_sc_address,
+        YOUR_WALLET_PRIVATE_KEY: $wallet_private_key
     }' >"$NILLION_CONFIG"
 echo "ℹ️  injected program, bootnode and cluster_id into config: [$NILLION_CONFIG]";
 
