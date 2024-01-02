@@ -90,18 +90,18 @@ update_env() {
 }
 
 # Add environment variables to .env
-update_env "YOUR_BOOTNODE_MULTIADDRESS_HERE" "$BOOT_MULTIADDR"
-update_env "YOUR_CLUSTER_ID_HERE" "$CLUSTER_ID"
-update_env "YOUR_WRITERKEY_PATH_HERE" "$WRITERKEYFILE"
-update_env "YOUR_READERKEY_PATH_HERE" "$READERKEYFILE"
-update_env "YOUR_NODEKEY_PATH_HERE" "$NODEKEYFILE"
-update_env "YOUR_BLOCKCHAIN_RPC_ENDPOINT" "$PAYMENTS_RPC"
-update_env "YOUR_CHAIN_ID" "$PAYMENTS_CHAIN"
-update_env "YOUR_PAYMENTS_SC_ADDRESS" "$PAYMENTS_SC_ADDR"
-update_env "YOUR_BLINDING_FACTORS_MANAGER_SC_ADDRESS" "$PAYMENTS_BF_ADDR"
-update_env "YOUR_WALLET_PRIVATE_KEY" "$WALLET_PRIVATE_KEY"
+update_env "NILLION_BOOTNODE_MULTIADDRESS" "$BOOT_MULTIADDR"
+update_env "NILLION_CLUSTER_ID" "$CLUSTER_ID"
+update_env "NILLION_WRITERKEY_PATH" "$WRITERKEYFILE"
+update_env "NILLION_READERKEY_PATH" "$READERKEYFILE"
+update_env "NILLION_NODEKEY_PATH" "$NODEKEYFILE"
+update_env "NILLION_BLOCKCHAIN_RPC_ENDPOINT" "$PAYMENTS_RPC"
+update_env "NILLION_CHAIN_ID" "$PAYMENTS_CHAIN"
+update_env "NILLION_PAYMENTS_SC_ADDRESS" "$PAYMENTS_SC_ADDR"
+update_env "NILLION_BLINDING_FACTORS_MANAGER_SC_ADDRESS" "$PAYMENTS_BF_ADDR"
+update_env "NILLION_WALLET_PRIVATE_KEY" "$WALLET_PRIVATE_KEY"
 echo "ℹ️  Updated configuration variables (bootnode, cluster id, keys, blockchain info) in the .env file."
 
-echo "📋 To start permissions examples, run 'cd permissions && python3 01-fetch-reader-userid.py' to get the reader user id";
+echo "📋 To start python permissions examples, run 'cd permissions && python3 01-fetch-reader-userid.py' to get the reader user id";
 
 exit 0
