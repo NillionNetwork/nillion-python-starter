@@ -3,3 +3,4 @@
 target/
 nillion-venv/
 permissions/.nillion-config.json
+.env

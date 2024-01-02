@@ -6,11 +6,10 @@ import os
 import sys
 from dotenv import load_dotenv
 from nillion_client_helper import create_nillion_client
-
 load_dotenv()
 
 parser = argparse.ArgumentParser(
-    description="Use read permissions to retrieve a secret owned by another user on the Nillion network"
+    description="Check that retrieval permissions on a Secret have been revoked"
 )
 parser.add_argument(
     "--store_id",
@@ -25,20 +24,21 @@ async def main():
     cluster_id = os.getenv("YOUR_CLUSTER_ID_HERE")
     reader_userkey_path = os.getenv("YOUR_READERKEY_PATH_HERE")
     reader_userkey = nillion.UserKey.from_file(reader_userkey_path)
-
+    
     # Reader Nillion client
     reader = create_nillion_client(reader_userkey)
     reader_user_id = reader.user_id()
 
-    secret_name = "fortytwo"
-
-    # Reader retrieves the named secret by store id
-    print(f"Retrieving secret as reader: {reader_user_id}")
-    result = await reader.retrieve_secret(cluster_id, args.store_id, secret_name)
-
-    print(f"🦄 Retrieved {secret_name} secret, value = {result[1].value}", file=sys.stderr)
-    print("\n\nRun the following command to revoke the reader's retrieve permissions to the secret")
-    print(f"\n📋 python3 04-revoke-read-permissions.py --store_id {args.store_id} --revoked_user_id {reader_user_id}")
+    try:
+        secret_name = "fortytwo"
+        result = await reader.retrieve_secret(cluster_id, args.store_id, secret_name)
+        print(f"⛔ FAIL: {reader_user_id} user id with revoked permissions was allowed to access secret", file=sys.stderr)
+    except TypeError as e:
+        if str(e) == "the user is not authorized to access the secret":
+            print(f"🦄 Success: After user permissions were revoked, {reader_user_id} was not allowed to access secret", file=sys.stderr)
+            pass
+        else:
+            raise(e)
 
 
 asyncio.run(main())

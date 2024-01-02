@@ -15,7 +15,9 @@ function activate_venv () {
   pip install --user virtualenv==20.24.6
 
   echo "Build virtualenv"
-  NILLION_VENV=$(mktemp -d --suffix '-virtualenv')
+  NILLION_VENV=".venv"
+  mkdir "$NILLION_VENV"
+  echo $NILLION_VENV
   virtualenv -p python3 "$NILLION_VENV"
 
   echo "Activate virtualenv"

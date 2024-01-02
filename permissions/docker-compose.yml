@@ -1,4 +1,4 @@
-version: "3.8"
+version: '3.8'
 services:
   demo:
     container_name: nillion
@@ -17,14 +17,14 @@ services:
             groupadd -r nillion; \
             useradd -rm -g nillion nillion;
         USER nillion
-    network_mode: "bridge"
+    network_mode: 'bridge'
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=Europe/London
       - NILLION_SDK_ROOT=/sdk
     volumes:
-      - "$PWD/..:/host"
+      - '$PWD/..:/host'
       - $NILLION_SDK_ROOT:/sdk
     working_dir: /host
     command:
@@ -35,4 +35,4 @@ services:
         check_for_sdk_root
         install_nada_dsl
         pushd permissions
-        ./start-test.sh
+        ./bootstrap-local-environment.sh
