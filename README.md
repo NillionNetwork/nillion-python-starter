@@ -30,7 +30,6 @@ The bootstrap-local-environment.sh file uses pidof and grep.
 ```shell
 source ./activate_venv.sh
 pip install -r requirements.txt
-cd permissions
 ./bootstrap-local-environment.sh
 ```
 
@@ -39,6 +38,7 @@ cd permissions
 5. Run permissions examples
 
 ```shell
+cd permissions
 python3 01-fetch-reader-userid.py
 python3 02-store-permissioned-secret.py --retriever_user_id {READER_USER_ID}
 python3 03-retrieve-secret.py --store_id {STORE_ID}

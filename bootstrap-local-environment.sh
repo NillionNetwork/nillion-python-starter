@@ -4,11 +4,11 @@ THIS_SCRIPT_DIR="$(dirname "$0")"
 set -euo pipefail
 trap "kill 0" SIGINT SIGTERM SIGQUIT EXIT
 
-# shellcheck source=../utils.sh
-source "$THIS_SCRIPT_DIR/../utils.sh"
+# shellcheck source=./utils.sh
+source "$THIS_SCRIPT_DIR/utils.sh"
 
 set -a  # Automatically export all variables
-source ../.env
+source "$THIS_SCRIPT_DIR/.env"
 set +a  # Stop automatically exporting
 
 check_for_sdk_root
@@ -77,7 +77,7 @@ echo "🔑 Keys have been generated"
 update_env() {
     local key=$1
     local value=$2
-    local file="../.env"  # Path to the .env file
+    local file="./.env"  # Path to the .env file
 
     # Check if the key exists in the file and remove it
     if grep -q "^$key=" "$file"; then
@@ -102,6 +102,6 @@ update_env "YOUR_BLINDING_FACTORS_MANAGER_SC_ADDRESS" "$PAYMENTS_BF_ADDR"
 update_env "YOUR_WALLET_PRIVATE_KEY" "$WALLET_PRIVATE_KEY"
 echo "ℹ️  Updated configuration variables (bootnode, cluster id, keys, blockchain info) in the .env file."
 
-echo "📋 Run 'python3 01-fetch-reader-userid.py' to get the reader user id";
+echo "📋 To start permissions examples, run 'cd permissions && python3 01-fetch-reader-userid.py' to get the reader user id";
 
 exit 0
