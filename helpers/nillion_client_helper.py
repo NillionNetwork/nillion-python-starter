@@ -1,6 +1,6 @@
 import os
 import py_nillion_client as nillion
-from payments_helper import create_payments_config
+from helpers.nillion_payments_helper import create_payments_config
 
 def create_nillion_client(userkey):
     nodekey_path = os.getenv("NILLION_NODEKEY_PATH")

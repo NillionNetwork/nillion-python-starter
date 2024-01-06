@@ -5,7 +5,10 @@ import py_nillion_client as nillion
 import os
 import sys
 from dotenv import load_dotenv
-from nillion_client_helper import create_nillion_client
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from helpers.nillion_client_helper import create_nillion_client
+
 load_dotenv()
 
 parser = argparse.ArgumentParser(
@@ -50,7 +53,7 @@ async def main():
     await writer.update_permissions( cluster_id, args.store_id , new_permissions)
 
     print("\n\nRun the following command to test that permissions have been properly revoked")
-    print(f"\n📋  python3 05-test-revoked-permissions  --store_id {args.store_id}")
+    print(f"\n📋  python3 05-test-revoked-permissions.py  --store_id {args.store_id}")
 
 
 asyncio.run(main())

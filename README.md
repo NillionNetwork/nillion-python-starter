@@ -17,7 +17,7 @@ The bootstrap-local-environment.sh file uses pidof and grep.
 - [Install pidof](https://command-not-found.com/pidof)
 - [Install grep](https://command-not-found.com/grep)
 
-### Running examples
+## Running examples
 
 1. Create a .env file by copying the sample
 
@@ -35,7 +35,7 @@ pip install -r requirements.txt
 
 4. Check .env file - keys, bootnodes, cluster, and payment info should now be present.
 
-5. Run permissions examples
+### Run permissions examples (storing and retrieving permissioned secrets, revoking permissions)
 
 ```shell
 cd permissions
@@ -46,9 +46,33 @@ python3 04-revoke-read-permissions.py --store_id {STORE_ID} --revoked_user_id {R
 python3 05-test-revoked-permissions  --store_id {STORE_ID}
 ```
 
-# Running permissions example in Docker
+Running permissions example in Docker
 
 ```shell
 cd permissions
 docker compose run demo
 ```
+
+## Compile programs
+
+Compile programs in the programs folder.
+
+```shell
+./compile_programs.sh
+```
+
+This results in programs-compiled, a folder of programs compiled to mir.
+
+## Store program
+
+```shell
+./store_programs.sh {RELATIVE_PROGRAM_PATH}
+```
+
+For example to store the compiled addition_simple program, run
+
+```shell
+./store_programs.sh ./program-examples-compiled/addition_simple.nada.bin
+```
+
+Storing a program results in the stored Program ID.

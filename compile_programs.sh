@@ -1,15 +1,22 @@
 #!/usr/bin/env bash
 
+# This script compiles all $PROGRAMS_FOLDER programs to mir
+PROGRAMS_FOLDER="programs"
+COMPILED_PROGRAMS_FOLDER="programs-compiled"
 
 SCRIPT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}" 2>/dev/null)" && pwd -P)"
-TARGET_PATH="${SCRIPT_PATH}/target"
-PROGRAMS_PATH="${SCRIPT_PATH}/programs"
+TARGET_PATH="${SCRIPT_PATH}/${COMPILED_PROGRAMS_FOLDER}"
+PROGRAMS_PATH="${SCRIPT_PATH}/${PROGRAMS_FOLDER}"
 
 # shellcheck source=utils.sh
 source "$SCRIPT_PATH/utils.sh"
 
 # shellcheck source=activate_venv.sh
 source "$SCRIPT_PATH/activate_venv.sh"
+
+set -a  # Automatically export all variables
+source "$SCRIPT_PATH/.env"
+set +a  # Stop automatically exporting
 
 check_for_sdk_root
 install_nada_dsl

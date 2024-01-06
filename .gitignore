@@ -1,6 +1,6 @@
 **/*.pyc
 **/__pycache__
-target/
+programs-compiled/
 nillion-venv/
 permissions/.nillion-config.json
 .env

@@ -5,7 +5,10 @@ import py_nillion_client as nillion
 import os
 import sys
 from dotenv import load_dotenv
-from nillion_client_helper import create_nillion_client
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from helpers.nillion_client_helper import create_nillion_client
+
 load_dotenv()
 
 parser = argparse.ArgumentParser(

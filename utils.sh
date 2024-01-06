@@ -29,6 +29,7 @@ function discover_sdk_bin_path() {
 }
 
 function check_for_sdk_root() {
+  echo "NILLION_SDK_ROOT is set to: '$NILLION_SDK_ROOT'"
   if [ -z "$NILLION_SDK_ROOT" -a ! -d "$NILLION_SDK_ROOT" ]; then
     echo "Error: NILLION_SDK_ROOT is not set to a directory"
     exit 1
