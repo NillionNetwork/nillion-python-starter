@@ -4,12 +4,13 @@ function __echo_red_bold {
 }
 
 function __nillion_pip_install() {
-  WHLPATH=$(find "$NILLION_SDK_ROOT" -iname "$1" -type f -print | head -n1)
-  pip install --force-reinstall "${WHLPATH:?could not find $1 in $NILLION_SDK_ROOT}"
+  WHLPATH=$(find "$NILLION_WHL_ROOT" -iname "$1" -type f -print | head -n1)
+  echo $WHLPATH
+  pip install --force-reinstall "${WHLPATH:?could not find $1 in $NILLION_WHL_ROOT}"
 }
 
 function install_py_nillion_client() {
-  __nillion_pip_install "py_nillion_client-*$(uname -s)*_$(uname -m).whl"
+  __nillion_pip_install "${NILLION_PYCLIENT_WHL_FILE_NAME}"
 }
 
 function install_nada_dsl() {
@@ -17,9 +18,11 @@ function install_nada_dsl() {
 }
 
 function discover_sdk_bin_path() {
-  BINPATH=$(find "$NILLION_SDK_ROOT" -name "$1" -type f -executable -print | head -n1)
+  
+  BINPATH=$(find "$NILLION_SDK_ROOT" -name "$1" -type f -print | head -n1)
+
   if ! command -v "$BINPATH" > /dev/null; then
-    echo "${1} was not discovered. Check NILLION_SDK_ROOT" 1>&2
+    echo "${1} was not discovered. Check NILLION_SDK_ROOT $NILLION_SDK_ROOT $BINPATH" 1>&2
     exit 1
   fi
   echo "$BINPATH"
