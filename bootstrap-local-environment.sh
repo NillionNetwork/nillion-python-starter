@@ -2,7 +2,6 @@
 THIS_SCRIPT_DIR="$(dirname "$0")"
 
 set -euo pipefail
-trap "kill 0" SIGINT SIGTERM SIGQUIT EXIT
 
 # shellcheck source=./utils.sh
 source "$THIS_SCRIPT_DIR/utils.sh"
@@ -16,8 +15,17 @@ install_nada_dsl
 install_py_nillion_client
 
 RUN_LOCAL_CLUSTER="$(discover_sdk_bin_path run-local-cluster)"
+
+# kill any processes of local clusters that are already running
+# LOCAL_CLUSTER_PROCESS=$(pgrep -f "$RUN_LOCAL_CLUSTER")
+# if [ -n "$LOCAL_CLUSTER_PROCESS" ]; then
+#     kill $LOCAL_CLUSTER_PROCESS
+# fi
+
 USER_KEYGEN=$(discover_sdk_bin_path user-keygen)
 NODE_KEYGEN=$(discover_sdk_bin_path node-keygen)
+
+echo $RUN_LOCAL_CLUSTER
 
 for var in RUN_LOCAL_CLUSTER USER_KEYGEN NODE_KEYGEN; do
   printf "ℹ️ found bin %-18s -> [${!var:?Failed to discover $var}]\n" "$var"
@@ -27,8 +35,6 @@ OUTFILE=$(mktemp);
 PIDFILE=$(mktemp);
 
 echo $OUTFILE
-
-trap 'kill $(pidof $RUN_LOCAL_CLUSTER)' SIGINT SIGTERM SIGQUIT EXIT
 
 NODEKEYFILE=$(mktemp);
 READERKEYFILE=$(mktemp);
@@ -66,11 +72,14 @@ WALLET_PRIVATE_KEY=$(tail -n1 "$WALLET_KEYS_FILE")
 
 echo "🔑 Generating a node key and user keys (reader key and writer key)"
 
+# Generate a node key
 "$NODE_KEYGEN" "$NODEKEYFILE"
+
+# Generate multiple user keys
 "$USER_KEYGEN" "$READERKEYFILE"
 "$USER_KEYGEN" "$WRITERKEYFILE"
 
-echo "🔑 Keys have been generated"
+echo "🔑 Node key and user keys have been generated"
 
 
 # Function to update or add an environment variable in the .env file
@@ -100,8 +109,10 @@ update_env "NILLION_CHAIN_ID" "$PAYMENTS_CHAIN"
 update_env "NILLION_PAYMENTS_SC_ADDRESS" "$PAYMENTS_SC_ADDR"
 update_env "NILLION_BLINDING_FACTORS_MANAGER_SC_ADDRESS" "$PAYMENTS_BF_ADDR"
 update_env "NILLION_WALLET_PRIVATE_KEY" "$WALLET_PRIVATE_KEY"
-echo "ℹ️  Updated configuration variables (bootnode, cluster id, keys, blockchain info) in the .env file."
 
-echo "📋 To start python permissions examples, run 'cd permissions && python3 01-fetch-reader-userid.py' to get the reader user id";
+echo "--------------------"
+echo "💻 Your Nillion local cluster is still running - process pid: $(pgrep -f $RUN_LOCAL_CLUSTER)"
+echo "ℹ️  Updated your .env file configuration variables: bootnode, cluster id, keys, blockchain info"
+echo "📋 Start python permissions examples, run 'cd permissions && python3 01-fetch-reader-userid.py' to get the reader user id";
 
 exit 0

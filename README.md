@@ -1,23 +1,22 @@
-# Permissions python examples
+# Python starter repo
 
-Before running through permissions examples, `./bootstrap-local-environment.sh` creates user keys for the secret writer and for the reader who the writer will allow to read the secret. Permissions examples are labeled 1-5:
+This is a python starter repo for building on the Nillion Network. Complete environment setup, then run examples
 
-1. The reader fetches their user id
-2. The writer stores a secret and gives the reader retrieve permissions on the secret based on the reader's user id, resulting in a store id for the secret
-3. The reader retrieves the secret with the store id
-4. The writer revokes secret permissions by rewriting them
-5. The reader tries to retrieve the secret, but no longer has access to it
+- To run multi party examples, go to the client_multi_party_compute folder.
 
-## Getting started with permissions examples
+- To run single party examples, go to the client_single_party_compute folder.
+
+- To run permissions examples (storing and retrieving permissioned secrets, revoking permissions), go to the permissions folder.
 
 ### Pre-req: install cli dependencies
 
-The bootstrap-local-environment.sh file uses pidof and grep.
+The run-local-cluster tool spins up anvil under the hood, so you need to have foundry installed. The bootstrap-local-environment.sh file uses pidof and grep.
 
+- [Install foundry](https://book.getfoundry.sh/getting-started/installation)
 - [Install pidof](https://command-not-found.com/pidof)
 - [Install grep](https://command-not-found.com/grep)
 
-## Running examples
+## Environment setup
 
 1. Create a .env file by copying the sample
 
@@ -33,46 +32,33 @@ pip install -r requirements.txt
 ./bootstrap-local-environment.sh
 ```
 
-4. Check .env file - keys, bootnodes, cluster, and payment info should now be present.
+4. Check .env file - keys, bootnodes, cluster, and payment info should now be present. If you want to run against a local cluster, use this configuration. Otherwise replace values with testnet bootnodes, cluster, and payment info.
 
-### Run permissions examples (storing and retrieving permissioned secrets, revoking permissions)
+5. Look through the programs folder to see examples of Nada programs.
 
-```shell
-cd permissions
-python3 01-fetch-reader-userid.py
-python3 02-store-permissioned-secret.py --retriever_user_id {READER_USER_ID}
-python3 03-retrieve-secret.py --store_id {STORE_ID}
-python3 04-revoke-read-permissions.py --store_id {STORE_ID} --revoked_user_id {READER_USER_ID}
-python3 05-test-revoked-permissions  --store_id {STORE_ID}
-```
+## Compiling programs
 
-Running permissions example in Docker
+Nada programs need to be compiled ahead of being stored. Compile all programs in the programs folder with the script:
 
 ```shell
-cd permissions
-docker compose run demo
-```
-
-## Compile programs
-
-Compile programs in the programs folder.
-
-```shell
+cd ..
 ./compile_programs.sh
 ```
 
-This results in programs-compiled, a folder of programs compiled to mir.
+This results in programs-compiled, a folder of compiled programs.
 
-## Store program
+## Store a compiled program
 
-```shell
-./store_programs.sh {RELATIVE_PROGRAM_PATH}
-```
-
-For example to store the compiled addition_simple program, run
+Store a compiled program in the network with this script:
 
 ```shell
-./store_programs.sh ./program-examples-compiled/addition_simple.nada.bin
+./store_program.sh {RELATIVE_COMPILED_PROGRAM_PATH}
 ```
 
-Storing a program results in the stored Program ID.
+To store the compiled addition_simple program you would run
+
+```shell
+./store_program.sh programs-compiled/addition_simple.nada.bin
+```
+
+Storing a program results in the stored program_id, the network's reference to the program. The program_id is the `{user_id}/{program_name}`
