@@ -33,7 +33,7 @@ async def main():
     reader_user_id = reader.user_id()
 
     try:
-        secret_name = "fortytwo"
+        secret_name = "my_int1"
         result = await reader.retrieve_secret(cluster_id, args.store_id, secret_name)
         print(f"⛔ FAIL: {reader_user_id} user id with revoked permissions was allowed to access secret", file=sys.stderr)
     except TypeError as e:

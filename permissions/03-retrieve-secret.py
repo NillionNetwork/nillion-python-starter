@@ -32,7 +32,7 @@ async def main():
     reader = create_nillion_client(reader_userkey)
     reader_user_id = reader.user_id()
 
-    secret_name = "fortytwo"
+    secret_name = "my_int1"
 
     # Reader retrieves the named secret by store id
     print(f"Retrieving secret as reader: {reader_user_id}")

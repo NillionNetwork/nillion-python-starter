@@ -30,12 +30,14 @@ async def main():
 
     # Writer Nillion client
     writer = create_nillion_client(writer_userkey)
+    writer_user_id = writer.user_id()
+    print(writer_user_id, args.retriever_user_id)
 
     # Writer gives themself default permissions
-    permissions = nillion.Permissions.default_for_user(writer.user_id())
-
+    permissions = nillion.Permissions.default_for_user(writer_user_id)
     # Writer gives the reader permission to read/retrieve secret
-    permissions.add_retrieve_permissions(set([args.retriever_user_id]))
+    permissions.add_retrieve_permissions(set([args.retriever_user_id, writer_user_id]))
+
     result = (
         "allowed"
         if permissions.is_retrieve_allowed(args.retriever_user_id)
@@ -46,9 +48,12 @@ async def main():
     
     print(f"ℹ️ Permissions set: Reader {args.retriever_user_id} is {result} to retrieve the secret")
 
-    secret_name = "fortytwo"
-    secret = nillion.SecretInteger(42)
-    secrets_object = nillion.Secrets({secret_name: secret})
+    secret_name_1 = "my_int1"
+    secret_1 = nillion.SecretInteger(10)
+
+    secret_name_2 = "my_int2"
+    secret_2 = nillion.SecretInteger(32)
+    secrets_object = nillion.Secrets({secret_name_1: secret_1, secret_name_2: secret_2})
 
     # Writer stores the permissioned secret, resulting in the secret's store id
     print(f"ℹ️  Storing permissioned secret: {secrets_object}")
