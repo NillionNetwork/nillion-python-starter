@@ -19,27 +19,26 @@ async def main():
     party_id = client.party_id()
     user_id = client.user_id()
 
-    program_id=f"{user_id}/input_array"
+    program_id=f"{user_id}/reduce_simple"
     party_name="Party1"
 
-    # Create a secret
-    secret_name = "my_integer_array"
+    # Create a secret array
+    secret_name = "my_array_1"
 
     secret_array= nillion.SecretArray([
         nillion.SecretInteger(1),
         nillion.SecretInteger(2),
         nillion.SecretInteger(3),
         nillion.SecretInteger(4),
-        nillion.SecretInteger(5),
     ])
 
-    stored_secret = nillion.Secrets({secret_name: secret_array})
+    stored_secret_array = nillion.Secrets({secret_name: secret_array})
     secret_bindings = nillion.ProgramBindings(program_id)
     secret_bindings.add_input_party(party_name, party_id)
 
-    # Store a secret
+    # Store a secret array
     store_id = await client.store_secrets(
-        cluster_id, secret_bindings, stored_secret, None
+        cluster_id, secret_bindings, stored_secret_array, None
     )
 
     # Bind the parties in the computation to the client to set input and output parties
@@ -50,9 +49,9 @@ async def main():
     print(f"Computing using program {program_id}")
     print(f"Use secret store_id: {store_id}")
 
-    computation_time_secrets = nillion.Secrets({})
+    computation_time_secrets = nillion.Secrets({"my_int1": nillion.SecretInteger(5)})
     
-    # # Compute on the secret
+    # Compute on the secret
     compute_id = await client.compute(
         cluster_id,
         compute_bindings,
