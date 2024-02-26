@@ -33,26 +33,6 @@ parser.add_argument(
 
 args = parser.parse_args()
 
-async def store_secret_for_party(client, party_name, party_id, user_id, program_id, cluster_id, secret_name, secret_value):
-    stored_secret = nillion.Secrets({
-        secret_name: nillion.SecretInteger(secret_value)
-    })
-
-    secret_bindings = nillion.ProgramBindings(program_id)
-    secret_bindings.add_input_party(party_name, party_id)
-
-    permissions = nillion.Permissions.default_for_user(user_id)
-    compute_permissions = {
-        args.user_id_1: {program_id},
-    }
-    permissions.add_compute_permissions(compute_permissions)
-
-    store_id = await client.store_secrets(
-        cluster_id, secret_bindings, stored_secret, permissions
-    )
-
-    return store_id
-
 # N other parties store a secret
 async def main():
     cluster_id = os.getenv("NILLION_CLUSTER_ID")
