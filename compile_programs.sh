@@ -32,4 +32,6 @@ for file in *.py ; do
     "${file}"
 done 
 
-echo "COMPLETE: programs compiled to mir in dir: [$TARGET_PATH]"
+echo "COMPLETE: all files in the programs directory were compiled to mir: [$TARGET_PATH]"
+echo "To store a compiled program, run './store_program.sh programs-compiled/{program_name}.nada.bin'"
+echo "📋 Store the addition_simple program: './store_program.sh programs-compiled/addition_simple.nada.bin'"

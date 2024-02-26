@@ -41,8 +41,8 @@ async def main():
     )
     secrets_string = ", ".join(f"{key}: {value}" for key, value in CONFIG_SECRETS_1.items())
     print(f"\n🎉1️⃣ Party {CONFIG_PARTY_NAME_1} stored {secrets_string} at store id: {store_id_1}")
-    print("\n📋⬇️ Copy and run the following command to store the 2nd Party's secret")
-    print(f"\npython3 02_store_secret_party2.py --user_id_1 {user_id_1} --store_id_1 {store_id_1}")
+    print("\n📋⬇️ Copy and run the following command to store N other party secrets")
+    print(f"\npython3 02_store_secret_party_n.py --user_id_1 {user_id_1} --store_id_1 {store_id_1}")
 
 
     

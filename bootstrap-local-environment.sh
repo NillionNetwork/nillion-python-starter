@@ -113,6 +113,6 @@ update_env "NILLION_WALLET_PRIVATE_KEY" "$WALLET_PRIVATE_KEY"
 echo "--------------------"
 echo "💻 Your Nillion local cluster is still running - process pid: $(pgrep -f $RUN_LOCAL_CLUSTER)"
 echo "ℹ️  Updated your .env file configuration variables: bootnode, cluster id, keys, blockchain info"
-echo "📋 Start python permissions examples, run 'cd permissions && python3 01-fetch-reader-userid.py' to get the reader user id";
+echo "📋 Compile all Nada programs './compile_programs.sh'";
 
 exit 0

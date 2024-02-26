@@ -6,9 +6,10 @@ This is an example of multi party compute, computation involving secret inputs f
 
 The 3-part Multi Party example assumes there is a stored program that meets the following criteria:
 
-- there are exactly 2 parties
+- there are N+1 parties
 - each party contributes secret inputs of type SecretInteger, and each party stores at least one secret an input
-- the 2nd party gives the 1st party permission to compute on the 2nd party's secret
+- the 1st party stores a secret
+- N other parties store secrets and give the 1st party permission to compute on their secrets
 - the 1st party runs compute
 - the 1st party reads the output
 
