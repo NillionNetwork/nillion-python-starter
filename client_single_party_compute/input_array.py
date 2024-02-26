@@ -52,7 +52,7 @@ async def main():
 
     computation_time_secrets = nillion.Secrets({})
     
-    # # Compute on the secret
+    # Compute on the secret
     compute_id = await client.compute(
         cluster_id,
         compute_bindings,
