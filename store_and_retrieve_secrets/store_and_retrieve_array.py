@@ -44,13 +44,15 @@ async def main():
     print(f"The secret is stored at store_id: {store_id}")
 
     # Retrieve the stored SecretArray
-    result = await client.retrieve_secret(cluster_id, store_id, secret_name)
+    result_tuple = await client.retrieve_secret(cluster_id, store_id, secret_name)
+
+    print(f"The secret name as a uuid is {result_tuple[0]}")
 
     # This is the list of secret objects
-    secret_results = result[1].value
+    secret_results = result_tuple[1].value
 
     # Read the secret value of the 1st element in the secret array
-    print(f"The 1st secret array value is {secret_results[0].value}")
+    print(f"The secret array value at index 0 is {secret_results[0].value}")
 
     # Read all secret values in the secret array
     secret_array_values = [secret_value.value for secret_value in secret_results]

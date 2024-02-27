@@ -35,7 +35,8 @@ async def main():
 
     print(f"The secret is stored at store_id: {store_id}")
 
-    result = await client.retrieve_secret(cluster_id, store_id, secret_name)
-    print(f"The secret value is {result[1].value}")
+    result_tuple = await client.retrieve_secret(cluster_id, store_id, secret_name)
+    print(f"The secret name as a uuid is {result_tuple[0]}")
+    print(f"The secret value is {result_tuple[1].value}")
 
 asyncio.run(main())
