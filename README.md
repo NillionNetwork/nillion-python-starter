@@ -28,6 +28,7 @@ The run-local-cluster tool spins up anvil under the hood, so you need to have fo
 
 ```shell
 ./activate_venv.sh
+source .venv/bin/activate
 ```
 
 Run bootstrap-local-environment.sh to run-local-cluster, generate keys, and get bootnodes, cluster, and payment info

@@ -29,7 +29,10 @@ function activate_venv () {
 
   source "$NILLION_VENV/bin/activate"
   source ./install-nillion.sh
-  echo "Virtualenv ready: $NILLION_VENV"
+  echo "Virtualenv: $NILLION_VENV"
+  echo "Check the $NILLION_VENV/lib/python3.11/site-packages folder to make sure you have py_nillion_client and nada_dsl packages"
+  echo "📋 Copy and run the following command to activate your environment:"
+  echo "source .venv/bin/activate"
 }
 
 activate_venv

@@ -11,8 +11,6 @@ source "$THIS_SCRIPT_DIR/.env"
 set +a  # Stop automatically exporting
 
 check_for_sdk_root
-install_nada_dsl
-install_py_nillion_client
 
 RUN_LOCAL_CLUSTER="$(discover_sdk_bin_path run-local-cluster)"
 
