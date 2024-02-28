@@ -20,14 +20,15 @@ function activate_venv () {
   # Check if the .venv directory exists
   if [ -d "$NILLION_VENV" ]; then
       echo "$NILLION_VENV exists, activating virtual environment."
-      source "$NILLION_VENV/bin/activate"
+      
   else
       echo "$NILLION_VENV does not exist, creating virtual environment."
       mkdir "$NILLION_VENV"
-      virtualenv -p python3 "$NILLION_VENV"
-      source "$NILLION_VENV/bin/activate"
+      virtualenv -p python3.11 "$NILLION_VENV"
   fi
 
+  source "$NILLION_VENV/bin/activate"
+  source ./install-nillion.sh
   echo "Virtualenv ready: $NILLION_VENV"
 }
 

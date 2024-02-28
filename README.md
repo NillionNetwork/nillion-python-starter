@@ -24,11 +24,15 @@ The run-local-cluster tool spins up anvil under the hood, so you need to have fo
 
 2. Update variables within the .env: NILLION_WHL_ROOT, NILLION_SDK_ROOT, NILLION_PYCLIENT_WHL_FILE_NAME
 
-3. Activate environment, install requirements, and run bootstrap-local-environment.sh to run-local-cluster, generate keys, and get bootnodes, cluster, and payment info
+3. Activate virtual environment (.venv) and install dependencies
 
 ```shell
-source ./activate_venv.sh
-pip install -r requirements.txt
+./activate_venv.sh
+```
+
+Run bootstrap-local-environment.sh to run-local-cluster, generate keys, and get bootnodes, cluster, and payment info
+
+```shell
 ./bootstrap-local-environment.sh
 ```
 
