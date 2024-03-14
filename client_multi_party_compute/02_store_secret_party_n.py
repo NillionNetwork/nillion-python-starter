@@ -12,6 +12,7 @@ from config import (
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from helpers.nillion_client_helper import create_nillion_client
+from helpers.nillion_keypath_helper import getUserKeyFromFile, getNodeKeyFromFile
 
 load_dotenv()
 
@@ -42,7 +43,10 @@ async def main():
     party_ids = []
 
     for party_info in CONFIG_N_PARTIES:
-        client_n = create_nillion_client(party_info["userkey"], party_info["nodekey"])
+        client_n = create_nillion_client(
+            getUserKeyFromFile(party_info["userkey_file"]), 
+            getNodeKeyFromFile(party_info["nodekey_file"])
+        )
         party_id_n = client_n.party_id()
         user_id_n = client_n.user_id()
         party_name = party_info["party_name"]

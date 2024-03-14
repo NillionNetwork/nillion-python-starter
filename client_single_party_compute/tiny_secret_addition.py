@@ -1,5 +1,4 @@
 from pdb import set_trace as bp
-import argparse
 import asyncio
 import py_nillion_client as nillion
 import os
@@ -8,6 +7,7 @@ from dotenv import load_dotenv
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from helpers.nillion_client_helper import create_nillion_client
+from helpers.nillion_keypath_helper import getUserKeyFromFile, getNodeKeyFromFile
 
 load_dotenv()
 
@@ -16,13 +16,13 @@ async def main():
 
     # Get cluster_id and userkey_path from the .env file
     cluster_id = os.getenv("NILLION_CLUSTER_ID")
-    userkey_path = os.getenv("NILLION_USERKEY_PATH_PARTY_1")
 
-    # Read user key from file
-    userkey = nillion.UserKey.from_file(userkey_path)
+    # Read user key and node key from file
+    userkey = getUserKeyFromFile(os.getenv("NILLION_USERKEY_PATH_PARTY_1"))
+    nodekey = getNodeKeyFromFile(os.getenv("NILLION_NODEKEY_PATH_PARTY_1"))
 
     # Create Nillion Client for user
-    client = create_nillion_client(userkey)
+    client = create_nillion_client(userkey, nodekey)
 
     # Get the party id and user id
     party_id = client.party_id()
@@ -76,10 +76,5 @@ async def main():
             print(f"✅  Compute complete for compute_id {compute_event.uuid}")
             print(f"🖥️  The result is {compute_event.result.value}")
             break
-    
-
-
-
-    
 
 asyncio.run(main())

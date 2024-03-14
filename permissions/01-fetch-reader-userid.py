@@ -6,15 +6,16 @@ from dotenv import load_dotenv
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from helpers.nillion_client_helper import create_nillion_client
+from helpers.nillion_keypath_helper import getUserKeyFromFile, getNodeKeyFromFile
 
 load_dotenv()
 
 async def main():
-    reader_userkey_path = os.getenv("NILLION_USERKEY_PATH_PARTY_2")
-    reader_userkey = nillion.UserKey.from_file(reader_userkey_path)
+    userkey = getUserKeyFromFile(os.getenv("NILLION_USERKEY_PATH_PARTY_1"))
+    nodekey = getNodeKeyFromFile(os.getenv("NILLION_NODEKEY_PATH_PARTY_1"))
     
     # Reader Nillion client
-    reader = create_nillion_client(reader_userkey)
+    reader = create_nillion_client(userkey, nodekey)
     # Get the reader's user id
     reader_user_id = reader.user_id()
 

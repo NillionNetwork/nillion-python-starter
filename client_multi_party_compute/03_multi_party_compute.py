@@ -14,6 +14,7 @@ from config import (
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from helpers.nillion_client_helper import create_nillion_client
+from helpers.nillion_keypath_helper import getUserKeyFromFile, getNodeKeyFromFile
 
 load_dotenv()
 
@@ -44,7 +45,10 @@ async def main():
     cluster_id = os.getenv("NILLION_CLUSTER_ID")
 
     # 1st party computes on secrets
-    client_1 = create_nillion_client(CONFIG_PARTY_1["userkey"], CONFIG_PARTY_1["nodekey"])
+    client_1 = create_nillion_client(
+        getUserKeyFromFile(CONFIG_PARTY_1["userkey_file"]), 
+        getNodeKeyFromFile(CONFIG_PARTY_1["nodekey_file"])
+    )
     party_id_1 = client_1.party_id()
 
 
