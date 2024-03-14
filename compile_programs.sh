@@ -35,3 +35,4 @@ done
 echo "COMPLETE: all files in the programs directory were compiled to mir: [$TARGET_PATH]"
 echo "To store a compiled program, run './store_program.sh programs-compiled/{program_name}.nada.bin'"
 echo "📋 Store the addition_simple program: './store_program.sh programs-compiled/addition_simple.nada.bin'"
+echo "📋 Store the addition_simple_multi_party program: './store_program.sh programs-compiled/addition_simple_multi_party.nada.bin'"

@@ -25,11 +25,11 @@ args = parser.parse_args()
 
 async def main():
     cluster_id = os.getenv("NILLION_CLUSTER_ID")
-    writer_userkey_path = os.getenv("NILLION_USERKEY_PATH_PARTY_1")
-    writer_userkey = nillion.UserKey.from_file(writer_userkey_path)
+    userkey_path_party_1 = os.getenv("NILLION_USERKEY_PATH_PARTY_1")
+    userkey_party_1 = nillion.UserKey.from_file(userkey_path_party_1)
 
     # Writer Nillion client
-    writer = create_nillion_client(writer_userkey)
+    writer = create_nillion_client(userkey_party_1)
     writer_user_id = writer.user_id()
     print(writer_user_id, args.retriever_user_id)
 

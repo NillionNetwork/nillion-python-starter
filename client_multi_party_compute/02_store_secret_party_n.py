@@ -7,7 +7,7 @@ import sys
 from dotenv import load_dotenv
 from config import (
     CONFIG_PROGRAM_ID,
-    N_PARTIES
+    CONFIG_N_PARTIES
 )
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -41,10 +41,8 @@ async def main():
     store_ids = []
     party_ids = []
 
-    for party_info in N_PARTIES:
-        userkey_path_n = os.getenv("NILLION_USERKEY_PATH_PARTY_2")
-        userkey_n = nillion.UserKey.from_file(userkey_path_n)
-        client_n = create_nillion_client(userkey_n)
+    for party_info in CONFIG_N_PARTIES:
+        client_n = create_nillion_client(party_info["userkey"], party_info["nodekey"])
         party_id_n = client_n.party_id()
         user_id_n = client_n.user_id()
         party_name = party_info["party_name"]
