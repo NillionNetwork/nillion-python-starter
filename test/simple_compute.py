@@ -20,7 +20,7 @@ async def main():
     cluster_id = os.getenv("NILLION_CLUSTER_ID")
 
     # get user key
-    userkey_path = os.getenv("NILLION_WRITERKEY_PATH")
+    userkey_path = os.getenv("NILLION_USERKEY_PATH_PARTY_1")
     userkey = nillion.UserKey.from_file(userkey_path)
 
     # create nillion client

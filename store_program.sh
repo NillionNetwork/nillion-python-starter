@@ -19,8 +19,8 @@ PROGRAM_NAME=$(basename "$RELATIVE_PROGRAM_PATH" .nada.bin)
 
 # Execute the command
 $NILLION_SDK_ROOT/nil-cli \
-    --user-key-path $NILLION_WRITERKEY_PATH \
-    --node-key-path $NILLION_NODEKEY_PATH \
+    --user-key-path $NILLION_USERKEY_PATH_PARTY_1 \
+    --node-key-path $NILLION_NODEKEY_PATH_PARTY_1 \
     -b $NILLION_BOOTNODE_MULTIADDRESS \
     --payments-private-key $NILLION_WALLET_PRIVATE_KEY \
     --payments-chain-id $NILLION_CHAIN_ID \

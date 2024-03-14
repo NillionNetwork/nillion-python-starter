@@ -14,7 +14,7 @@ load_dotenv()
 # Store and retrieve a SecretInteger using the Python Client
 async def main():
     cluster_id = os.getenv("NILLION_CLUSTER_ID")
-    userkey_path = os.getenv("NILLION_WRITERKEY_PATH")
+    userkey_path = os.getenv("NILLION_USERKEY_PATH_PARTY_1")
     userkey = nillion.UserKey.from_file(userkey_path)
     client = create_nillion_client(userkey)
 

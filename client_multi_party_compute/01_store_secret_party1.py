@@ -19,7 +19,7 @@ load_dotenv()
 # The 1st Party stores a secret
 async def main():
     cluster_id = os.getenv("NILLION_CLUSTER_ID")
-    userkey_path_1 = os.getenv("NILLION_WRITERKEY_PATH")
+    userkey_path_1 = os.getenv("NILLION_USERKEY_PATH_PARTY_1")
     userkey_1 = nillion.UserKey.from_file(userkey_path_1)
     client_1 = create_nillion_client(userkey_1)
     party_id_1 = client_1.party_id()

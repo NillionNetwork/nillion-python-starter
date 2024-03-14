@@ -16,7 +16,7 @@ async def main():
 
     # Get cluster_id and userkey_path from the .env file
     cluster_id = os.getenv("NILLION_CLUSTER_ID")
-    userkey_path = os.getenv("NILLION_WRITERKEY_PATH")
+    userkey_path = os.getenv("NILLION_USERKEY_PATH_PARTY_1")
 
     # Read user key from file
     userkey = nillion.UserKey.from_file(userkey_path)

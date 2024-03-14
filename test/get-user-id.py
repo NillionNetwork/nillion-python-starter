@@ -26,7 +26,7 @@ async def main():
     if args.user_key:
         userkey = nillion.UserKey.from_base58(args.user_key)
     else:
-        userkey_path = os.getenv("NILLION_WRITERKEY_PATH")
+        userkey_path = os.getenv("NILLION_USERKEY_PATH_PARTY_1")
         print(f"No user key specified. Using key in {userkey_path}")
         userkey = nillion.UserKey.from_file(userkey_path)
     

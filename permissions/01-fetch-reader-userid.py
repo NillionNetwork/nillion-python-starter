@@ -10,7 +10,7 @@ from helpers.nillion_client_helper import create_nillion_client
 load_dotenv()
 
 async def main():
-    reader_userkey_path = os.getenv("NILLION_READERKEY_PATH")
+    reader_userkey_path = os.getenv("NILLION_USERKEY_PATH_PARTY_2")
     reader_userkey = nillion.UserKey.from_file(reader_userkey_path)
     
     # Reader Nillion client
