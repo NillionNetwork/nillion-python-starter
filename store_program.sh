@@ -18,7 +18,7 @@ RELATIVE_PROGRAM_PATH="$SCRIPT_PATH/$1"
 PROGRAM_NAME=$(basename "$RELATIVE_PROGRAM_PATH" .nada.bin)
 
 # Execute the command
-$NILLION_SDK_ROOT/nil-cli \
+$NILLION_SDK_ROOT/nillion \
     --user-key-path $NILLION_USERKEY_PATH_PARTY_1 \
     --node-key-path $NILLION_NODEKEY_PATH_PARTY_1 \
     -b $NILLION_BOOTNODE_MULTIADDRESS \
