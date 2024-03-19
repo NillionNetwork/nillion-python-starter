@@ -1,58 +1,60 @@
-# Python starter repo
+# Nillion Python Starter <a href="https://github.com/nillion-oss/nillion-python-starter/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
 
-This is a python starter repo for building on the Nillion Network. Complete environment setup, then run examples
 
-- To run multi party examples, go to the client_multi_party_compute folder.
+This is a python starter repo for building on the Nillion Network. Complete environment setup, then run the examples:
 
-- To run single party examples, go to the client_single_party_compute folder.
+- To run multi party examples, go to the [client_multi_party_compute](./client_multi_party_compute) folder.
 
-- To run permissions examples (storing and retrieving permissioned secrets, revoking permissions), go to the permissions folder.
+- To run single party examples, go to the [client_single_party_compute](./client_single_party_compute) folder.
 
-### Pre-req: install cli dependencies
+- To run permissions examples (storing and retrieving permissioned secrets, revoking permissions, etc.), go to the [permissions](./permissions) folder.
 
-The run-local-cluster tool spins up anvil under the hood, so you need to have foundry installed. The bootstrap-local-environment.sh file uses pidof and grep.
+### Prerequisites: Install the CLI Dependencies
 
-- [Install foundry](https://book.getfoundry.sh/getting-started/installation)
-- [Install pidof](https://command-not-found.com/pidof)
-- [Install grep](https://command-not-found.com/grep)
+The `run-local-cluster` tool spins up `anvil` under the hood, so you need to have `foundry` installed. The [`bootstrap-local-environment.sh`](./bootstrap-local-environment.sh) file uses `pidof` and `grep`.
 
-## Environment setup
+- [Install `foundry`](https://book.getfoundry.sh/getting-started/installation)
+- [Install `pidof`](https://command-not-found.com/pidof)
+- [Install `grep`](https://command-not-found.com/grep)
 
-1. Create a .env file by copying the sample
+## Environment Setup
 
-`cp .env.sample .env`
+1. Create a `.env` file by copying the sample:
 
-2. Update variables within the .env: NILLION_WHL_ROOT, NILLION_SDK_ROOT, NILLION_PYCLIENT_WHL_FILE_NAME
+    ```shell
+    cp .env.sample .env
+    ```
 
-3. Activate virtual environment (.venv) and install dependencies
+2. Update the following variables within the `.env` file: `NILLION_WHL_ROOT`, `NILLION_SDK_ROOT`, `NILLION_PYCLIENT_WHL_FILE_NAME`.
+
+3. Activate the virtual environment (`.venv`) and install dependencies
+
+    ```shell
+    ./activate_venv.sh
+    source .venv/bin/activate
+    ```
+
+    Run the [`bootstrap-local-environment.sh`](./bootstrap-local-environment.sh) script to `run-local-cluster`, generate keys, and get bootnodes, cluster, and payment info:
+
+    ```shell
+    ./bootstrap-local-environment.sh
+    ```
+
+4. Check `.env` file - keys, bootnodes, cluster, and payment info should now be present. If you want to run against a local cluster, use this configuration. Otherwise, replace values with testnet bootnodes, cluster, and payment info.
+
+5. Look through the [programs](./programs/) folder to see examples of Nada programs.
+
+## Compiling Programs
+
+Nada programs need to be compiled ahead of being stored. Compile all programs in the [programs](./programs/) folder with the script [`compile_programs.sh`](./compile_programs.sh):
 
 ```shell
-./activate_venv.sh
-source .venv/bin/activate
-```
-
-Run bootstrap-local-environment.sh to run-local-cluster, generate keys, and get bootnodes, cluster, and payment info
-
-```shell
-./bootstrap-local-environment.sh
-```
-
-4. Check .env file - keys, bootnodes, cluster, and payment info should now be present. If you want to run against a local cluster, use this configuration. Otherwise replace values with testnet bootnodes, cluster, and payment info.
-
-5. Look through the programs folder to see examples of Nada programs.
-
-## Compiling programs
-
-Nada programs need to be compiled ahead of being stored. Compile all programs in the programs folder with the script:
-
-```shell
-cd ..
 ./compile_programs.sh
 ```
 
-This results in programs-compiled, a folder of compiled programs.
+This generates a `programs-compiled` folder containing the compiled programs.
 
-## Store a compiled program
+## Store a Compiled Program
 
 Store a compiled program in the network with this script:
 
@@ -60,10 +62,10 @@ Store a compiled program in the network with this script:
 ./store_program.sh {RELATIVE_COMPILED_PROGRAM_PATH}
 ```
 
-To store the compiled addition_simple program you would run
+To store the compiled [`addition_simple`](./programs/addition_simple.py) program you can run:
 
 ```shell
 ./store_program.sh programs-compiled/addition_simple.nada.bin
 ```
 
-Storing a program results in the stored program_id, the network's reference to the program. The program_id is the `{user_id}/{program_name}`
+Storing a program results in the stored `program_id`, the network's reference to the program. The `program_id` is the `{user_id}/{program_name}`.
