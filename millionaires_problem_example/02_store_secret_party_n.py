@@ -57,15 +57,17 @@ async def main():
             secret_name: nillion.SecretInteger(secret_value)
         })
 
-        # Create input bindings for the program
+        # Create input bindings for the specific millionaires program by program id
         secret_bindings = nillion.ProgramBindings(args.program_id)
+
+        # Add the respective input party to say who will provide the input to the program
         secret_bindings.add_input_party(party_name, party_id_n)
         print(f"\n🔗 {party_name} sets bindings so that the secret can be input to a specific program (program_id: {args.program_id}) by a specific party (party_id: {party_id_n})")
 
-        # Create permissions object
+        # Create permissions object with default permissions for the current user
         permissions = nillion.Permissions.default_for_user(user_id_n)
 
-        # Give compute permissions to the first party
+        # Give compute permissions to Alice so she can use the secret in the specific millionionaires program by program id
         compute_permissions = {
             args.user_id_1: {args.program_id},
         }

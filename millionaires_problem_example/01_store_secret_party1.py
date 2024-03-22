@@ -30,7 +30,7 @@ async def main():
     # Store millionaires program in the network
     print(f"Storing program in the network: {millionaires_program_name}")
     await client_alice.store_program(
-        cluster_id, "", program_mir_path
+        cluster_id, millionaires_program_name, program_mir_path
     )
 
     user_id_alice = client_alice.user_id()

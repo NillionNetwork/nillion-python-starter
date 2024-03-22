@@ -43,21 +43,26 @@ args = parser.parse_args()
 async def main():
     cluster_id = os.getenv("NILLION_CLUSTER_ID")
 
-    # 1st party computes on secrets
-    client_1 = create_nillion_client(
+    # Alice initializes a client
+    client_alice = create_nillion_client(
         getUserKeyFromFile(CONFIG_PARTY_1["userkey_file"]), 
         getNodeKeyFromFile(CONFIG_PARTY_1["nodekey_file"])
     )
-    party_id_1 = client_1.party_id()
+    party_id_alice = client_alice.party_id()
 
-
-    # Bind the parties in the computation to the client to set inputs and output parties
+    # Create computation bindings for millionaires program
     compute_bindings = nillion.ProgramBindings(args.program_id)
-    compute_bindings.add_input_party(CONFIG_PARTY_1["party_name"], party_id_1)
-    compute_bindings.add_output_party(CONFIG_PARTY_1["party_name"], party_id_1)
+
+    # Add Alice as an input party
+    compute_bindings.add_input_party(CONFIG_PARTY_1["party_name"], party_id_alice)
+
+    # Add an output party (Alice). 
+    # The output party reads the result of the blind computation
+    compute_bindings.add_output_party(CONFIG_PARTY_1["party_name"], party_id_alice)
 
     print(f"Computing using program {args.program_id}")
 
+    # Also add Bob and Charlie as input parties
     party_ids_to_store_ids = {}
     i=0
     for pair in args.party_ids_to_store_ids:
@@ -67,6 +72,7 @@ async def main():
         party_ids_to_store_ids[party_id] = store_id
         i=i+1
 
+    # Add any computation time secrets
     # Alice provides her salary at compute time
     party_name_alice = CONFIG_PARTY_1["party_name"]
     secret_name_alice = CONFIG_PARTY_1["secret_name"]
@@ -78,21 +84,25 @@ async def main():
     print(f"\n🎉 {party_name_alice} provided {secret_name_alice}: {secret_value_alice} as a compute time secret")
 
     # Compute on the secret with all store ids. Note that there are no compute time secrets or public variables
-    compute_id = await client_1.compute(
+    compute_id = await client_alice.compute(
         cluster_id,
         compute_bindings,
-        list(party_ids_to_store_ids.values()),
-        compute_time_secrets,
+        list(party_ids_to_store_ids.values()), # Bob and Charlie's stored secrets
+        compute_time_secrets, # Alice's computation time secret
         nillion.PublicVariables({}),
     )
 
     # Print compute result
     print(f"The computation was sent to the network. compute_id: {compute_id}")
     while True:
-        compute_event = await client_1.next_compute_event()
+        compute_event = await client_alice.next_compute_event()
         if isinstance(compute_event, nillion.ComputeFinishedEvent):
             print(f"✅  Compute complete for compute_id {compute_event.uuid}")
             print(f"🖥️  The output result is {compute_event.result.value}")
+
+            # The compute result is an index
+            # Map it to the corresponding party name who should pay for lunch
+            # ['Alice', 'Bob', 'Charlie']
             my_parties = CONFIG_N_PARTIES
             my_parties.insert(0, CONFIG_PARTY_1)
             richest_party = my_parties[compute_event.result.value["largest_position"]]["party_name"]
