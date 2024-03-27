@@ -6,12 +6,12 @@ They want to figure out who has the highest salary without telling each other ho
 
 Alice suggests that this is the perfect opportunity for the friends to use Nillion for blind computation on high value data to determine who should pay for lunch. She offers to create a millionaires problem program, compile it, and store it in Nillion so that the friends can run multi party blind computation to figure out who should pay for lunch.
 
-- Alice's millionaires program in NADA: [../programs/millionaires.py](https://github.com/nillion-oss/nillion-python-starter/blob/main/programs/millionaires.py)
-- Compiled program: [./millionaires.nada.bin](https://github.com/nillion-oss/nillion-python-starter/blob/main/millionaires_problem_example/millionaires.nada.bin)
+- Alice's millionaires program in NADA: [../programs/millionaires.py](https://github.com/NillionNetwork/nillion-python-starter/blob/main/programs/millionaires.py)
+- Compiled program: [./millionaires.nada.bin](https://github.com/NillionNetwork/nillion-python-starter/blob/main/millionaires_problem_example/millionaires.nada.bin)
 
 ## Setup
 
-Before running the example, [follow the repo README](https://github.com/nillion-oss/nillion-python-starter/blob/main/README.md) to install cli dependencies, complete environment setup, and activate your .venv environment.
+Before running the example, [follow the repo README](https://github.com/NillionNetwork/nillion-python-starter/blob/main/README.md) to install cli dependencies, complete environment setup, and activate your .venv environment.
 
 ## Run the example
 
