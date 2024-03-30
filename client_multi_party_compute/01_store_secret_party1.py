@@ -1,12 +1,11 @@
 from pdb import set_trace as bp
-import argparse
 import asyncio
 import py_nillion_client as nillion
 import os
 import sys
 from dotenv import load_dotenv
 from config import (
-    CONFIG_PROGRAM_ID,
+    CONFIG_PROGRAM_NAME,
     CONFIG_PARTY_1
 )
 
@@ -25,6 +24,19 @@ async def main():
     party_id_1 = client_1.party_id()
     user_id_1 = client_1.user_id()
 
+
+    program_mir_path=f"../programs-compiled/{CONFIG_PROGRAM_NAME}.nada.bin"
+
+    # 1st Party stores program
+    action_id = await client_1.store_program(
+        cluster_id, CONFIG_PROGRAM_NAME, program_mir_path
+    )
+
+    program_id=f"{user_id_1}/{CONFIG_PROGRAM_NAME}"
+    print('Stored program. action_id:', action_id)
+    print('Stored program_id:', program_id)
+
+
     # 1st Party creates a secret
     stored_secret_1 = nillion.Secrets({
         key: nillion.SecretInteger(value)
@@ -32,7 +44,7 @@ async def main():
     })
 
     # 1st Party creates input bindings for the program
-    secret_bindings_1 = nillion.ProgramBindings(CONFIG_PROGRAM_ID)
+    secret_bindings_1 = nillion.ProgramBindings(program_id)
     secret_bindings_1.add_input_party(CONFIG_PARTY_1["party_name"], party_id_1)
 
     # 1st Party stores a secret

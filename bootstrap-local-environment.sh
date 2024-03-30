@@ -1,57 +1,31 @@
 #!/usr/bin/env bash
-THIS_SCRIPT_DIR="$(dirname "$0")"
 
-set -euo pipefail
+# set number of node and user keys to be created
+num_node_keys=5
+num_user_keys=5
 
-# shellcheck source=./utils.sh
-source "$THIS_SCRIPT_DIR/utils.sh"
+# set env file to update
+ENV_TO_UPDATE=".env"
 
-set -a  # Automatically export all variables
-source "$THIS_SCRIPT_DIR/.env"
-set +a  # Stop automatically exporting
+NILLION_DEVNET="nillion-devnet"
+NILLION_CLI="nillion"
+NILLION_CLI_COMMAND_USER_KEYGEN="user-key-gen"
+NILLION_CLI_COMMAND_NODE_KEYGEN="node-key-gen"
 
-check_for_sdk_root
+# kill any other nillion-devnet processes
+pkill -9 -f $NILLION_DEVNET
 
-RUN_LOCAL_CLUSTER="$(discover_sdk_bin_path run-local-cluster)"
-
-# kill any processes of local clusters that are already running
-# LOCAL_CLUSTER_PROCESS=$(pgrep -f "$RUN_LOCAL_CLUSTER")
-# if [ -n "$LOCAL_CLUSTER_PROCESS" ]; then
-#     kill $LOCAL_CLUSTER_PROCESS
-# fi
-
-USER_KEYGEN=$(discover_sdk_bin_path user-keygen)
-NODE_KEYGEN=$(discover_sdk_bin_path node-keygen)
-
-echo $RUN_LOCAL_CLUSTER
-
-for var in RUN_LOCAL_CLUSTER USER_KEYGEN NODE_KEYGEN; do
+for var in NILLION_DEVNET NILLION_CLI; do
   printf "ℹ️ found bin %-18s -> [${!var:?Failed to discover $var}]\n" "$var"
 done
 
 OUTFILE=$(mktemp);
 PIDFILE=$(mktemp);
 
-echo $OUTFILE
-
-# Create node keys
-NODEKEY_FILE_PARTY_1=$(mktemp);
-NODEKEY_FILE_PARTY_2=$(mktemp);
-NODEKEY_FILE_PARTY_3=$(mktemp);
-NODEKEY_FILE_PARTY_4=$(mktemp);
-NODEKEY_FILE_PARTY_5=$(mktemp);
-
-# Crete user keys
-USERKEY_FILE_PARTY_1=$(mktemp);
-USERKEY_FILE_PARTY_2=$(mktemp);
-USERKEY_FILE_PARTY_3=$(mktemp);
-USERKEY_FILE_PARTY_4=$(mktemp);
-USERKEY_FILE_PARTY_5=$(mktemp);
-
-"$RUN_LOCAL_CLUSTER" >"$OUTFILE" & echo $! >"$PIDFILE";
-
-echo "Bootstrapping environment and updating your .env file..."
-
+"$NILLION_DEVNET" >"$OUTFILE" & echo $! >"$PIDFILE";
+echo "--------------------"
+echo "Updating your ${ENV_TO_UPDATE} files with nillion-devnet environment info... This may take a minute."
+echo "--------------------"
 time_limit=160
 while true; do
     # Use 'wait' to check if the log file contains the string
@@ -70,7 +44,9 @@ done
 echo "ℹ️ Cluster has been STARTED (see $OUTFILE)"
 cat "$OUTFILE"
 
+# grep cluster info from nillion-devnet
 CLUSTER_ID=$(grep "cluster id is" "$OUTFILE" | awk '{print $4}');
+WEBSOCKET=$(grep "websocket:" "$OUTFILE" | awk '{print $2}');
 BOOT_MULTIADDR=$(grep "cluster is running, bootnode is at" "$OUTFILE" | awk '{print $7}');
 PAYMENTS_CONFIG_FILE=$(grep "payments configuration written to" "$OUTFILE" | awk '{print $5}');
 WALLET_KEYS_FILE=$(grep "wallet keys written to" "$OUTFILE" | awk '{print $5}');
@@ -80,62 +56,98 @@ PAYMENTS_SC_ADDR=$(grep "payments_sc_address:" "$PAYMENTS_CONFIG_FILE" | awk '{p
 PAYMENTS_BF_ADDR=$(grep "blinding_factors_manager_sc_address:" "$PAYMENTS_CONFIG_FILE" | awk '{print $2}');
 WALLET_PRIVATE_KEY=$(tail -n1 "$WALLET_KEYS_FILE")
 
-echo "🔑 Generating a node key and user keys (reader key and writer key)"
-
-# Generate multiple node keys
-"$NODE_KEYGEN" "$NODEKEY_FILE_PARTY_1"
-"$NODE_KEYGEN" "$NODEKEY_FILE_PARTY_2"
-"$NODE_KEYGEN" "$NODEKEY_FILE_PARTY_3"
-"$NODE_KEYGEN" "$NODEKEY_FILE_PARTY_4"
-"$NODE_KEYGEN" "$NODEKEY_FILE_PARTY_5"
-
-# Generate multiple user keys
-"$USER_KEYGEN" "$USERKEY_FILE_PARTY_1"
-"$USER_KEYGEN" "$USERKEY_FILE_PARTY_2"
-"$USER_KEYGEN" "$USERKEY_FILE_PARTY_3"
-"$USER_KEYGEN" "$USERKEY_FILE_PARTY_4"
-"$USER_KEYGEN" "$USERKEY_FILE_PARTY_5"
-
-echo "🔑 Node key and user keys have been generated"
-
-# Function to update or add an environment variable in the .env file
+# update or add an environment variable to one or more files
 update_env() {
     local key=$1
     local value=$2
-    local file="./.env"  # Path to the .env file
+    # Skip the first two arguments to get the file paths
+    local files=("${@:3}")
 
-    # Check if the key exists in the file and remove it
-    if grep -q "^$key=" "$file"; then
-        # Key exists, remove it
-        grep -v "^$key=" "$file" > temp.txt && mv temp.txt "$file"
-    fi
+    for file in "${files[@]}"; do
+        if [ -f "$file" ]; then  # Check if file exists
+            # Check if the key exists in the file and remove it
+            if grep -q "^$key=" "$file"; then
+                # Key exists, remove it
+                grep -v "^$key=" "$file" > temp.txt && mv temp.txt "$file"
+            fi
 
-    # Append the new key-value pair to the file
-    echo "$key=$value" >> "$file"
+            # Append the new key-value pair to the file
+            echo "$key=$value" >> "$file"
+        else
+            echo "File $file not found. Creating $file"
+            touch $file
+            echo "$key=$value" >> "$file"
+        fi
+    done
 }
 
+# log file contents of key files to add to .env
+log_file_contents() {
+    local file_path=$1  # Direct path to the target file
+
+    # Check if the file exists at the path
+    if [[ ! -f "$file_path" ]]; then
+        echo "File $file_path does not exist."
+        return 1  # Exit the function with an error status if the file does not exist
+    fi
+
+    # If the file exists, cat its contents
+    cat "$file_path"
+}
+
+# Generate node keys and add to .env - ex: NILLION_NODEKEY_PATH_PARTY_1
+for ((i=1; i<=$num_node_keys; i++)); do
+    nodekey_file=$(mktemp)
+    "$NILLION_CLI" "$NILLION_CLI_COMMAND_NODE_KEYGEN" "$nodekey_file"
+    NODEKEY_FILES+=("$nodekey_file")
+    update_env "NILLION_NODEKEY_PATH_PARTY_$i" "$nodekey_file" $ENV_TO_UPDATE
+    update_env "NILLION_NODEKEY_TEXT_PARTY_$i" "$(log_file_contents $nodekey_file)" $ENV_TO_UPDATE
+done
+
+# Generate user keys and add to .env - ex: NILLION_USERKEY_PATH_PARTY_1
+for ((i=1; i<=$num_user_keys; i++)); do
+    userkey_file=$(mktemp)
+    "$NILLION_CLI" "$NILLION_CLI_COMMAND_USER_KEYGEN" "$userkey_file"
+    USERKEY_FILES+=("$userkey_file")
+    update_env "NILLION_USERKEY_PATH_PARTY_$i" "$userkey_file" $ENV_TO_UPDATE
+    update_env "NILLION_USERKEY_TEXT_PARTY_$i" "$(log_file_contents $userkey_file)" $ENV_TO_UPDATE
+done
+
+echo "🔑 Node key and user keys have been generated and added to .env"
+
 # Add environment variables to .env
-update_env "NILLION_BOOTNODE_MULTIADDRESS" "$BOOT_MULTIADDR"
-update_env "NILLION_CLUSTER_ID" "$CLUSTER_ID"
-update_env "NILLION_USERKEY_PATH_PARTY_1" "$USERKEY_FILE_PARTY_1"
-update_env "NILLION_USERKEY_PATH_PARTY_2" "$USERKEY_FILE_PARTY_2"
-update_env "NILLION_USERKEY_PATH_PARTY_3" "$USERKEY_FILE_PARTY_3"
-update_env "NILLION_USERKEY_PATH_PARTY_4" "$USERKEY_FILE_PARTY_4"
-update_env "NILLION_USERKEY_PATH_PARTY_5" "$USERKEY_FILE_PARTY_5"
-update_env "NILLION_NODEKEY_PATH_PARTY_1" "$NODEKEY_FILE_PARTY_1"
-update_env "NILLION_NODEKEY_PATH_PARTY_2" "$NODEKEY_FILE_PARTY_2"
-update_env "NILLION_NODEKEY_PATH_PARTY_3" "$NODEKEY_FILE_PARTY_3"
-update_env "NILLION_NODEKEY_PATH_PARTY_4" "$NODEKEY_FILE_PARTY_4"
-update_env "NILLION_NODEKEY_PATH_PARTY_5" "$NODEKEY_FILE_PARTY_5"
-update_env "NILLION_BLOCKCHAIN_RPC_ENDPOINT" "$PAYMENTS_RPC"
-update_env "NILLION_CHAIN_ID" "$PAYMENTS_CHAIN"
-update_env "NILLION_PAYMENTS_SC_ADDRESS" "$PAYMENTS_SC_ADDR"
-update_env "NILLION_BLINDING_FACTORS_MANAGER_SC_ADDRESS" "$PAYMENTS_BF_ADDR"
-update_env "NILLION_WALLET_PRIVATE_KEY" "$WALLET_PRIVATE_KEY"
+update_env "NILLION_WEBSOCKETS" "$WEBSOCKET" $ENV_TO_UPDATE
+update_env "NILLION_CLUSTER_ID" "$CLUSTER_ID" $ENV_TO_UPDATE
+update_env "NILLION_BLOCKCHAIN_RPC_ENDPOINT" "$PAYMENTS_RPC" $ENV_TO_UPDATE
+update_env "NILLION_BLINDING_FACTORS_MANAGER_SC_ADDRESS" "$PAYMENTS_BF_ADDR" $ENV_TO_UPDATE
+update_env "NILLION_PAYMENTS_SC_ADDRESS" "$PAYMENTS_SC_ADDR" $ENV_TO_UPDATE
+update_env "NILLION_CHAIN_ID" "$PAYMENTS_CHAIN" $ENV_TO_UPDATE
+update_env "NILLION_WALLET_PRIVATE_KEY" "$WALLET_PRIVATE_KEY" $ENV_TO_UPDATE
+update_env "NILLION_BOOTNODE_MULTIADDRESS" "$BOOT_MULTIADDR" $ENV_TO_UPDATE
+
+echo "Running at process pid: $(pgrep -f $NILLION_DEVNET)"
+
+echo "-------------------------------------------------------"
+echo "                   7MM   7MM                           "
+echo "                    MM    MM                           "
+echo "              db    MM    MM    db                     "
+echo "                    MM    MM                           "
+echo ".7MMpMMMb.   7MM    MM    MM   7MM  ,pW-Wq. 7MMpMMMb.  "
+echo "  MM    MM    MM    MM    MM    MM 6W'    Wb MM    MM  "
+echo "  MM    MM    MM    MM    MM    MM 8M     M8 MM    MM  "
+echo "  MM    MM    MM    MM    MM    MM YA.   ,A9 MM    MM  "
+echo ".JMML  JMML..JMML..JMML..JMML..JMML. Ybmd9 .JMML  JMML."
+echo "-------------------------------------------------------"
+echo "-------------------------------------------------------"
+echo "-----------🦆 CONNECTED TO NILLION-DEVNET 🦆-----------"
+echo "-------------------------------------------------------"
+
+echo "ℹ️ Your $ENV_TO_UPDATE file configurations were updated with nillion-devnet connection variables: websocket, cluster id, keys, blockchain info"
+echo "💻 The Nillion devnet is still running behind the scenes; to spin down the Nillion devnet at any time, run 'yarn nillion-devnet-stop'"
 
 echo "--------------------"
-echo "💻 Your Nillion local cluster is still running - process pid: $(pgrep -f $RUN_LOCAL_CLUSTER)"
+echo "💻 Your Nillion local cluster is still running - process pid: $(pgrep -f $NILLION_DEVNET)"
 echo "ℹ️  Updated your .env file configuration variables: bootnode, cluster id, keys, blockchain info"
-echo "📋 Compile all Nada programs './compile_programs.sh'";
+echo "📋 Next, compile all Nada programs in the 'programs' folder with 'sh compile_programs.sh'";
 
 exit 0

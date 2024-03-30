@@ -8,12 +8,11 @@ These compute examples only involve one party.
 
 2. Follow README instructions to compile and store the program of the same name as the file
 
-For example before running addition_simple.py, compile all programs and store addition_simple.nada.bin in the network.
+For example before running addition_simple.py, compile all programs and check that addition_simple.nada.bin exists in the compiled-programs folder.
 
 ```bash
 cd ..
 ./compile_programs.sh
-./store_program.sh programs-compiled/addition_simple.nada.bin
 ```
 
 3. Run the python example

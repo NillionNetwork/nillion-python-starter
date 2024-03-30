@@ -7,7 +7,7 @@ import sys
 from dotenv import load_dotenv
 
 from config import (
-    CONFIG_PROGRAM_ID,
+    CONFIG_PROGRAM_NAME,
     CONFIG_PARTY_1,
     CONFIG_N_PARTIES
 )
@@ -37,7 +37,6 @@ parser.add_argument(
     help="List of partyid:storeid pairs of the secrets, with each pair separated by a space",
 )
 
-
 args = parser.parse_args()
 
 
@@ -49,16 +48,19 @@ async def main():
         getUserKeyFromFile(CONFIG_PARTY_1["userkey_file"]), 
         getNodeKeyFromFile(CONFIG_PARTY_1["nodekey_file"])
     )
+    user_id_1 = client_1.user_id()
     party_id_1 = client_1.party_id()
+
+    program_id=f"{user_id_1}/{CONFIG_PROGRAM_NAME}"
 
 
     # Bind the parties in the computation to the client to set inputs and output parties
-    compute_bindings = nillion.ProgramBindings(CONFIG_PROGRAM_ID)
+    compute_bindings = nillion.ProgramBindings(program_id)
     compute_bindings.add_input_party(CONFIG_PARTY_1["party_name"], party_id_1)
     compute_bindings.add_output_party(CONFIG_PARTY_1["party_name"], party_id_1)
     store_id_1 = args.store_id_1
 
-    print(f"Computing using program {CONFIG_PROGRAM_ID}")
+    print(f"Computing using program {program_id}")
     print(f"Party 1 secret store_id: {store_id_1}")
 
     party_ids_to_store_ids = {}

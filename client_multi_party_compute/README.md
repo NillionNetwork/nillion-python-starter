@@ -1,6 +1,6 @@
 # Multi Party Example
 
-This is an example of multi party compute, computation involving secret inputs from multiple parties.
+This is an example using the Nillion Python Client to store a program, and run multi party compute, computation involving secret inputs from multiple parties.
 
 ## Assumptions
 
@@ -17,7 +17,7 @@ The 3-part Multi Party example assumes there is a stored program that meets the 
 
 1. Set up requirements following the repo README to populate the .env file with environment variables.
 
-2. Follow README instructions to compile and store a program that meets the above assumptions. Take note of the resulting program_id. Here are some programs that meet the multi party example program assumptions:
+2. Follow README instructions to compile a program that meets the above assumptions. Take note of the program name. Here are some programs that meet the multi party example program assumptions:
 
 - addition_simple_multi_party.nada.bin
 - circuit_simple_multi_party.nada.bin
@@ -34,15 +34,14 @@ The 3-part Multi Party example assumes there is a stored program that meets the 
 - reuse_simple_1_multi_party.nada.bin
 - reuse_simple_sub_multi_party.nada.bin
 
-For example before running addition_simple_multi_party.py, compile all programs and store addition_simple_multi_party.nada.bin in the network.
+For example before running addition_simple_multi_party.py, compile all programs and check that addition_simple_multi_party.nada.bin exists in the compiled-programs folder.
 
 ```bash
 cd ..
 ./compile_programs.sh
-./store_program.sh programs-compiled/addition_simple_multi_party.nada.bin
 ```
 
-3. Update values in config.py to set the stored program_id, party names, secret names, and secret values.
+3. Update values in config.py to set the stored program name, party names, secret names, and secret values.
 
 4. Start the 3 part example by running
 

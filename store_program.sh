@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This script stores a compiled program
+# This script stores a compiled program as NILLION_USERKEY_PATH_PARTY_1
 SCRIPT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}" 2>/dev/null)" && pwd -P)"
 
 set -a  # Automatically export all variables
@@ -18,7 +18,7 @@ RELATIVE_PROGRAM_PATH="$SCRIPT_PATH/$1"
 PROGRAM_NAME=$(basename "$RELATIVE_PROGRAM_PATH" .nada.bin)
 
 # Execute the command
-$NILLION_SDK_ROOT/nillion \
+nillion \
     --user-key-path $NILLION_USERKEY_PATH_PARTY_1 \
     --node-key-path $NILLION_NODEKEY_PATH_PARTY_1 \
     -b $NILLION_BOOTNODE_MULTIADDRESS \

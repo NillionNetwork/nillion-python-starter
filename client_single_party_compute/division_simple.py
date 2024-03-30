@@ -20,9 +20,18 @@ async def main():
     client = create_nillion_client(userkey, nodekey)
     party_id = client.party_id()
     user_id = client.user_id()
-
-    program_id=f"{user_id}/division_simple"
     party_name="Party1"
+    program_name="division_simple"
+    program_mir_path=f"../programs-compiled/{program_name}.nada.bin"
+
+    # store program
+    action_id = await client.store_program(
+        cluster_id, program_name, program_mir_path
+    )
+
+    program_id=f"{user_id}/{program_name}"
+    print('Stored program. action_id:', action_id)
+    print('Stored program_id:', program_id)
 
     # Create a secret
     stored_secret = nillion.Secrets({
@@ -44,7 +53,7 @@ async def main():
     print(f"Computing using program {program_id}")
     print(f"Use secret store_id: {store_id}")
 
-    computation_time_secrets = nillion.Secrets({"my_int3": nillion.SecretInteger(2)})
+    computation_time_secrets = nillion.Secrets({})
     
     # Compute on the secret
     compute_id = await client.compute(
@@ -52,7 +61,7 @@ async def main():
         compute_bindings,
         [store_id],
         computation_time_secrets,
-        nillion.PublicVariables({}),
+        nillion.PublicVariables({"my_int3": nillion.PublicVariableInteger(2),}),
     )
 
     # Print compute result

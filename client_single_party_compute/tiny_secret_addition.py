@@ -28,8 +28,21 @@ async def main():
     party_id = client.party_id()
     user_id = client.user_id()
 
+    # Set the program name
+    program_name="tiny_secret_addition"
+
+    # set the path to the compiled program
+    program_mir_path=f"../programs-compiled/{program_name}.nada.bin"
+
+    # Store the program
+    action_id = await client.store_program(
+        cluster_id, program_name, program_mir_path
+    )
+
     # Set the program id
-    program_id=f"{user_id}/tiny_secret_addition"
+    program_id=f"{user_id}/{program_name}"
+    print('Stored program. action_id:', action_id)
+    print('Stored program_id:', program_id)
 
     # Set the party name to match the party name from the stored program
     party_name="Party1"

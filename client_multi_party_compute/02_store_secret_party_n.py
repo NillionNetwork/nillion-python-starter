@@ -6,7 +6,7 @@ import os
 import sys
 from dotenv import load_dotenv
 from config import (
-    CONFIG_PROGRAM_ID,
+    CONFIG_PROGRAM_NAME,
     CONFIG_N_PARTIES
 )
 
@@ -37,6 +37,7 @@ args = parser.parse_args()
 # N other parties store a secret
 async def main():
     cluster_id = os.getenv("NILLION_CLUSTER_ID")
+    program_id=f"{args.user_id_1}/{CONFIG_PROGRAM_NAME}"
     
     # start a list of store ids to keep track of stored secrets
     store_ids = []
@@ -59,7 +60,7 @@ async def main():
         })
 
         # Create input bindings for the program
-        secret_bindings = nillion.ProgramBindings(CONFIG_PROGRAM_ID)
+        secret_bindings = nillion.ProgramBindings(program_id)
         secret_bindings.add_input_party(party_name, party_id_n)
 
         # Create permissions object
@@ -67,7 +68,7 @@ async def main():
 
         # Give compute permissions to the first party
         compute_permissions = {
-            args.user_id_1: {CONFIG_PROGRAM_ID},
+            args.user_id_1: {program_id},
         }
         permissions.add_compute_permissions(compute_permissions)
 

@@ -5,5 +5,5 @@ nillion-venv/
 permissions/.nillion-config.json
 .env
 .DS_Store
-node.key
-user.key
+*.key
+.venv

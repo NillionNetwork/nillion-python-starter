@@ -20,9 +20,18 @@ async def main():
     client = create_nillion_client(userkey, nodekey)
     party_id = client.party_id()
     user_id = client.user_id()
-
-    program_id=f"{user_id}/complex"
     party_name="Party1"
+    program_name="complex"
+    program_mir_path=f"../programs-compiled/{program_name}.nada.bin"
+
+    # store program
+    action_id = await client.store_program(
+        cluster_id, program_name, program_mir_path
+    )
+
+    program_id=f"{user_id}/{program_name}"
+    print('Stored program. action_id:', action_id)
+    print('Stored program_id:', program_id)
 
     # Create a secret
     stored_secret = nillion.Secrets({
