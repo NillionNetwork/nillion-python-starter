@@ -11,83 +11,47 @@ from helpers.nillion_keypath_helper import getUserKeyFromFile, getNodeKeyFromFil
 
 load_dotenv()
 
-# Store secrets then compute on secrets
+# Complete the 🎯 TODOs to store the tiny_secret_addition program in the network, store secrets, and compute
 async def main():
-
-    # Get cluster_id and userkey_path from the .env file
+    # 0. The bootstrap-local-environment.sh script put nillion-devnet config variables into the .env file
+    # Get cluster_id, user_key, and node_key from the .env file
     cluster_id = os.getenv("NILLION_CLUSTER_ID")
-
-    # Read user key and node key from file
     userkey = getUserKeyFromFile(os.getenv("NILLION_USERKEY_PATH_PARTY_1"))
     nodekey = getNodeKeyFromFile(os.getenv("NILLION_NODEKEY_PATH_PARTY_1"))
 
+    # 1. Initialize NillionClient against nillion-devnet
     # Create Nillion Client for user
     client = create_nillion_client(userkey, nodekey)
+    
+    # 🎯 TODO 2. Get the user id and party id from NillionClient
 
-    # Get the party id and user id
-    party_id = client.party_id()
-    user_id = client.user_id()
-
+   
+    # 🎯 TODO 3. Store a compiled Nada program in the network
     # Set the program name
     program_name="tiny_secret_addition"
-
-    # set the path to the compiled program
+    # Set the path to the compiled program
     program_mir_path=f"../programs-compiled/{program_name}.nada.bin"
-
     # Store the program
-    action_id = await client.store_program(
-        cluster_id, program_name, program_mir_path
-    )
+    # Create a variable for the program_id, which is the {user_id}/{program_name}
 
-    # Set the program id
-    program_id=f"{user_id}/{program_name}"
-    print('Stored program. action_id:', action_id)
-    print('Stored program_id:', program_id)
 
-    # Set the party name to match the party name from the stored program
-    party_name="Party1"
+    # 🎯 TODO 4. Create the 1st secret with bindings to the program
+    # Create a secret named "my_int1" with any value, ex: 500
+    # Create secret bindings object to bind the secret to the program and set the input party
+    # Set the input party for the secret
+    # The party name needs to match the party name that is storing "my_int1" in the program
 
-    # Create a secret
-    stored_secret = nillion.Secrets({
-        "my_int1": nillion.SecretInteger(500),
-    })
 
-    # Create secret bindings to tie a secret to a program and set the input party
-    secret_bindings = nillion.ProgramBindings(program_id)
-    secret_bindings.add_input_party(party_name, party_id)
+    # 🎯 TODO 5. Store the secret in the network
 
-    # Store a secret
-    store_id = await client.store_secrets(
-        cluster_id, secret_bindings, stored_secret, None
-    )
 
-    print(f"Computing using program {program_id}")
-    print(f"Use secret store_id: {store_id}")
+    # 🎯 TODO 6. Create compute bindings to set input and output parties
 
-    # Bind the parties in the computation to the client to set input and output parties
-    compute_bindings = nillion.ProgramBindings(program_id)
-    compute_bindings.add_input_party(party_name, party_id)
-    compute_bindings.add_output_party(party_name, party_id)
 
-    # Add the second secret at computation time
-    computation_time_secrets = nillion.Secrets({"my_int2": nillion.SecretInteger(10)})
-    
+    # 🎯 TODO 7. Compute on the program with 1st secret from the network, and the 2nd secret, provided at compute time
+    # Add my_int2, the 2nd secret at computation time
     # Compute on the secret
-    compute_id = await client.compute(
-        cluster_id,
-        compute_bindings,
-        [store_id],
-        computation_time_secrets,
-        nillion.PublicVariables({}),
-    )
 
-    # Print compute result
-    print(f"The computation was sent to the network. compute_id: {compute_id}")
-    while True:
-        compute_event = await client.next_compute_event()
-        if isinstance(compute_event, nillion.ComputeFinishedEvent):
-            print(f"✅  Compute complete for compute_id {compute_event.uuid}")
-            print(f"🖥️  The result is {compute_event.result.value}")
-            break
+    # 🎯 TODO 8. Print the computation result
 
 asyncio.run(main())
