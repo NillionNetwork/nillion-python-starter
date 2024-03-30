@@ -19,7 +19,7 @@ async def main():
     userkey = getUserKeyFromFile(os.getenv("NILLION_USERKEY_PATH_PARTY_1"))
     nodekey = getNodeKeyFromFile(os.getenv("NILLION_NODEKEY_PATH_PARTY_1"))
 
-    # 1. Initialize NillionClient against nillion-devnet
+    # 🎯 TODO 1. Initialize NillionClient against nillion-devnet
     # Create Nillion Client for user
     client = create_nillion_client(userkey, nodekey)
     
@@ -42,7 +42,7 @@ async def main():
     # The party name needs to match the party name that is storing "my_int1" in the program
 
 
-    # 🎯 TODO 5. Store the secret in the network
+    # 🎯 TODO 5. Store the secret in the network and print the returned store_id
 
 
     # 🎯 TODO 6. Create compute bindings to set input and output parties

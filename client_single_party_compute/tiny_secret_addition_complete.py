@@ -19,15 +19,15 @@ async def main():
     userkey = getUserKeyFromFile(os.getenv("NILLION_USERKEY_PATH_PARTY_1"))
     nodekey = getNodeKeyFromFile(os.getenv("NILLION_NODEKEY_PATH_PARTY_1"))
 
-    # 1. Initialize NillionClient against nillion-devnet
+    # ✅ 1. Initialize NillionClient against nillion-devnet
     # Create Nillion Client for user
     client = create_nillion_client(userkey, nodekey)
 
-    # 2. Get the user id and party id from NillionClient
+    # ✅ 2. Get the user id and party id from NillionClient
     party_id = client.party_id()
     user_id = client.user_id()
 
-    # 3. Store a compiled Nada program in the network
+    # ✅ 3. Store a compiled Nada program in the network
     # Set the program name
     program_name="tiny_secret_addition_complete"
     # Set the path to the compiled program
@@ -42,7 +42,7 @@ async def main():
     print('Stored program_id:', program_id)
 
 
-    # 4. Create the 1st secret with bindings to the program
+    # ✅ 4. Create the 1st secret with bindings to the program
     # Create a secret named "my_int1" with any value, ex: 500
     new_secret = nillion.Secrets({
         "my_int1": nillion.SecretInteger(500),
@@ -56,19 +56,19 @@ async def main():
     party_name="Party1"
     secret_bindings.add_input_party(party_name, party_id)
 
-    # 5. Store the secret in the network
+    # ✅ 5. Store the secret in the network and print the returned store_id
     store_id = await client.store_secrets(
         cluster_id, secret_bindings, new_secret, None
     )
     print(f"Computing using program {program_id}")
     print(f"Use secret store_id: {store_id}")
 
-    # 6. Create compute bindings to set input and output parties
+    # ✅ 6. Create compute bindings to set input and output parties
     compute_bindings = nillion.ProgramBindings(program_id)
     compute_bindings.add_input_party(party_name, party_id)
     compute_bindings.add_output_party(party_name, party_id)
 
-    # 7. Compute on the program with 1st secret from the network, and the 2nd secret, provided at compute time
+    # ✅ 7. Compute on the program with 1st secret from the network, and the 2nd secret, provided at compute time
 
     # Add my_int2, the 2nd secret at computation time
     computation_time_secrets = nillion.Secrets({"my_int2": nillion.SecretInteger(10)})
@@ -82,7 +82,7 @@ async def main():
         nillion.PublicVariables({}),
     )
 
-    # 8. Print the computation result
+    # ✅ 8. Print the computation result
     print(f"The computation was sent to the network. compute_id: {compute_id}")
     while True:
         compute_event = await client.next_compute_event()
