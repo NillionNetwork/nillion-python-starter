@@ -7,7 +7,7 @@ function create_venv () {
   fi
 
   echo "Creating virtualenv"
-  pip install --user virtualenv==20.24.6
+  python3 -m pip install --user virtualenv==20.24.6
 
   NILLION_VENV=".venv"
   mkdir -p "$NILLION_VENV"
@@ -16,7 +16,7 @@ function create_venv () {
   python3 -m pip install -r requirements.txt
 
   echo "Virtualenv: $NILLION_VENV"
-  echo "Check the $NILLION_VENV/lib/python3/site-packages folder to make sure you have py_nillion_client and nada_dsl packages"
+  echo "Check the $NILLION_VENV/lib/python3.1X/site-packages folder to make sure you have py_nillion_client and nada_dsl packages"
   echo "📋 Copy and run the following command to activate your environment:"
   echo "source $NILLION_VENV/bin/activate"
 }
