@@ -39,7 +39,7 @@ async def main(args = None):
     writer = create_nillion_client(userkey, nodekey)
 
     # Create new permissions object to rewrite permissions (reader no longer has retrieve permission)
-    new_permissions = nillion.Permissions.default_for_user(writer.user_id())
+    new_permissions = nillion.Permissions.default_for_user(writer.user_id)
     result = (
         "allowed"
         if new_permissions.is_retrieve_allowed(args.revoked_user_id)

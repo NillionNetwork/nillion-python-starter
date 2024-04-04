@@ -32,7 +32,7 @@ async def main(args = None):
 
     # Writer Nillion client
     writer = create_nillion_client(userkey, nodekey)
-    writer_user_id = writer.user_id()
+    writer_user_id = writer.user_id
     print(writer_user_id, args.retriever_user_id)
 
     # Writer gives themself default permissions
