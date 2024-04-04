@@ -148,6 +148,6 @@ echo "💻 The Nillion devnet is still running behind the scenes; to spin down t
 echo "--------------------"
 echo "💻 Your Nillion local cluster is still running - process pid: $(pgrep -f $NILLION_DEVNET)"
 echo "ℹ️  Updated your .env file configuration variables: bootnode, cluster id, keys, blockchain info"
-echo "📋 Next, compile all Nada programs in the 'programs' folder with 'sh compile_programs.sh'";
+echo "📋 Next, compile all Nada programs in the 'programs' folder with 'bash compile_programs.sh'";
 
 exit 0

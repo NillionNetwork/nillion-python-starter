@@ -27,7 +27,7 @@ The `run-local-cluster` tool spins up `anvil` under the hood, so you need to hav
 2. Create the virtual environment (`.venv`), install dependencies, and activate the virtual environment
 
    ```shell
-   sh ./create_venv.sh && source .venv/bin/activate
+   bash ./create_venv.sh && source .venv/bin/activate
    ```
 
    Run the [`bootstrap-local-environment.sh`](./bootstrap-local-environment.sh) script to spin up `nillion-devnet`, generate keys, and get bootnodes, cluster, and payment info:
@@ -45,7 +45,7 @@ The `run-local-cluster` tool spins up `anvil` under the hood, so you need to hav
 Nada programs need to be compiled ahead of being stored. Compile all programs in the [programs](./programs/) folder with the script [`compile_programs.sh`](./compile_programs.sh):
 
 ```shell
-sh compile_programs.sh
+bash compile_programs.sh
 ```
 
 This generates a `programs-compiled` folder containing the compiled programs.
@@ -55,13 +55,13 @@ This generates a `programs-compiled` folder containing the compiled programs.
 Store a compiled program in the network with this script:
 
 ```shell
-sh store_program.sh {RELATIVE_COMPILED_PROGRAM_PATH}
+bash store_program.sh {RELATIVE_COMPILED_PROGRAM_PATH}
 ```
 
 To store the compiled [`addition_simple`](./programs/addition_simple.py) program you can run:
 
 ```shell
-sh store_program.sh programs-compiled/addition_simple.nada.bin
+bash store_program.sh programs-compiled/addition_simple.nada.bin
 ```
 
 Storing a program results in the stored `program_id`, the network's reference to the program. The `program_id` is the `{user_id}/{program_name}`.
