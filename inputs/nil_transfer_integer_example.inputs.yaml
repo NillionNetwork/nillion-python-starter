@@ -1,8 +1,0 @@
----
-program_id: ~
-store_secrets:
-  HHCibzpM7rhIgYyNgZuUX5S9eq48mt:
-    UnsignedInteger:
-      value: "6938"
-compute_secrets: {}
-public_variables: {}
