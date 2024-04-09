@@ -6,7 +6,7 @@ nr of candidates: n = 2
 """
 from nada_dsl import *
 
-def return_val_if_any_true(list_of_bool, val):
+def return_val_if_any_false(list_of_bool, val):
     """
     Returns val if any boolean inside list_of_bool is false.
 
@@ -22,7 +22,7 @@ def return_val_if_any_true(list_of_bool, val):
     final_value = UnsignedInteger(0)
     for bool in list_of_bool:
         # Use if_else method to check if the current boolean is true,
-        # if true, return val, otherwise return the current final_value
+        # if true, return vfinal_valueal, otherwise return the current val
         final_value = bool.if_else(final_value, val) 
 
     return final_value
@@ -144,7 +144,7 @@ def fn_check_prod(nr_voters, nr_candidates, votes_per_candidate, outparty):
         all_comp_v_prod = all_comp_prod[v]
         for c in range(nr_candidates):
             vote_v_c = votes_per_candidate[c][v]
-            if_prod_cheat_open_v_c = return_val_if_any_true(all_comp_v_prod, vote_v_c)
+            if_prod_cheat_open_v_c = return_val_if_any_false(all_comp_v_prod, vote_v_c)
             if_prod_cheat_open.append(Output(if_prod_cheat_open_v_c, "if_prod_cheat_open_v" + str(v) + "_c" + str(c), outparty))
 
     return check_prod, if_prod_cheat_open
