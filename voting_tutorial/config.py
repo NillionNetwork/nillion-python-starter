@@ -1,5 +1,4 @@
 import os
-import py_nillion_client as nillion
 from dotenv import load_dotenv
 load_dotenv()
 

@@ -1,8 +1,9 @@
-from pdb import set_trace as bp
 import asyncio
 import py_nillion_client as nillion
 import os
 import sys
+import pytest
+
 from dotenv import load_dotenv
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -28,7 +29,6 @@ async def main():
         nillion.SecretInteger(5),
     ])
 
-    secret_array_length = len(secret_value)
     secret_array = nillion.Secrets({
         secret_name: secret_value
     })
@@ -57,5 +57,12 @@ async def main():
     # Read all secret values in the secret array
     secret_array_values = [secret_value.value for secret_value in secret_results]
     print("The secret array values are:", secret_array_values)
+    return secret_array_values
 
-asyncio.run(main())
+if __name__ == "__main__":
+    asyncio.run(main())
+
+@pytest.mark.asyncio
+async def test_main():
+    result = await main()
+    assert result == [1, 2, 3, 4, 5]

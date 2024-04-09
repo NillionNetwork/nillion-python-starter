@@ -1,9 +1,10 @@
-from pdb import set_trace as bp
 import argparse
 import asyncio
 import py_nillion_client as nillion
 import os
 import sys
+import pytest
+
 from dotenv import load_dotenv
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -12,19 +13,19 @@ from helpers.nillion_keypath_helper import getUserKeyFromFile, getNodeKeyFromFil
 
 load_dotenv()
 
-parser = argparse.ArgumentParser(
-    description="Create a secret on the Nillion network with set read/retrieve permissions"
-)
-parser.add_argument(
-    "--retriever_user_id",
-    required=True,
-    type=str,
-    help="User ID of the reader python client (derived from user key)",
-)
-args = parser.parse_args()
 
+async def main(args = None):
+    parser = argparse.ArgumentParser(
+        description="Create a secret on the Nillion network with set read/retrieve permissions"
+    )
+    parser.add_argument(
+        "--retriever_user_id",
+        required=True,
+        type=str,
+        help="User ID of the reader python client (derived from user key)",
+    )
+    args = parser.parse_args(args)
 
-async def main():
     cluster_id = os.getenv("NILLION_CLUSTER_ID")
     userkey = getUserKeyFromFile(os.getenv("NILLION_USERKEY_PATH_PARTY_2"))
     nodekey = getNodeKeyFromFile(os.getenv("NILLION_NODEKEY_PATH_PARTY_2"))
@@ -64,7 +65,12 @@ async def main():
 
     print("ℹ️ STORE ID:", store_id)
     print("\n\nRun the following command to retrieve the secret by store id as the reader")
-    print(f"\n📋 python3 03-retrieve-secret.py --store_id {store_id}")
+    print(f"\n📋 python3 03_retrieve_secret.py --store_id {store_id}")
+    return store_id
 
+if __name__ == "__main__":
+    asyncio.run(main())
 
-asyncio.run(main())
+@pytest.mark.asyncio
+async def test_main():
+    pass

@@ -1,9 +1,9 @@
-from pdb import set_trace as bp
-import argparse
 import asyncio
 import py_nillion_client as nillion
 import os
 import sys
+import pytest
+
 from dotenv import load_dotenv
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -71,11 +71,12 @@ async def main():
         if isinstance(compute_event, nillion.ComputeFinishedEvent):
             print(f"✅  Compute complete for compute_id {compute_event.uuid}")
             print(f"🖥️  The result is {compute_event.result.value}")
-            break
+            return compute_event.result.value
     
+if __name__ == "__main__":
+    asyncio.run(main())
 
-
-
-    
-
-asyncio.run(main())
+@pytest.mark.asyncio
+async def test_main():
+    result = await main()
+    assert result == {'my_output': 510}

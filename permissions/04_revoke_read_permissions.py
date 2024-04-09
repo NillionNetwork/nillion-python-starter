@@ -1,9 +1,10 @@
-from pdb import set_trace as bp
 import argparse
 import asyncio
 import py_nillion_client as nillion
 import os
 import sys
+import pytest
+
 from dotenv import load_dotenv
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -12,28 +13,27 @@ from helpers.nillion_keypath_helper import getUserKeyFromFile, getNodeKeyFromFil
 
 load_dotenv()
 
-parser = argparse.ArgumentParser(
-    description="Revoke user read/retrieve permissions from a secret on the Nillion network"
-)
-parser.add_argument(
-    "--store_id",
-    required=True,
-    type=str,
-    help="Store ID from the writer client store operation",
-)
-parser.add_argument(
-    "--revoked_user_id",
-    required=True,
-    type=str,
-    help="User ID of the reader python client (derived from user key)",
-)
-args = parser.parse_args()
+async def main(args = None):
+    parser = argparse.ArgumentParser(
+        description="Revoke user read/retrieve permissions from a secret on the Nillion network"
+    )
+    parser.add_argument(
+        "--store_id",
+        required=True,
+        type=str,
+        help="Store ID from the writer client store operation",
+    )
+    parser.add_argument(
+        "--revoked_user_id",
+        required=True,
+        type=str,
+        help="User ID of the reader python client (derived from user key)",
+    )
+    args = parser.parse_args(args)
 
-
-async def main():
     cluster_id = os.getenv("NILLION_CLUSTER_ID")
     userkey = getUserKeyFromFile(os.getenv("NILLION_USERKEY_PATH_PARTY_2"))
-    nodekey = getNodeKeyFromFile(os.getenv("NILLION_NODEKEY_PATH_PARTY_2"))
+    nodekey = getNodeKeyFromFile(os.getenv("NILLION_NODEKEY_PATH_PARTY_4"))
 
     # Writer Nillion client
     writer = create_nillion_client(userkey, nodekey)
@@ -54,7 +54,12 @@ async def main():
     await writer.update_permissions( cluster_id, args.store_id , new_permissions)
 
     print("\n\nRun the following command to test that permissions have been properly revoked")
-    print(f"\n📋  python3 05-test-revoked-permissions.py  --store_id {args.store_id}")
+    print(f"\n📋  python3 05_test_revoked_permissions.py  --store_id {args.store_id}")
+    return args.store_id
 
+if __name__ == "__main__":
+    asyncio.run(main())
 
-asyncio.run(main())
+@pytest.mark.asyncio
+async def test_main():
+    pass

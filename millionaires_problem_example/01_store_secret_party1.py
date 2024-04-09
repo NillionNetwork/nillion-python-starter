@@ -1,9 +1,8 @@
-from pdb import set_trace as bp
-import argparse
 import asyncio
-import py_nillion_client as nillion
 import os
 import sys
+import pytest
+
 from dotenv import load_dotenv
 from config import (
     CONFIG_PARTY_1
@@ -41,5 +40,11 @@ async def main():
 
     print("\n📋⬇️ Copy and run the following command to store Bob and Charlie's salaries in the network")
     print(f"\npython3 02_store_secret_party_n.py --user_id_1 {user_id_alice} --program_id {program_id}")
+    return [user_id_alice, program_id]
 
-asyncio.run(main())
+if __name__ == "__main__":
+    asyncio.run(main())
+
+@pytest.mark.asyncio
+async def test_main():
+    pass

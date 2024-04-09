@@ -1,9 +1,9 @@
-from pdb import set_trace as bp
-import argparse
 import asyncio
 import py_nillion_client as nillion
 import os
 import sys
+import pytest
+
 from dotenv import load_dotenv
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -39,5 +39,12 @@ async def main():
     result_tuple = await client.retrieve_secret(cluster_id, store_id, secret_name)
     print(f"The secret name as a uuid is {result_tuple[0]}")
     print(f"The secret value is {result_tuple[1].value}")
+    return result_tuple[1].value
 
-asyncio.run(main())
+if __name__ == "__main__":
+    asyncio.run(main())
+
+@pytest.mark.asyncio
+async def test_main():
+    result = await main()
+    assert result == 100
