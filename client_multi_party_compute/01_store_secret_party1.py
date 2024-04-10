@@ -1,8 +1,9 @@
-from pdb import set_trace as bp
 import asyncio
 import py_nillion_client as nillion
 import os
 import sys
+import pytest
+
 from dotenv import load_dotenv
 from config import (
     CONFIG_PROGRAM_NAME,
@@ -55,5 +56,11 @@ async def main():
     print(f"\n🎉1️⃣ Party {CONFIG_PARTY_1['party_name']} stored {secrets_string} at store id: {store_id_1}")
     print("\n📋⬇️ Copy and run the following command to store N other party secrets")
     print(f"\npython3 02_store_secret_party_n.py --user_id_1 {user_id_1} --store_id_1 {store_id_1}")
+    return [user_id_1, store_id_1]
 
-asyncio.run(main())
+if __name__ == "__main__":
+    asyncio.run(main())
+
+@pytest.mark.asyncio
+async def test_main():
+    pass

@@ -1,9 +1,10 @@
-from pdb import set_trace as bp
 import argparse
 import asyncio
 import py_nillion_client as nillion
 import os
 import sys
+import pytest
+
 from dotenv import load_dotenv
 from config import (
     CONFIG_PROGRAM_NAME,
@@ -16,26 +17,26 @@ from helpers.nillion_keypath_helper import getUserKeyFromFile, getNodeKeyFromFil
 
 load_dotenv()
 
-parser = argparse.ArgumentParser(
-    description="Create a secret on the Nillion network with set read/retrieve permissions"
-)
-parser.add_argument(
-    "--user_id_1",
-    required=True,
-    type=str,
-    help="User ID of the user who will compute with the secret being stored",
-)
-parser.add_argument(
-    "--store_id_1",
-    required=True,
-    type=str,
-    help="Store ID of the 1st secret",
-)
-
-args = parser.parse_args()
-
 # N other parties store a secret
-async def main():
+async def main(args = None):
+    parser = argparse.ArgumentParser(
+        description="Create a secret on the Nillion network with set read/retrieve permissions"
+    )
+    parser.add_argument(
+        "--user_id_1",
+        required=True,
+        type=str,
+        help="User ID of the user who will compute with the secret being stored",
+    )
+    parser.add_argument(
+        "--store_id_1",
+        required=True,
+        type=str,
+        help="Store ID of the 1st secret",
+    )
+
+    args = parser.parse_args(args)
+
     cluster_id = os.getenv("NILLION_CLUSTER_ID")
     program_id=f"{args.user_id_1}/{CONFIG_PROGRAM_NAME}"
     
@@ -86,6 +87,12 @@ async def main():
     party_ids_to_store_ids = ' '.join([f'{party_id}:{store_id}' for party_id, store_id in zip(party_ids, store_ids)])
 
     print("\n📋⬇️ Copy and run the following command to run multi party computation using the secrets")
-    print(f"\npython3 03_multi_party_compute.py --store_id_1 {args.store_id_1} --party_ids_to_store_ids {party_ids_to_store_ids}")  
+    print(f"\npython3 03_multi_party_compute.py --store_id_1 {args.store_id_1} --party_ids_to_store_ids {party_ids_to_store_ids}")
+    return [args.store_id_1, party_ids_to_store_ids]
 
-asyncio.run(main())
+if __name__ == "__main__":
+    asyncio.run(main())
+
+@pytest.mark.asyncio
+async def test_main():
+    pass

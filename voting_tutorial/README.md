@@ -57,7 +57,7 @@ Furthermore, the voters will cast their votes for two candidates: Dave and Emma.
 Run the command to perform step 1.
 
 ```bash
-python3 01_store_program_party1.py
+python3 01_store_secret_party1.py
 ```
 
 ### Step 2

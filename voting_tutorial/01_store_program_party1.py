@@ -5,10 +5,7 @@
 ##########################################################################################
 
 
-from pdb import set_trace as bp
-import argparse
 import asyncio
-import py_nillion_client as nillion
 import os
 import sys
 from dotenv import load_dotenv
@@ -108,7 +105,7 @@ async def main():
     # 3. Send program ID                #
     #####################################
 
-    # This requires its own mechanism in a real environemnt. 
+    # This requires its own mechanism in a real environment. 
     print(f"Alice stored {program_name} program at program_id: {program_id}")
     print(f"Alice tells Bob and Charlie her user_id and the voting program_id")
 

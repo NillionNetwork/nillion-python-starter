@@ -1,9 +1,9 @@
-from pdb import set_trace as bp
-import argparse
 import asyncio
 import py_nillion_client as nillion
 import os
 import sys
+import pytest
+
 from dotenv import load_dotenv
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -43,5 +43,12 @@ async def main():
 
     decoded_secret_value = result_tuple[1].value.decode('utf-8')
     print(f"The secret value is '{decoded_secret_value}'")
+    return decoded_secret_value
 
-asyncio.run(main())
+if __name__ == "__main__":
+    asyncio.run(main())
+
+@pytest.mark.asyncio
+async def test_main():
+    result = await main()
+    assert result == 'gm, builder!'

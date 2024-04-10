@@ -10,9 +10,9 @@ Before running through examples, `./bootstrap-local-environment.sh` creates user
 
 ```shell
 cd permissions
-python3 01-fetch-reader-userid.py
-python3 02-store-permissioned-secret.py --retriever_user_id {READER_USER_ID}
-python3 03-retrieve-secret.py --store_id {STORE_ID}
-python3 04-revoke-read-permissions.py --store_id {STORE_ID} --revoked_user_id {READER_USER_ID}
-python3 05-test-revoked-permissions  --store_id {STORE_ID}
+python3 01_fetch_reader_userid.py
+python3 02_store_permissioned_secret.py --retriever_user_id {READER_USER_ID}
+python3 03_retrieve_secret.py --store_id {STORE_ID}
+python3 04_revoke_read_permissions.py --store_id {STORE_ID} --revoked_user_id {READER_USER_ID}
+python3 05_test_revoked_permissions.py  --store_id {STORE_ID}
 ```

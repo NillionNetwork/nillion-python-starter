@@ -4,7 +4,6 @@
 
 ##########################################################################################
 
-from pdb import set_trace as bp
 import argparse
 import asyncio
 import py_nillion_client as nillion
@@ -110,7 +109,7 @@ async def main():
     # 5. Send party IDs and store IDs   #
     #####################################
 
-    # This requires its own mechanism in a real environemnt. 
+    # This requires its own mechanism in a real environment. 
     party_ids_to_store_ids = ' '.join([f'{party_id}:{store_id}' for party_id, store_id in zip(party_ids, store_ids)])
 
     print("\n📋⬇️  Copy and run the following command to run multi party computation using the secrets")

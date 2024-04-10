@@ -4,7 +4,6 @@
 
 ##########################################################################################
 
-from pdb import set_trace as bp
 import argparse
 import asyncio
 import py_nillion_client as nillion

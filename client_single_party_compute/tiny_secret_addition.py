@@ -1,8 +1,8 @@
-from pdb import set_trace as bp
 import asyncio
-import py_nillion_client as nillion
 import os
 import sys
+import pytest
+
 from dotenv import load_dotenv
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -54,4 +54,9 @@ async def main():
 
     # 🎯 TODO 8. Print the computation result
 
-asyncio.run(main())
+if __name__ == "__main__":
+    asyncio.run(main())
+
+@pytest.mark.asyncio
+async def test_main():
+    pass

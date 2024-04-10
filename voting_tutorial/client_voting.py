@@ -5,8 +5,6 @@
 ##########################################################################################
 
 
-from pdb import set_trace as bp
-import argparse
 import asyncio
 import py_nillion_client as nillion
 import os
@@ -81,11 +79,11 @@ async def main():
     # The script has the following flow:
     #     1. Parties initialization
     #     2. Owner stores a program.
-    #     3. (Real environemtn:) Owner sends the program ID to all voters.
+    #     3. (Real environment:) Owner sends the program ID to all voters.
     #     4. Voters store votes:
     #         4.1 Bind voter to party in the program
     #         4.2 Set compute permission to owner
-    #     5. (Real environemtn:) Voters send their their party IDs and store IDs to the owner.
+    #     5. (Real environment:) Voters send their their party IDs and store IDs to the owner.
     #     6. Owner compute voting system using votes from voters.
     
     nr_candidates = CONFIG["nr_candidates"]
@@ -165,7 +163,7 @@ async def main():
     # 3. Send program ID                #
     #####################################
 
-    # This requires its own mechanism in a real environemnt. 
+    # This requires its own mechanism in a real environment. 
     # In this demo, we just reuse the variable 'program_id'.
 
     #####################################
@@ -228,7 +226,7 @@ async def main():
     # 5. Send party IDs and store IDs   #
     #####################################
 
-    # This requires its own mechanism in a real environemnt. 
+    # This requires its own mechanism in a real environment. 
     # In this demo, we just reuse the variable 'store_ids' and
     # the voters' clients to extra their party IDs.
         

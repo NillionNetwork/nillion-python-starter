@@ -1,9 +1,10 @@
-from pdb import set_trace as bp
 import argparse
 import asyncio
 import py_nillion_client as nillion
 import os
 import sys
+import pytest
+
 from dotenv import load_dotenv
 from config import (
     CONFIG_N_PARTIES
@@ -15,26 +16,26 @@ from helpers.nillion_keypath_helper import getUserKeyFromFile, getNodeKeyFromFil
 
 load_dotenv()
 
-parser = argparse.ArgumentParser(
-    description="Create a secret on the Nillion network with set read/retrieve permissions"
-)
-parser.add_argument(
-    "--user_id_1",
-    required=True,
-    type=str,
-    help="User ID of the user who will compute with the secret being stored",
-)
-parser.add_argument(
-    "--program_id",
-    required=True,
-    type=str,
-    help="Program ID of the millionaires program",
-)
-
-args = parser.parse_args()
-
 # Bob and Charlie store their salaries in the network
-async def main():
+async def main(args = None):
+    parser = argparse.ArgumentParser(
+        description="Create a secret on the Nillion network with set read/retrieve permissions"
+    )
+    parser.add_argument(
+        "--user_id_1",
+        required=True,
+        type=str,
+        help="User ID of the user who will compute with the secret being stored",
+    )
+    parser.add_argument(
+        "--program_id",
+        required=True,
+        type=str,
+        help="Program ID of the millionaires program",
+    )
+
+    args = parser.parse_args(args)
+
     cluster_id = os.getenv("NILLION_CLUSTER_ID")
     
     # start a list of store ids to keep track of stored secrets
@@ -89,5 +90,11 @@ async def main():
 
     print("\n📋⬇️  Copy and run the following command to run multi party computation using the secrets")
     print(f"\npython3 03_multi_party_compute.py --program_id {args.program_id} --party_ids_to_store_ids {party_ids_to_store_ids}")  
+    return [args.program_id, party_ids_to_store_ids]
 
-asyncio.run(main())
+if __name__ == "__main__":
+    asyncio.run(main())
+
+@pytest.mark.asyncio
+async def test_main():
+    pass

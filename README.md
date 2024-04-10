@@ -65,3 +65,12 @@ bash store_program.sh programs-compiled/addition_simple.nada.bin
 ```
 
 Storing a program results in the stored `program_id`, the network's reference to the program. The `program_id` is the `{user_id}/{program_name}`.
+
+## Testing
+
+Most examples and tutorials within this repository can be tested. Docker is required to run the tests.
+
+```shell
+cd testing
+bash run_tests.sh
+```
