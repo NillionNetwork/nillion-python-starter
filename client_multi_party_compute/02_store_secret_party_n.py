@@ -64,6 +64,9 @@ async def main(args = None):
         secret_bindings = nillion.ProgramBindings(program_id)
         secret_bindings.add_input_party(party_name, party_id_n)
 
+        if (party_info["is_output_party"]):
+            secret_bindings.add_output_party(party_name, party_id_n)
+
         # Create permissions object
         permissions = nillion.Permissions.default_for_user(user_id_n)
 

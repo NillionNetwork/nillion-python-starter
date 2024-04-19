@@ -73,6 +73,8 @@ async def main(args = None):
         party_id, store_id = pair.split(':')
         party_name = CONFIG_N_PARTIES[i]['party_name']
         compute_bindings.add_input_party(party_name, party_id)
+        if (CONFIG_N_PARTIES[i]["is_output_party"]):
+            compute_bindings.add_output_party(party_name, party_id)
         party_ids_to_store_ids[party_id] = store_id
         i=i+1
     

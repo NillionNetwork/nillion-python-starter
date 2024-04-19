@@ -3,16 +3,16 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # replace this with your program_id
-CONFIG_PROGRAM_NAME="addition_simple_multi_party_3"
+CONFIG_PROGRAM_NAME="millionaires_multi_output"
 
 # 1st party
 CONFIG_PARTY_1={
     "userkey_file": os.getenv("NILLION_USERKEY_PATH_PARTY_1"),
     "nodekey_file": os.getenv("NILLION_NODEKEY_PATH_PARTY_1"),
     "nodekey_alternate_file": os.getenv("NILLION_NODEKEY_PATH_PARTY_4"),
-    "party_name": "Party1",
+    "party_name": "Alice",
     "secrets": {
-        "my_int1": 1,
+        "alice_salary": 1,
     }
 }
 
@@ -21,15 +21,17 @@ CONFIG_N_PARTIES=[
     {
         "userkey_file": os.getenv("NILLION_USERKEY_PATH_PARTY_2"),
         "nodekey_file": os.getenv("NILLION_NODEKEY_PATH_PARTY_2"),
-        "party_name": "Party2",
-        "secret_name": "my_int2",
+        "party_name": "Bob",
+        "secret_name": "bob_salary",
         "secret_value": 5,
+        "is_output_party": True
     },
     {
         "userkey_file": os.getenv("NILLION_USERKEY_PATH_PARTY_3"),
         "nodekey_file": os.getenv("NILLION_NODEKEY_PATH_PARTY_3"),
-        "party_name": "Party3",
-        "secret_name": "my_int3",
+        "party_name": "Charlie",
+        "secret_name": "charlie_salary",
         "secret_value": 2,
+        "is_output_party": True
     },
 ]
