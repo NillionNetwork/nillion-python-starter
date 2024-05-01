@@ -26,7 +26,7 @@ from digest_result import digest_plurality_vote_honest_result, digest_plurality_
 load_dotenv()
 
 parser = argparse.ArgumentParser(
-    description="Create a secret on the Nillion network with set read/retrieve core_concept_permissions"
+    description="Create a secret on the Nillion network with set read/retrieve permissions"
 )
 
 parser.add_argument(

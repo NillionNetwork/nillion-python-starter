@@ -205,9 +205,9 @@ async def main():
         v_bindings.add_input_party("Voter"+str(v), voter_v.party_id())
 
         ###########################################
-        # 4.2 Set compute core_concept_permissions to owner    #
+        # 4.2 Set compute permissions to owner    #
         ###########################################
-        # Give core_concept_permissions to owner to compute with my vote
+        # Give permissions to owner to compute with my vote
         v_permissions = nillion.Permissions.default_for_user(voter_v.user_id())
         v_permissions.add_compute_permissions({
             # owner.user_id(): {program_id},

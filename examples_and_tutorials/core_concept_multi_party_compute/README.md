@@ -37,7 +37,7 @@ The 3-part Multi Party example assumes there is a stored program that meets the 
 For example before running addition_simple_multi_party.py, compile all programs and check that addition_simple_multi_party.nada.bin exists in the compiled-programs folder.
 
 ```bash
-cd ..
+cd ../..
 ./compile_programs.sh
 ```
 

@@ -20,7 +20,7 @@ load_dotenv()
 # N other parties store a secret
 async def main(args = None):
     parser = argparse.ArgumentParser(
-        description="Create a secret on the Nillion network with set read/retrieve core_concept_permissions"
+        description="Create a secret on the Nillion network with set read/retrieve permissions"
     )
     parser.add_argument(
         "--user_id_1",
@@ -64,10 +64,10 @@ async def main(args = None):
         secret_bindings = nillion.ProgramBindings(program_id)
         secret_bindings.add_input_party(party_name, party_id_n)
 
-        # Create core_concept_permissions object
+        # Create permissions object
         permissions = nillion.Permissions.default_for_user(user_id_n)
 
-        # Give compute core_concept_permissions to the first party
+        # Give compute permissions to the first party
         compute_permissions = {
             args.user_id_1: {program_id},
         }

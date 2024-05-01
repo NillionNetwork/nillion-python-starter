@@ -25,7 +25,7 @@ load_dotenv()
 
 async def main(args = None):
     parser = argparse.ArgumentParser(
-        description="Create a secret on the Nillion network with set read/retrieve core_concept_permissions"
+        description="Create a secret on the Nillion network with set read/retrieve permissions"
     )
 
     parser.add_argument(

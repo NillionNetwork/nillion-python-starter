@@ -29,7 +29,7 @@ async def main():
     })
 
     # Store a SecretBlob 
-    # Notice that both bindings and core_concept_permissions are set to None
+    # Notice that both bindings and permissions are set to None
     # Secrets of type SecretBlob don't need bindings because they aren't used in programs
     # Permissions need to be set to allow users other than the secret creator to use the secret
     store_id = await client.store_secrets(
