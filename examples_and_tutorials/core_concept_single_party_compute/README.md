@@ -11,7 +11,7 @@ These compute examples only involve one party.
 For example before running addition_simple.py, compile all programs and check that addition_simple.nada.bin exists in the compiled-programs folder.
 
 ```bash
-cd ..
+cd ../..
 ./compile_programs.sh
 ```
 

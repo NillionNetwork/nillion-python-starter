@@ -2,15 +2,15 @@
 
 This is a python starter repo for building on the Nillion Network. Complete environment setup, then run the examples:
 
-- To run multi party examples, go to the [client_multi_party_compute](examples_and_tutorials/core_concept_multi_party_compute) folder.
+- To run multi party examples, go to the [multi party compute](examples_and_tutorials/core_concept_multi_party_compute) folder.
 
-- To run single party examples, go to the [client_single_party_compute](examples_and_tutorials/core_concept_single_party_compute) folder.
+- To run single party examples, go to the [single party compute](examples_and_tutorials/core_concept_single_party_compute) folder.
 
 - To run permissions examples (storing and retrieving permissioned secrets, revoking permissions, etc.), go to the [permissions](examples_and_tutorials/core_concept_permissions) folder.
 
 ### Prerequisites: Install the CLI Dependencies
 
-The `run-local-cluster` tool spins up `anvil` under the hood, so you need to have `foundry` installed. The [`bootstrap-local-environment.sh`](./bootstrap-local-environment.sh) file uses `pidof` and `grep`.
+The `nillion-devnet` tool spins up `anvil` under the hood, so you need to have `foundry` installed. The [`bootstrap-local-environment.sh`](./bootstrap-local-environment.sh) file uses `pidof` and `grep`.
 
 - [Install `foundry`](https://book.getfoundry.sh/getting-started/installation)
 - [Install `pidof`](https://command-not-found.com/pidof)

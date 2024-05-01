@@ -19,7 +19,7 @@ load_dotenv()
 # Bob and Charlie store their salaries in the network
 async def main(args = None):
     parser = argparse.ArgumentParser(
-        description="Create a secret on the Nillion network with set read/retrieve core_concept_permissions"
+        description="Create a secret on the Nillion network with set read/retrieve permissions"
     )
     parser.add_argument(
         "--user_id_1",
@@ -65,15 +65,15 @@ async def main(args = None):
         secret_bindings.add_input_party(party_name, party_id_n)
         print(f"\n🔗 {party_name} sets bindings so that the secret can be input to a specific program (program_id: {args.program_id}) by a specific party (party_id: {party_id_n})")
 
-        # Create core_concept_permissions object with default core_concept_permissions for the current user
+        # Create permissions object with default permissions for the current user
         permissions = nillion.Permissions.default_for_user(user_id_n)
 
-        # Give compute core_concept_permissions to Alice so she can use the secret in the specific millionionaires program by program id
+        # Give compute permissions to Alice so she can use the secret in the specific millionionaires program by program id
         compute_permissions = {
             args.user_id_1: {args.program_id},
         }
         permissions.add_compute_permissions(compute_permissions)
-        print(f"\n👍 {party_name} gives compute core_concept_permissions on their secret to Alice's user_id: {args.user_id_1}")
+        print(f"\n👍 {party_name} gives compute permissions on their secret to Alice's user_id: {args.user_id_1}")
 
         # Store the permissioned secret
         store_id = await client_n.store_secrets(

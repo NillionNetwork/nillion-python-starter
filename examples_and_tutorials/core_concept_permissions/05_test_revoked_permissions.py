@@ -20,7 +20,7 @@ load_dotenv()
 
 async def main(args = None):
     parser = argparse.ArgumentParser(
-        description="Check that retrieval core_concept_permissions on a Secret have been revoked"
+        description="Check that retrieval permissions on a Secret have been revoked"
     )
     parser.add_argument(
         "--store_id",
@@ -41,10 +41,10 @@ async def main(args = None):
     try:
         secret_name = "my_int1"
         await reader.retrieve_secret(cluster_id, args.store_id, secret_name)
-        print(f"⛔ FAIL: {reader_user_id} user id with revoked core_concept_permissions was allowed to access secret", file=sys.stderr)
+        print(f"⛔ FAIL: {reader_user_id} user id with revoked permissions was allowed to access secret", file=sys.stderr)
     except Exception as e:
         if str(e) == "retrieving secret: the user is not authorized to access the secret":
-            print(f"🦄 Success: After user core_concept_permissions were revoked, {reader_user_id} was not allowed to access secret", file=sys.stderr)
+            print(f"🦄 Success: After user permissions were revoked, {reader_user_id} was not allowed to access secret", file=sys.stderr)
         else:
             raise(e)
 

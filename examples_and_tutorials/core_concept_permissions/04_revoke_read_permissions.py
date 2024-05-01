@@ -15,7 +15,7 @@ load_dotenv()
 
 async def main(args = None):
     parser = argparse.ArgumentParser(
-        description="Revoke user read/retrieve core_concept_permissions from a secret on the Nillion network"
+        description="Revoke user read/retrieve permissions from a secret on the Nillion network"
     )
     parser.add_argument(
         "--store_id",
@@ -38,7 +38,7 @@ async def main(args = None):
     # Writer Nillion client
     writer = create_nillion_client(userkey, nodekey)
 
-    # Create new core_concept_permissions object to rewrite core_concept_permissions (reader no longer has retrieve permission)
+    # Create new permissions object to rewrite permissions (reader no longer has retrieve permission)
     new_permissions = nillion.Permissions.default_for_user(writer.user_id)
     result = (
         "allowed"
@@ -46,14 +46,14 @@ async def main(args = None):
         else "not allowed"
     )
     if result != "not allowed":
-        raise Exception("failed to create valid core_concept_permissions object")
+        raise Exception("failed to create valid permissions object")
 
     # Update the permission
-    print(f"ℹ️ Updating core_concept_permissions for secret: {args.store_id}.")
-    print(f"ℹ️ Reset core_concept_permissions so that user id {args.revoked_user_id} is {result} to retrieve object.", file=sys.stderr)
+    print(f"ℹ️ Updating permissions for secret: {args.store_id}.")
+    print(f"ℹ️ Reset permissions so that user id {args.revoked_user_id} is {result} to retrieve object.", file=sys.stderr)
     await writer.update_permissions( cluster_id, args.store_id , new_permissions)
 
-    print("\n\nRun the following command to test that core_concept_permissions have been properly revoked")
+    print("\n\nRun the following command to test that permissions have been properly revoked")
     print(f"\n📋  python3 05_test_revoked_permissions.py  --store_id {args.store_id}")
     return args.store_id
 
