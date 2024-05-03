@@ -32,7 +32,10 @@ echo "Waiting 60 seconds for preprocessing elements" && sleep 60 && \
 sh compile_programs.sh && \
 
 run_pytest_in_dir client_single_party_compute && \
-run_pytest_in_dir client_multi_party_compute && \
-run_pytest_in_dir millionaires_problem_example && \
-run_pytest_in_dir permissions && \
-run_pytest_in_dir store_and_retrieve_secrets
+cd examples_and_tutorials && \
+run_pytest_in_dir core_concept_multi_party_compute && \
+run_pytest_in_dir core_concept_permissions && \
+run_pytest_in_dir core_concept_single_party_compute && \
+run_pytest_in_dir core_concept_permissions && \
+run_pytest_in_dir core_concept_store_and_retrieve_secrets && \
+run_pytest_in_dir millionaires_problem_example
