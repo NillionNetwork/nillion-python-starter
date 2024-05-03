@@ -1,0 +1,40 @@
+name: sync 'main' branch to 'release'
+on:
+  push:
+    branches:
+      - main
+
+permissions: write-all
+
+jobs:
+  sync-branches:
+    runs-on: ubuntu-latest
+    name: sync main to release
+    steps:
+
+      - name: checkout 'release'
+        uses: actions/checkout@v4
+        with:
+          ref: release
+
+      - name: rebase onto 'main'
+        id: rebase
+        continue-on-error: true
+        run: |
+          git fetch origin main
+          git rebase origin/main
+
+      - name: push changes to 'release'
+        if: success() && steps.rebase.outcome == 'success'
+        run: |
+          git push origin release --force-with-lease
+
+      - name: open pr on rebase failure
+        id: pull
+        if: steps.rebase.outcome == 'failure'
+        uses: TreTuna/sync-branches@1.4.0
+        with:
+          FROM_BRANCH: "main"
+          TO_BRANCH: "release"
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          PULL_REQUEST_TITLE: "chore: sync main -> release"
