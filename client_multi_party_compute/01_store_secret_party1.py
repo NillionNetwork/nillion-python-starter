@@ -22,8 +22,8 @@ async def main():
     client_1 = create_nillion_client(
         getUserKeyFromFile(CONFIG_PARTY_1["userkey_file"]), getNodeKeyFromFile(CONFIG_PARTY_1["nodekey_file"])
     )
-    party_id_1 = client_1.party_id()
-    user_id_1 = client_1.user_id()
+    party_id_1 = client_1.party_id
+    user_id_1 = client_1.user_id
 
 
     program_mir_path=f"../programs-compiled/{CONFIG_PROGRAM_NAME}.nada.bin"
