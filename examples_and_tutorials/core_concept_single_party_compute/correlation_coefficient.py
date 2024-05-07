@@ -21,8 +21,8 @@ async def main():
     userkey = getUserKeyFromFile(os.getenv("NILLION_USERKEY_PATH_PARTY_1"))
     nodekey = getNodeKeyFromFile(os.getenv("NILLION_NODEKEY_PATH_PARTY_1"))
     client = create_nillion_client(userkey, nodekey)
-    party_id = client.party_id()
-    user_id = client.user_id()
+    party_id = client.party_id
+    user_id = client.user_id
     party_0_name="Party0"
     party_1_name="Party1"
     out_party_name="OutParty"
