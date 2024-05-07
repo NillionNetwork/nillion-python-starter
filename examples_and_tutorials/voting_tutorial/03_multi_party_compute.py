@@ -61,7 +61,7 @@ async def main():
         getUserKeyFromFile(CONFIG_PARTY_1["userkey_file"]), 
         getNodeKeyFromFile(CONFIG_PARTY_1["nodekey_file"])
     )
-    party_id_alice = client_alice.party_id()
+    party_id_alice = client_alice.party_id
 
     #####################################
     # 4. Storing votes                  #

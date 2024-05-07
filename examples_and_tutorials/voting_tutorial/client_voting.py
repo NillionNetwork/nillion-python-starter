@@ -155,8 +155,8 @@ async def main():
         cluster_id, program_name, program_mir_path
     )
     print("action_id is: ", action_id)
-    # program_id = owner.user_id() + "/" + program_name
-    program_id = general_client.user_id() + "/" + program_name
+    # program_id = owner.user_id + "/" + program_name
+    program_id = general_client.user_id + "/" + program_name
     print("program_id is: ", program_id)
 
     #####################################
@@ -202,16 +202,16 @@ async def main():
         # 4.1 Bind voter to party in the program  #
         ###########################################
         v_bindings = nillion.ProgramBindings(program_id)
-        v_bindings.add_input_party("Voter"+str(v), voter_v.party_id())
+        v_bindings.add_input_party("Voter"+str(v), voter_v.party_id)
 
         ###########################################
         # 4.2 Set compute permissions to owner    #
         ###########################################
         # Give permissions to owner to compute with my vote
-        v_permissions = nillion.Permissions.default_for_user(voter_v.user_id())
+        v_permissions = nillion.Permissions.default_for_user(voter_v.user_id)
         v_permissions.add_compute_permissions({
-            # owner.user_id(): {program_id},
-            general_client.user_id(): {program_id},
+            # owner.user_id: {program_id},
+            general_client.user_id: {program_id},
         })
 
         # Store in the network
@@ -239,15 +239,15 @@ async def main():
     #################################################
     owner_bindings = nillion.ProgramBindings(program_id)
     for v in range(nr_voters):
-        # owner_bindings_0.add_input_party("Voter"+str(v), voters[v].party_id())
-        owner_bindings.add_input_party("Voter"+str(v), general_client.party_id())
+        # owner_bindings_0.add_input_party("Voter"+str(v), voters[v].party_id)
+        owner_bindings.add_input_party("Voter"+str(v), general_client.party_id)
 
     ##################################################
     # 6.2 Bind owner to output party in the program  #
     ##################################################
     # Bind the "OutParty" party in the computation to the owner's client
-    # owner_bindings.add_output_party("OutParty", owner.party_id())
-    owner_bindings.add_output_party("OutParty", general_client.party_id())
+    # owner_bindings.add_output_party("OutParty", owner.party_id)
+    owner_bindings.add_output_party("OutParty", general_client.party_id)
     
     # No secret is directly passed to 'compute'. It only uses
     # stored secrets.

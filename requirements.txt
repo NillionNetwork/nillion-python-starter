@@ -1,4 +1,4 @@
 python-dotenv==1.0.0
-nada-dsl>=0.0.7
-py-nillion-client>=0.0.7
+nada-dsl>=0.2.1
+py-nillion-client>=0.2.1
 pytest-asyncio>=0.23.6

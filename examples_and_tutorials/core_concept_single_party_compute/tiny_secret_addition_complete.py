@@ -25,8 +25,8 @@ async def main():
     client = create_nillion_client(userkey, nodekey)
 
     # ✅ 2. Get the user id and party id from NillionClient
-    party_id = client.party_id()
-    user_id = client.user_id()
+    party_id = client.party_id
+    user_id = client.user_id
 
     # ✅ 3. Store a compiled Nada program in the network
     # Set the program name

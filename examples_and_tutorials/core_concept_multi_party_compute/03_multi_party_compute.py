@@ -52,8 +52,8 @@ async def main(args = None):
         getUserKeyFromFile(CONFIG_PARTY_1["userkey_file"]), 
         getNodeKeyFromFile(CONFIG_PARTY_1["nodekey_alternate_file"]),
     )
-    user_id_1 = client_1.user_id()
-    party_id_1 = client_1.party_id()
+    user_id_1 = client_1.user_id
+    party_id_1 = client_1.party_id
 
     program_id=f"{user_id_1}/{CONFIG_PROGRAM_NAME}"
 

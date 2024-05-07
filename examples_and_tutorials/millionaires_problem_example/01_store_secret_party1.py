@@ -32,7 +32,7 @@ async def main():
         cluster_id, millionaires_program_name, program_mir_path
     )
 
-    user_id_alice = client_alice.user_id()
+    user_id_alice = client_alice.user_id
     program_id = f"{user_id_alice}/{millionaires_program_name}"
 
     print(f"Alice stores millionaires program at program_id: {program_id}")

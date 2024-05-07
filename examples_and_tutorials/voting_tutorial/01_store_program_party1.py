@@ -97,7 +97,7 @@ async def main():
         cluster_id, program_name, program_mir_path
     )
     print("action_id is: ", action_id)
-    user_id_alice = client_alice.user_id()
+    user_id_alice = client_alice.user_id
     program_id = f"{user_id_alice}/{program_name}"
     print("program_id is: ", program_id)
 

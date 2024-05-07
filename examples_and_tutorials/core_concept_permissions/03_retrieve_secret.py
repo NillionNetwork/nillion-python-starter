@@ -30,7 +30,7 @@ async def main(args = None):
 
     # Reader Nillion client
     reader = create_nillion_client(userkey, nodekey)
-    reader_user_id = reader.user_id()
+    reader_user_id = reader.user_id
 
     secret_name = "my_int1"
 

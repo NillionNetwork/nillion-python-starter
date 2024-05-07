@@ -59,8 +59,8 @@ async def main():
             getUserKeyFromFile(party_info["userkey_file"]), 
             getNodeKeyFromFile(party_info["nodekey_file"])
         )
-        party_id_n = client_n.party_id()
-        user_id_n = client_n.user_id()
+        party_id_n = client_n.party_id
+        user_id_n = client_n.user_id
         party_name = party_info["party_name"]
         party_role = party_info["party_role"]
         secret_votes = party_info["secret_votes"]

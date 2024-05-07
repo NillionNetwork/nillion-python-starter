@@ -52,7 +52,7 @@ async def main(args = None):
         getUserKeyFromFile(CONFIG_PARTY_1["userkey_file"]), 
         getNodeKeyFromFile(CONFIG_PARTY_1["nodekey_alternate_file"])
     )
-    party_id_alice = client_alice.party_id()
+    party_id_alice = client_alice.party_id
 
     # Create computation bindings for millionaires program
     compute_bindings = nillion.ProgramBindings(args.program_id)
