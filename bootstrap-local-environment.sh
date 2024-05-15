@@ -143,11 +143,10 @@ echo "-----------🦆 CONNECTED TO NILLION-DEVNET 🦆-----------"
 echo "-------------------------------------------------------"
 
 echo "ℹ️ Your $ENV_TO_UPDATE file configurations were updated with nillion-devnet connection variables: websocket, cluster id, keys, blockchain info"
-echo "💻 The Nillion devnet is still running behind the scenes; to spin down the Nillion devnet at any time, run 'yarn nillion-devnet-stop'"
+echo "💻 The Nillion devnet is still running behind the scenes; to spin down the Nillion devnet at any time, run 'killall nillion-devnet'"
 
 echo "--------------------"
 echo "💻 Your Nillion local cluster is still running - process pid: $(pgrep -f $NILLION_DEVNET)"
 echo "ℹ️  Updated your .env file configuration variables: bootnode, cluster id, keys, blockchain info"
-echo "📋 Next, compile all Nada programs in the 'programs' folder with 'bash compile_programs.sh'";
 
 exit 0
