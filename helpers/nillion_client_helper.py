@@ -1,20 +1,48 @@
 import os
 import py_nillion_client as nillion
 
+from cosmpy.aerial.client import LedgerClient, NetworkConfig
+from cosmpy.aerial.wallet import LocalWallet
+from cosmpy.crypto.keypairs import PrivateKey
+from cosmpy.aerial.tx import Transaction
+from cosmpy.aerial.client.utils import prepare_and_broadcast_basic_transaction
+from cosmpy.crypto.address import Address
+
 def create_nillion_client(userkey, nodekey):
     bootnodes = [os.getenv("NILLION_BOOTNODE_MULTIADDRESS")]
-    payments_config = nillion.PaymentsConfig(
-        os.getenv("NILLION_BLOCKCHAIN_RPC_ENDPOINT"),
-        os.getenv("NILLION_WALLET_PRIVATE_KEY"),
-        int(os.getenv("NILLION_CHAIN_ID")),
-        os.getenv("NILLION_PAYMENTS_SC_ADDRESS"),
-        os.getenv("NILLION_BLINDING_FACTORS_MANAGER_SC_ADDRESS"),
-    )
 
     return nillion.NillionClient(
         nodekey,
         bootnodes,
         nillion.ConnectionMode.relay(),
-        userkey,
-        payments_config,
+        userkey
     )
+
+async def pay(
+        client: nillion.NillionClient,
+        operation: nillion.Operation,
+        payments_wallet,
+        payments_client,
+        cluster_id
+    ) -> nillion.PaymentReceipt:
+        quote = await client.request_price_quote(cluster_id, operation)
+        address = str(Address(payments_wallet.public_key(), "nillion"))
+        message = nillion.create_payments_message(quote, address)
+        tx = Transaction()
+        tx.add_message(message)
+        submitted_tx = prepare_and_broadcast_basic_transaction(
+            payments_client, tx, payments_wallet, gas_limit=1000000
+        )
+        submitted_tx.wait_to_complete()
+        return nillion.PaymentReceipt(quote, submitted_tx.tx_hash)
+
+def create_payments_config(chain_id, payments_endpoint):
+
+    return NetworkConfig(
+            chain_id=chain_id,
+            url=f"grpc+http://{payments_endpoint}/",
+            fee_minimum_gas_price=0,
+            fee_denomination="unil",
+            staking_denomination="unil",
+            faucet_url=None,
+        )

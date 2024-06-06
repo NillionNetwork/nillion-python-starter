@@ -45,16 +45,14 @@ echo "ℹ️ Cluster has been STARTED (see $OUTFILE)"
 cat "$OUTFILE"
 
 # grep cluster info from nillion-devnet
-CLUSTER_ID=$(grep "cluster id is" "$OUTFILE" | awk '{print $4}');
-WEBSOCKET=$(grep "websocket:" "$OUTFILE" | awk '{print $2}');
-BOOT_MULTIADDR=$(grep "cluster is running, bootnode is at" "$OUTFILE" | awk '{print $7}');
-PAYMENTS_CONFIG_FILE=$(grep "payments configuration written to" "$OUTFILE" | awk '{print $5}');
-WALLET_KEYS_FILE=$(grep "wallet keys written to" "$OUTFILE" | awk '{print $5}');
-PAYMENTS_RPC=$(grep "blockchain_rpc_endpoint:" "$PAYMENTS_CONFIG_FILE" | awk '{print $2}');
-PAYMENTS_CHAIN=$(grep "chain_id:" "$PAYMENTS_CONFIG_FILE" | awk '{print $2}');
-PAYMENTS_SC_ADDR=$(grep "payments_sc_address:" "$PAYMENTS_CONFIG_FILE" | awk '{print $2}');
-PAYMENTS_BF_ADDR=$(grep "blinding_factors_manager_sc_address:" "$PAYMENTS_CONFIG_FILE" | awk '{print $2}');
-WALLET_PRIVATE_KEY=$(tail -n1 "$WALLET_KEYS_FILE")
+CLUSTER_ID=$(grep "cluster id is" "$OUTFILE" | awk '{print $5}');
+BOOT_MULTIADDR=$(grep "cluster is running, bootnode is at" "$OUTFILE" | awk '{print $8}');
+JSON_RPC=$(grep "nilchain JSON RPC available at" "$OUTFILE" | awk '{print $7}');
+GRPC=$(grep "nilchain gRPC available at" "$OUTFILE" | awk '{print $6}');
+CHAIN_DIR=$(grep 'starting nilchain node in:' "$OUTFILE" | awk -F'"' '{print $2}')
+
+# Retrieve the wallet private key
+WALLET_PRIVATE_KEY=$(echo "y" | "$CHAIN_DIR/bin/nilchaind" keys export stash --home "$CHAIN_DIR" --keyring-backend test --unsafe --unarmored-hex)
 
 # update or add an environment variable to one or more files
 update_env() {
@@ -118,12 +116,11 @@ echo "🔑 Node key and user keys have been generated and added to .env"
 # Add environment variables to .env
 update_env "NILLION_WEBSOCKETS" "$WEBSOCKET" $ENV_TO_UPDATE
 update_env "NILLION_CLUSTER_ID" "$CLUSTER_ID" $ENV_TO_UPDATE
-update_env "NILLION_BLOCKCHAIN_RPC_ENDPOINT" "$PAYMENTS_RPC" $ENV_TO_UPDATE
-update_env "NILLION_BLINDING_FACTORS_MANAGER_SC_ADDRESS" "$PAYMENTS_BF_ADDR" $ENV_TO_UPDATE
-update_env "NILLION_PAYMENTS_SC_ADDRESS" "$PAYMENTS_SC_ADDR" $ENV_TO_UPDATE
-update_env "NILLION_CHAIN_ID" "$PAYMENTS_CHAIN" $ENV_TO_UPDATE
-update_env "NILLION_WALLET_PRIVATE_KEY" "$WALLET_PRIVATE_KEY" $ENV_TO_UPDATE
 update_env "NILLION_BOOTNODE_MULTIADDRESS" "$BOOT_MULTIADDR" $ENV_TO_UPDATE
+update_env "NILLION_JSON_RPC" "$JSON_RPC" $ENV_TO_UPDATE
+update_env "NILLION_GRPC" "$GRPC" $ENV_TO_UPDATE
+update_env "NILLION_CHAIN_ID" "nillion-chain-testnet" $ENV_TO_UPDATE
+update_env "NILLION_WALLET_PRIVATE_KEY" "$WALLET_PRIVATE_KEY" $ENV_TO_UPDATE
 
 echo "Running at process pid: $(pgrep -f $NILLION_DEVNET)"
 
