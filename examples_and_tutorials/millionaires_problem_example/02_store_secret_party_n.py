@@ -6,18 +6,25 @@ import sys
 import pytest
 
 from dotenv import load_dotenv
-from config import (
-    CONFIG_N_PARTIES
-)
+from config import CONFIG_N_PARTIES
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
-from helpers.nillion_client_helper import create_nillion_client
+from cosmpy.aerial.client import LedgerClient
+from cosmpy.aerial.wallet import LocalWallet
+from cosmpy.crypto.keypairs import PrivateKey
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
+from helpers.nillion_client_helper import (
+    create_nillion_client,
+    pay,
+    create_payments_config,
+)
 from helpers.nillion_keypath_helper import getUserKeyFromFile, getNodeKeyFromFile
 
 load_dotenv()
 
+
 # Bob and Charlie store their salaries in the network
-async def main(args = None):
+async def main(args=None):
     parser = argparse.ArgumentParser(
         description="Create a secret on the Nillion network with set read/retrieve permissions"
     )
@@ -37,33 +44,36 @@ async def main(args = None):
     args = parser.parse_args(args)
 
     cluster_id = os.getenv("NILLION_CLUSTER_ID")
-    
+    grpc_endpoint = os.getenv("NILLION_GRPC")
+    chain_id = os.getenv("NILLION_CHAIN_ID")
+
     # start a list of store ids to keep track of stored secrets
     store_ids = []
     party_ids = []
 
     for party_info in CONFIG_N_PARTIES:
         client_n = create_nillion_client(
-            getUserKeyFromFile(party_info["userkey_file"]), 
-            getNodeKeyFromFile(party_info["nodekey_file"])
+            getUserKeyFromFile(party_info["userkey_file"]),
+            getNodeKeyFromFile(party_info["nodekey_file"]),
         )
         party_id_n = client_n.party_id
         user_id_n = client_n.user_id
+
+        payments_config_n = create_payments_config(chain_id, grpc_endpoint)
+        payments_client_n = LedgerClient(payments_config_n)
+        payments_wallet_n = LocalWallet(
+            PrivateKey(bytes.fromhex(os.getenv("NILLION_WALLET_PRIVATE_KEY"))),
+            prefix="nillion",
+        )
+
         party_name = party_info["party_name"]
         secret_name = party_info["secret_name"]
         secret_value = party_info["secret_value"]
 
         # Create a secret for the current party
-        stored_secret = nillion.Secrets({
-            secret_name: nillion.SecretInteger(secret_value)
-        })
-
-        # Create input bindings for the specific millionaires program by program id
-        secret_bindings = nillion.ProgramBindings(args.program_id)
-
-        # Add the respective input party to say who will provide the input to the program
-        secret_bindings.add_input_party(party_name, party_id_n)
-        print(f"\n🔗 {party_name} sets bindings so that the secret can be input to a specific program (program_id: {args.program_id}) by a specific party (party_id: {party_id_n})")
+        stored_secret = nillion.Secrets(
+            {secret_name: nillion.SecretInteger(secret_value)}
+        )
 
         # Create permissions object with default permissions for the current user
         permissions = nillion.Permissions.default_for_user(user_id_n)
@@ -73,27 +83,45 @@ async def main(args = None):
             args.user_id_1: {args.program_id},
         }
         permissions.add_compute_permissions(compute_permissions)
-        print(f"\n👍 {party_name} gives compute permissions on their secret to Alice's user_id: {args.user_id_1}")
+        print(
+            f"\n👍 {party_name} gives compute permissions on their secret to Alice's user_id: {args.user_id_1}"
+        )
 
+        receipt_store = await pay(
+            client_n,
+            nillion.Operation.store_secrets(stored_secret),
+            payments_wallet_n,
+            payments_client_n,
+            cluster_id,
+        )
         # Store the permissioned secret
         store_id = await client_n.store_secrets(
-            cluster_id, secret_bindings, stored_secret, permissions
+            cluster_id, stored_secret, permissions, receipt_store
         )
 
         store_ids.append(store_id)
         party_ids.append(party_id_n)
 
-        print(f"\n🎉 {party_name} stored {secret_name}: {secret_value} at store id: {store_id}")
-        
-        
-    party_ids_to_store_ids = ' '.join([f'{party_id}:{store_id}' for party_id, store_id in zip(party_ids, store_ids)])
+        print(
+            f"\n🎉 {party_name} stored {secret_name}: {secret_value} at store id: {store_id}"
+        )
 
-    print("\n📋⬇️  Copy and run the following command to run multi party computation using the secrets")
-    print(f"\npython3 03_multi_party_compute.py --program_id {args.program_id} --party_ids_to_store_ids {party_ids_to_store_ids}")  
+    party_ids_to_store_ids = " ".join(
+        [f"{party_id}:{store_id}" for party_id, store_id in zip(party_ids, store_ids)]
+    )
+
+    print(
+        "\n📋⬇️  Copy and run the following command to run multi party computation using the secrets"
+    )
+    print(
+        f"\npython3 03_multi_party_compute.py --program_id {args.program_id} --party_ids_to_store_ids {party_ids_to_store_ids}"
+    )
     return [args.program_id, party_ids_to_store_ids]
+
 
 if __name__ == "__main__":
     asyncio.run(main())
+
 
 @pytest.mark.asyncio
 async def test_main():

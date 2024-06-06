@@ -1,10 +1,11 @@
 import os
 import py_nillion_client as nillion
 from dotenv import load_dotenv
+
 load_dotenv()
 
 # Alice
-CONFIG_PARTY_1={
+CONFIG_PARTY_1 = {
     "userkey_file": os.getenv("NILLION_USERKEY_PATH_PARTY_1"),
     "nodekey_file": os.getenv("NILLION_NODEKEY_PATH_PARTY_1"),
     "nodekey_alternate_file": os.getenv("NILLION_NODEKEY_PATH_PARTY_4"),
@@ -14,7 +15,7 @@ CONFIG_PARTY_1={
 }
 
 # Bob and Charlie
-CONFIG_N_PARTIES=[
+CONFIG_N_PARTIES = [
     {
         "userkey_file": os.getenv("NILLION_USERKEY_PATH_PARTY_2"),
         "nodekey_file": os.getenv("NILLION_NODEKEY_PATH_PARTY_2"),
