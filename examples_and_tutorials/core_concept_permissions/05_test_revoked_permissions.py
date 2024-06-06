@@ -1,11 +1,25 @@
+import importlib
 import argparse
 import asyncio
+import py_nillion_client as nillion
 import os
 import sys
 import pytest
-import importlib
 
 from dotenv import load_dotenv
+from cosmpy.aerial.client import LedgerClient
+from cosmpy.aerial.wallet import LocalWallet
+from cosmpy.crypto.keypairs import PrivateKey
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+from helpers.nillion_client_helper import (
+    create_nillion_client,
+    pay,
+    create_payments_config,
+)
+from helpers.nillion_keypath_helper import getUserKeyFromFile, getNodeKeyFromFile
+
+load_dotenv()
 
 fetch_reader_userid = importlib.import_module("01_fetch_reader_userid")
 store_permissioned_secret = importlib.import_module("02_store_permissioned_secret")
@@ -31,6 +45,8 @@ async def main(args = None):
     args = parser.parse_args(args)
 
     cluster_id = os.getenv("NILLION_CLUSTER_ID")
+    grpc_endpoint = os.getenv("NILLION_GRPC")
+    chain_id = os.getenv("NILLION_CHAIN_ID")
     userkey = getUserKeyFromFile(os.getenv("NILLION_USERKEY_PATH_PARTY_1"))
     nodekey = getNodeKeyFromFile(os.getenv("NILLION_NODEKEY_PATH_PARTY_5"))
     
@@ -38,9 +54,26 @@ async def main(args = None):
     reader = create_nillion_client(userkey, nodekey)
     reader_user_id = reader.user_id
 
+    # Create payments config and set up Nillion wallet with a private key to pay for operations
+    payments_config = create_payments_config(chain_id, grpc_endpoint)
+    payments_client = LedgerClient(payments_config)
+    payments_wallet = LocalWallet(
+        PrivateKey(bytes.fromhex(os.getenv("NILLION_WALLET_PRIVATE_KEY"))),
+        prefix="nillion",
+    )
+
+    # Get cost quote, then pay for operation to retrieve the secret
+    receipt_store = await pay(
+        reader,
+        nillion.Operation.retrieve_secret(),
+        payments_wallet,
+        payments_client,
+        cluster_id,
+    )
+
     try:
         secret_name = "my_int1"
-        await reader.retrieve_secret(cluster_id, args.store_id, secret_name)
+        await reader.retrieve_secret(cluster_id, args.store_id, secret_name, receipt_store)
         print(f"⛔ FAIL: {reader_user_id} user id with revoked permissions was allowed to access secret", file=sys.stderr)
     except Exception as e:
         if str(e) == "retrieving secret: the user is not authorized to access the secret":

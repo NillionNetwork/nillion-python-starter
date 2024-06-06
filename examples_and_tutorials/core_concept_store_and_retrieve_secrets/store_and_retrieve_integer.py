@@ -24,7 +24,7 @@ async def main():
     nodekey = getNodeKeyFromFile(os.getenv("NILLION_NODEKEY_PATH_PARTY_1"))
     client = create_nillion_client(userkey, nodekey)
 
-    # Create payments config and set up Nillion wallet with a private key to pay for storage and compute operations
+    # Create payments config and set up Nillion wallet with a private key to pay for operations
     payments_config = create_payments_config(chain_id, grpc_endpoint)
     payments_client = LedgerClient(payments_config)
     payments_wallet = LocalWallet(

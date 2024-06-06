@@ -34,7 +34,7 @@ async def main():
     program_name = "addition_simple"
     program_mir_path = f"../../programs-compiled/{program_name}.nada.bin"
 
-    # Create payments config and set up Nillion wallet with a private key to pay for storage and compute operations
+    # Create payments config and set up Nillion wallet with a private key to pay for operations
     payments_config = create_payments_config(chain_id, grpc_endpoint)
     payments_client = LedgerClient(payments_config)
     payments_wallet = LocalWallet(

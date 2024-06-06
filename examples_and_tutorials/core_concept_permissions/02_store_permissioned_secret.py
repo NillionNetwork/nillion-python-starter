@@ -6,9 +6,16 @@ import sys
 import pytest
 
 from dotenv import load_dotenv
+from cosmpy.aerial.client import LedgerClient
+from cosmpy.aerial.wallet import LocalWallet
+from cosmpy.crypto.keypairs import PrivateKey
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
-from helpers.nillion_client_helper import create_nillion_client
+from helpers.nillion_client_helper import (
+    create_nillion_client,
+    pay,
+    create_payments_config,
+)
 from helpers.nillion_keypath_helper import getUserKeyFromFile, getNodeKeyFromFile
 
 load_dotenv()
@@ -27,6 +34,8 @@ async def main(args = None):
     args = parser.parse_args(args)
 
     cluster_id = os.getenv("NILLION_CLUSTER_ID")
+    grpc_endpoint = os.getenv("NILLION_GRPC")
+    chain_id = os.getenv("NILLION_CHAIN_ID")
     userkey = getUserKeyFromFile(os.getenv("NILLION_USERKEY_PATH_PARTY_2"))
     nodekey = getNodeKeyFromFile(os.getenv("NILLION_NODEKEY_PATH_PARTY_2"))
 
@@ -34,6 +43,22 @@ async def main(args = None):
     writer = create_nillion_client(userkey, nodekey)
     writer_user_id = writer.user_id
     print(writer_user_id, args.retriever_user_id)
+
+    # Create payments config and set up Nillion wallet with a private key to pay for operations
+    payments_config = create_payments_config(chain_id, grpc_endpoint)
+    payments_client = LedgerClient(payments_config)
+    payments_wallet = LocalWallet(
+        PrivateKey(bytes.fromhex(os.getenv("NILLION_WALLET_PRIVATE_KEY"))),
+        prefix="nillion",
+    )
+
+    # Create secret
+    secret_name_1 = "my_int1"
+    secret_1 = nillion.SecretInteger(10)
+
+    secret_name_2 = "my_int2"
+    secret_2 = nillion.SecretInteger(32)
+    secrets_object = nillion.Secrets({secret_name_1: secret_1, secret_name_2: secret_2})
 
     # Writer gives themself default core_concept_permissions
     permissions = nillion.Permissions.default_for_user(writer_user_id)
@@ -50,22 +75,24 @@ async def main(args = None):
     
     print(f"ℹ️ Permissions set: Reader {args.retriever_user_id} is {result} to retrieve the secret")
 
-    secret_name_1 = "my_int1"
-    secret_1 = nillion.SecretInteger(10)
-
-    secret_name_2 = "my_int2"
-    secret_2 = nillion.SecretInteger(32)
-    secrets_object = nillion.Secrets({secret_name_1: secret_1, secret_name_2: secret_2})
+    # Get cost quote, then pay for operation to store the secret
+    receipt_store = await pay(
+        writer,
+        nillion.Operation.store_secrets(secrets_object),
+        payments_wallet,
+        payments_client,
+        cluster_id,
+    )
 
     # Writer stores the permissioned secret, resulting in the secret's store id
     print(f"ℹ️  Storing permissioned secret: {secrets_object}")
     store_id = await writer.store_secrets(
-        cluster_id, None, secrets_object, permissions
+        cluster_id, secrets_object, permissions, receipt_store
     )
 
     print("ℹ️ STORE ID:", store_id)
     print("\n\nRun the following command to retrieve the secret by store id as the reader")
-    print(f"\n📋 python3 03_retrieve_secret.py --store_id {store_id}")
+    print(f"\n📋 python3 03_retrieve_secret.py --store_id {store_id} --secret_name {secret_name_1}")
     return store_id
 
 if __name__ == "__main__":
