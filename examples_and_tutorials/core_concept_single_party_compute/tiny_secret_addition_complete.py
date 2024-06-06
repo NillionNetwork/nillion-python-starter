@@ -44,7 +44,7 @@ async def main():
     program_name = "tiny_secret_addition_complete"
     # Set the path to the compiled program
     program_mir_path = f"../../programs-compiled/{program_name}.nada.bin"
-    # Store the program
+    # Create payments config
     payments_config = create_payments_config(chain_id, grpc_endpoint)
     payments_client = LedgerClient(payments_config)
     payments_wallet = LocalWallet(
@@ -61,7 +61,7 @@ async def main():
         cluster_id,
     )
 
-    # store program
+    # Store program
     action_id = await client.store_program(
         cluster_id, program_name, program_mir_path, receipt_store_program
     )
