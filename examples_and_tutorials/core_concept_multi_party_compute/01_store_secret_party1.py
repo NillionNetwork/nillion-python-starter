@@ -18,12 +18,61 @@ load_dotenv()
 
 # The 1st Party stores a secret
 async def main():
+
+    cluster_id = os.getenv("NILLION_CLUSTER_ID")
+
     cluster_id = os.getenv("NILLION_CLUSTER_ID")
     client_1 = create_nillion_client(
         getUserKeyFromFile(CONFIG_PARTY_1["userkey_file"]), getNodeKeyFromFile(CONFIG_PARTY_1["nodekey_file"])
     )
     party_id_1 = client_1.party_id
     user_id_1 = client_1.user_id
+
+    program_mir_path = f"../../programs-compiled/{CONFIG_PROGRAM_NAME}.nada.bin"
+
+    # 1st Party stores program
+    action_id = await client_1.store_program(
+        cluster_id, CONFIG_PROGRAM_NAME, program_mir_path
+    )
+
+    program_id = f"{user_id_1}/{CONFIG_PROGRAM_NAME}"
+
+    program_name = "simple"
+
+    program_id = f"{Test.programs_namespace}/{program_name}"
+
+    permissions = py_nillion_client.Permissions.default_for_user(client.user_id)
+    permissions.add_compute_permissions({client.user_id: {program_id}})
+
+    inputs = Test.load_inputs(program_name)
+    receipt = await self.pay(
+        client, py_nillion_client.Operation.store_secrets(inputs.store_secrets)
+    )
+    store_id = await client.store_secrets(
+        self.cluster_id, inputs.store_secrets, permissions, receipt
+    )
+
+    bindings = py_nillion_client.ProgramBindings(program_id)
+    bindings.add_input_party("Dealer", client.party_id)
+    bindings.add_output_party("Result", client.party_id)
+    receipt = await self.pay(
+        client,
+        py_nillion_client.Operation.compute(program_id, inputs.compute_secrets),
+    )
+    uuid = await client.compute(
+        self.cluster_id,
+        bindings,
+        [store_id],
+        inputs.compute_secrets,
+        inputs.compute_public_variables,
+        receipt,
+    )
+
+
+    ######
+
+
+
 
 
     program_mir_path=f"../../programs-compiled/{CONFIG_PROGRAM_NAME}.nada.bin"
