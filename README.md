@@ -30,7 +30,7 @@ The [`bootstrap-local-environment.sh`](./bootstrap-local-environment.sh) file us
     python client version vABCD installed
     ```
 
-    Use this message to figure out your local paths to the latest experimental versions of
+    Use this message to figure out your local paths to the latest experimental versions of python client and nada. You'll need to know these paths in steps 5 and 6 to manually install these 2 packages.
 
     - python client path: `/Users/steph/.nilup/sdks/vABCD/py_nillion_client-0.1.1-cp37-abi3-macosx_11_0_arm64.whl`
     - nada path: `/Users/steph/.nilup/sdks/vABCD/py_nillion_client-0.1.1-cp37-abi3-macosx_11_0_arm64.whl`
@@ -86,7 +86,7 @@ nilup use {version}
 
 ## Usage
 
-After completing environment setup, then run the examples:
+After completing environment setup, run the examples:
 
 - To run multi party examples, go to the [multi party compute](examples_and_tutorials/core_concept_multi_party_compute) folder.
 
