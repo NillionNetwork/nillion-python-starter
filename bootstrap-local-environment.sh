@@ -50,6 +50,7 @@ BOOT_MULTIADDR=$(grep "cluster is running, bootnode is at" "$OUTFILE" | awk '{pr
 JSON_RPC=$(grep "nilchain JSON RPC available at" "$OUTFILE" | awk '{print $7}');
 GRPC=$(grep "nilchain gRPC available at" "$OUTFILE" | awk '{print $6}');
 CHAIN_DIR=$(grep 'starting nilchain node in:' "$OUTFILE" | awk -F'"' '{print $2}')
+WEBSOCKET=$(grep 'websocket:' "$OUTFILE" | awk '{print $3}');
 
 # Retrieve the wallet private key
 WALLET_PRIVATE_KEY=$(echo "y" | "$CHAIN_DIR/bin/nilchaind" keys export stash --home "$CHAIN_DIR" --keyring-backend test --unsafe --unarmored-hex)
