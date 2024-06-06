@@ -25,7 +25,9 @@ async def pay(
         payments_client,
         cluster_id
     ) -> nillion.PaymentReceipt:
+        print("Getting quote for operation...")
         quote = await client.request_price_quote(cluster_id, operation)
+        print(f"Quote cost is {quote.cost} unil")
         address = str(Address(payments_wallet.public_key(), "nillion"))
         message = nillion.create_payments_message(quote, address)
         tx = Transaction()
@@ -34,6 +36,7 @@ async def pay(
             payments_client, tx, payments_wallet, gas_limit=1000000
         )
         submitted_tx.wait_to_complete()
+        print(f"Submitting payment receipt {quote.cost} unil, tx hash {submitted_tx.tx_hash}")
         return nillion.PaymentReceipt(quote, submitted_tx.tx_hash)
 
 def create_payments_config(chain_id, payments_endpoint):

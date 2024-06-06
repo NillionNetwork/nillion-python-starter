@@ -1,46 +1,78 @@
 # Nillion Python Starter <a href="https://github.com/NillionNetwork/nillion-python-starter/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
 
-This is a python starter repo for building on the Nillion Network. Complete environment setup, then run the examples:
+This is an EXPERIMENTAL PAYMENTS ENABLED BRANCH of python starter repo for building on the Nillion Network. In order to use this branch, you'll need the latest experimental version of the Nillion SDK, nada library, and python client library.
 
-- To run multi party examples, go to the [multi party compute](examples_and_tutorials/core_concept_multi_party_compute) folder.
+## Installing the latest experimental versions of Nillion
 
-- To run single party examples, go to the [single party compute](examples_and_tutorials/core_concept_single_party_compute) folder.
+#### Prerequisites: Install the CLI Dependencies
 
-- To run permissions examples (storing and retrieving permissioned secrets, revoking permissions, etc.), go to the [permissions](examples_and_tutorials/core_concept_permissions) folder.
+The [`bootstrap-local-environment.sh`](./bootstrap-local-environment.sh) file uses `pidof` and `grep`.
 
-### Prerequisites: Install the CLI Dependencies
-
-The `nillion-devnet` tool spins up `anvil` under the hood, so you need to have `foundry` installed. The [`bootstrap-local-environment.sh`](./bootstrap-local-environment.sh) file uses `pidof` and `grep`.
-
-- [Install `foundry`](https://book.getfoundry.sh/getting-started/installation)
 - [Install `pidof`](https://command-not-found.com/pidof)
 - [Install `grep`](https://command-not-found.com/grep)
 
-## Environment Setup
+1. Install the specific version of nillion with flags to also download nada and the python client at the same specific version by running
 
-1. Create a `.env` file by copying the sample:
+```bash
+nilup install {version} --nada-dsl --python-client
+```
 
-   ```shell
-   cp .env.sample .env
-   ```
+This results in a message that shows you the downloaded paths to the versions of nada_dsl and the python client you’ll need to use, for example if I was downloading a version `vABCD`, I would see:
 
-2. Create the virtual environment (`.venv`), install dependencies, and activate the virtual environment
+```bash
+Using pip to install /Users/steph/.nilup/sdks/vABCD/nada_dsl-0.1.0-py3-none-any.whl
+nada_dsl version vABCD installed
+Installing python client version vABCD
+Downloading vABCD/py_nillion_client-0.1.1-cp37-abi3-macosx_11_0_arm64.whl to /Users/steph/.nilup/sdks/vABCD/py_nillion_client-0.1.1-cp37-abi3-macosx_11_0_arm64.whl
+Using pip to install /Users/steph/.nilup/sdks/vABCD/py_nillion_client-0.1.1-cp37-abi3-macosx_11_0_arm64.whl
+python client version vABCD installed
+```
 
-   ```shell
-   bash ./create_venv.sh && source .venv/bin/activate
-   ```
+Use this message to figure out your local paths to the latest experimental versions of
 
-   Run the [`bootstrap-local-environment.sh`](./bootstrap-local-environment.sh) script to spin up `nillion-devnet`, generate keys, and get bootnodes, cluster, and payment info:
+      - python client path: `/Users/steph/.nilup/sdks/vABCD/py_nillion_client-0.1.1-cp37-abi3-macosx_11_0_arm64.whl`
+      - nada path: `/Users/steph/.nilup/sdks/vABCD/py_nillion_client-0.1.1-cp37-abi3-macosx_11_0_arm64.whl`
 
-   ```shell
-   ./bootstrap-local-environment.sh
-   ```
+2. Set nillion version
 
-3. Check `.env` file - keys, bootnodes, cluster, and payment info should now be present. If you want to run against a local cluster, use this configuration. Otherwise, replace values with testnet bootnodes, cluster, and payment info.
+```bash
+nilup use {version}
+```
 
-4. Look through the [programs](./programs/) folder to see examples of Nada programs.
+3. Change directories into this branch of this repo
 
-## Compiling Programs
+```
+cd nillion-python-starter
+git branch payments-flow-update
+git checkout payments-flow-update
+git pull origin payments-flow-update
+```
+
+4. Create venv
+
+```bash
+bash ./create_venv.sh && source .venv/bin/activate
+```
+
+5. Manually install nada using the path printed by nilup installation in step 1
+
+```bash
+python3 -m pip install {your/nada/path}
+```
+
+6. Manually install the Python client using the path printed by nilup installation in step 1
+
+```bash
+python3 -m pip install {your/python/client/path}
+```
+
+7. Bootstrap local environment to connect to the nillion-devnet and add the configuration to your .env file
+
+```bash
+./bootstrap-local-environment.sh
+```
+
+8. Compile all programs
 
 Nada programs need to be compiled ahead of being stored. Compile all programs in the [programs](./programs/) folder with the script [`compile_programs.sh`](./compile_programs.sh):
 
@@ -49,6 +81,16 @@ bash compile_programs.sh
 ```
 
 This generates a `programs-compiled` folder containing the compiled programs.
+
+## Usage
+
+After completing environment setup, then run the examples:
+
+- To run multi party examples, go to the [multi party compute](examples_and_tutorials/core_concept_multi_party_compute) folder.
+
+- To run single party examples, go to the [single party compute](examples_and_tutorials/core_concept_single_party_compute) folder.
+
+- To run permissions examples (storing and retrieving permissioned secrets, revoking permissions, etc.), go to the [permissions](examples_and_tutorials/core_concept_permissions) folder.
 
 ## Store a Compiled Program
 

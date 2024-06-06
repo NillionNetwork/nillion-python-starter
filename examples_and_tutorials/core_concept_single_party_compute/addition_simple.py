@@ -5,13 +5,9 @@ import sys
 import pytest
 
 from dotenv import load_dotenv
-
-from cosmpy.aerial.client import LedgerClient, NetworkConfig
+from cosmpy.aerial.client import LedgerClient
 from cosmpy.aerial.wallet import LocalWallet
 from cosmpy.crypto.keypairs import PrivateKey
-from cosmpy.aerial.tx import Transaction
-from cosmpy.aerial.client.utils import prepare_and_broadcast_basic_transaction
-from cosmpy.crypto.address import Address
 
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
@@ -34,12 +30,17 @@ async def main():
     program_name="addition_simple"
     program_mir_path=f"../../programs-compiled/{program_name}.nada.bin"
 
+    # Create payments config and set up Nillion wallet with a private key to pay for storage and compute operations
     payments_config = create_payments_config(chain_id, grpc_endpoint)
     payments_client = LedgerClient(payments_config)
     payments_wallet = LocalWallet(
         PrivateKey(bytes.fromhex(os.getenv("NILLION_WALLET_PRIVATE_KEY"))), prefix="nillion"
     )
 
+    ##### STORE PROGRAM
+    print('-----STORE PROGRAM')
+
+    # Get cost quote, then pay for operation to store program
     receipt_store_program = await pay(
         client,
         nillion.Operation.store_program(),
@@ -47,46 +48,56 @@ async def main():
         payments_client,
         cluster_id)
 
-    # store program
+    # Store program, passing in the receipt that shows proof of payment
     action_id = await client.store_program(
         cluster_id, program_name, program_mir_path, receipt_store_program
     )
 
+    # Print details about stored program
     program_id=f"{user_id}/{program_name}"
     print('Stored program. action_id:', action_id)
     print('Stored program_id:', program_id)
 
-    permissions = nillion.Permissions.default_for_user(client.user_id)
-    permissions.add_compute_permissions({client.user_id: {program_id}})
+    ##### STORE SECRETS
+    print('-----STORE SECRETS')
 
     # Create a secret
     stored_secret = nillion.Secrets({
         "my_int1": nillion.SecretInteger(500),
     })
-    secret_bindings = nillion.ProgramBindings(program_id)
-    secret_bindings.add_input_party(party_name, party_id)
 
+    # Create a permissions object to attach to the stored secret 
+    permissions = nillion.Permissions.default_for_user(client.user_id)
+    permissions.add_compute_permissions({client.user_id: {program_id}})
+
+    # Get cost quote, then pay for operation to store the secret
     receipt_store = await pay(
         client, nillion.Operation.store_secrets(stored_secret), payments_wallet, payments_client, cluster_id
     )
 
-    # Store a secret
+    # Store a secret, passing in the receipt that shows proof of payment
     store_id = await client.store_secrets(
         cluster_id, stored_secret, permissions, receipt_store
     )
+
+    ##### COMPUTE
+    print('-----COMPUTE')
 
     # Bind the parties in the computation to the client to set input and output parties
     compute_bindings = nillion.ProgramBindings(program_id)
     compute_bindings.add_input_party(party_name, party_id)
     compute_bindings.add_output_party(party_name, party_id)
 
+    # Get cost quote, then pay for operation to compute
     receipt_compute = await pay(
         client,
         nillion.Operation.compute(program_id, stored_secret), payments_wallet, payments_client, cluster_id
     )
 
+    # Create a computation time secret to use
     computation_time_secrets = nillion.Secrets({"my_int2": nillion.SecretInteger(10)})
 
+    # Compute, passing all params including the receipt that shows proof of payment
     uuid = await client.compute(
         cluster_id=cluster_id,
         bindings=compute_bindings,
