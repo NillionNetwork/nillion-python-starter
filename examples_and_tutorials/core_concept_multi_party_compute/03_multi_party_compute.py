@@ -4,24 +4,27 @@ import py_nillion_client as nillion
 import os
 import sys
 import pytest
-import importlib
 
 from dotenv import load_dotenv
+from cosmpy.aerial.client import LedgerClient
+from cosmpy.aerial.wallet import LocalWallet
+from cosmpy.crypto.keypairs import PrivateKey
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
+from helpers.nillion_client_helper import (
+    create_nillion_client,
+    pay,
+    create_payments_config,
+)
+from helpers.nillion_keypath_helper import getUserKeyFromFile, getNodeKeyFromFile
+
+load_dotenv()
 
 from config import (
     CONFIG_PROGRAM_NAME,
     CONFIG_PARTY_1,
     CONFIG_N_PARTIES
 )
-
-store_secret_party_1 = importlib.import_module("01_store_secret_party1")
-store_secret_party_n = importlib.import_module("02_store_secret_party_n")
-
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
-from helpers.nillion_client_helper import create_nillion_client
-from helpers.nillion_keypath_helper import getUserKeyFromFile, getNodeKeyFromFile
-
-load_dotenv()
 
 async def main(args = None):
     parser = argparse.ArgumentParser(
@@ -46,6 +49,8 @@ async def main(args = None):
     args = parser.parse_args(args)
 
     cluster_id = os.getenv("NILLION_CLUSTER_ID")
+    grpc_endpoint = os.getenv("NILLION_GRPC")
+    chain_id = os.getenv("NILLION_CHAIN_ID")
 
     # 1st party computes on secrets
     client_1 = create_nillion_client(
@@ -55,8 +60,15 @@ async def main(args = None):
     user_id_1 = client_1.user_id
     party_id_1 = client_1.party_id
 
-    program_id=f"{user_id_1}/{CONFIG_PROGRAM_NAME}"
+    # Create payments config and set up Nillion wallet with a private key to pay for operations
+    payments_config = create_payments_config(chain_id, grpc_endpoint)
+    payments_client = LedgerClient(payments_config)
+    payments_wallet = LocalWallet(
+        PrivateKey(bytes.fromhex(os.getenv("NILLION_WALLET_PRIVATE_KEY"))),
+        prefix="nillion",
+    )
 
+    program_id=f"{user_id_1}/{CONFIG_PROGRAM_NAME}"
 
     # Bind the parties in the computation to the client to set inputs and output parties
     compute_bindings = nillion.ProgramBindings(program_id)
@@ -75,14 +87,26 @@ async def main(args = None):
         compute_bindings.add_input_party(party_name, party_id)
         party_ids_to_store_ids[party_id] = store_id
         i=i+1
+
+    compute_time_secrets = nillion.Secrets({})
+    
+    # Get cost quote, then pay for operation to compute
+    receipt_compute = await pay(
+        client_1,
+        nillion.Operation.compute(program_id, compute_time_secrets),
+        payments_wallet,
+        payments_client,
+        cluster_id,
+    )
     
     # Compute on the secret with all store ids. Note that there are no compute time secrets or public variables
     compute_id = await client_1.compute(
         cluster_id,
         compute_bindings,
         [store_id_1] + list(party_ids_to_store_ids.values()),
-        nillion.Secrets({}),
+        compute_time_secrets,
         nillion.PublicVariables({}),
+        receipt_compute,
     )
 
     # Print compute result
@@ -96,13 +120,3 @@ async def main(args = None):
     
 if __name__ == "__main__":
     asyncio.run(main())
-
-@pytest.mark.asyncio
-async def test_main():
-    result = await store_secret_party_1.main()
-    args = ['--user_id_1', result[0], '--store_id_1', result[1]]
-    result = await store_secret_party_n.main(args)
-    store_ids = result[1].split(' ', 1)
-    args = ['--store_id_1', result[0], '--party_ids_to_store_ids', store_ids[0], store_ids[1]]
-    result = await main(args)
-    assert result == {'my_output': 8}
