@@ -114,15 +114,33 @@ async def main():
     store_ids = []
     # Store in the network
     print(f"Storing party 0: {party_0_secrets}")
+
+    # Get cost quote, then pay for operation to store the secret
+    receipt_store_0 = await pay(
+        client,
+        nillion.Operation.store_secrets(party_0_secrets),
+        payments_wallet,
+        payments_client,
+        cluster_id,
+    )
+
     store_id = await client.store_secrets(
-        cluster_id, party_0_secrets, secret_permissions
+        cluster_id, party_0_secrets, secret_permissions, receipt_store_0
     )
     store_ids.append(store_id)
     print(f"Stored party 0 with store_id ={store_id}")
 
+    receipt_store_1 = await pay(
+        client,
+        nillion.Operation.store_secrets(party_1_secrets),
+        payments_wallet,
+        payments_client,
+        cluster_id,
+    )
+
     print(f"Storing party 1: {party_1_secrets}")
     store_id = await client.store_secrets(
-        cluster_id, secret_bindings, party_1_secrets, secret_permissions
+        cluster_id, party_1_secrets, secret_permissions, receipt_store_1
     )
     store_ids.append(store_id)
     print(f"Stored party 1 with store_id ={store_id}")
@@ -137,6 +155,14 @@ async def main():
     print(f"Computing using program {program_id}")
     print(f"Use secret store_id: {store_id}")
 
+    # Get cost quote, then pay for operation to compute
+    receipt_compute = await pay(
+        client,
+        nillion.Operation.compute(program_id, computation_time_secrets),
+        payments_wallet,
+        payments_client,
+        cluster_id,
+    )
     # Compute on the secret
     compute_id = await client.compute(
         cluster_id,
@@ -144,6 +170,7 @@ async def main():
         store_ids,
         computation_time_secrets,
         nillion.PublicVariables({}),
+        receipt_compute
     )
 
     # Print compute result

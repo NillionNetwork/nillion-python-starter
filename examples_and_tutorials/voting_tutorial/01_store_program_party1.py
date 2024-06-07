@@ -6,6 +6,7 @@
 
 
 import asyncio
+import py_nillion_client as nillion
 import os
 import sys
 from dotenv import load_dotenv
@@ -13,8 +14,16 @@ from config import (
     CONFIG_PARTY_1
 )
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
-from helpers.nillion_client_helper import create_nillion_client
+from cosmpy.aerial.client import LedgerClient
+from cosmpy.aerial.wallet import LocalWallet
+from cosmpy.crypto.keypairs import PrivateKey
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
+from helpers.nillion_client_helper import (
+    create_nillion_client,
+    pay,
+    create_payments_config,
+)
 from helpers.nillion_keypath_helper import getUserKeyFromFile, getNodeKeyFromFile
 
 load_dotenv()
@@ -22,6 +31,8 @@ load_dotenv()
 # Alice stores the voting program in the network
 async def main():
     cluster_id = os.getenv("NILLION_CLUSTER_ID")
+    grpc_endpoint = os.getenv("NILLION_GRPC")
+    chain_id = os.getenv("NILLION_CHAIN_ID")
 
     while True:
 
@@ -77,13 +88,31 @@ async def main():
     # 1.1 Owner initialization  #
     #############################
 
+    # Create client
     client_alice = create_nillion_client(
         getUserKeyFromFile(CONFIG_PARTY_1["userkey_file"]), getNodeKeyFromFile(CONFIG_PARTY_1["nodekey_file"])
+    )
+
+    # Create payments config and set up Nillion wallet with a private key to pay for operations
+    payments_config = create_payments_config(chain_id, grpc_endpoint)
+    payments_client = LedgerClient(payments_config)
+    payments_wallet = LocalWallet(
+        PrivateKey(bytes.fromhex(os.getenv("NILLION_WALLET_PRIVATE_KEY"))),
+        prefix="nillion",
     )
 
     #####################################
     # 2. Storing program                #
     #####################################
+
+    # Get cost quote, then pay for operation to store program
+    receipt_store_program = await pay(
+        client_alice,
+        nillion.Operation.store_program(),
+        payments_wallet,
+        payments_client,
+        cluster_id,
+    )
 
     program_mir_path = f"../../programs-compiled/{program_name}.nada.bin"
     if os.path.exists(program_mir_path):
@@ -94,7 +123,7 @@ async def main():
     # Store program in the Network
     print(f"Storing program in the network: {program_name}")
     action_id = await client_alice.store_program(
-        cluster_id, program_name, program_mir_path
+        cluster_id, program_name, program_mir_path, receipt_store_program
     )
     print("action_id is: ", action_id)
     user_id_alice = client_alice.user_id

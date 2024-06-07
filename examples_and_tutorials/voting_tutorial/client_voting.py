@@ -14,9 +14,18 @@ from config import (
     CONFIG
 )
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
-from helpers.nillion_client_helper import create_nillion_client
+from cosmpy.aerial.client import LedgerClient
+from cosmpy.aerial.wallet import LocalWallet
+from cosmpy.crypto.keypairs import PrivateKey
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
+from helpers.nillion_client_helper import (
+    create_nillion_client,
+    pay,
+    create_payments_config,
+)
 from helpers.nillion_keypath_helper import getUserKeyFromFile, getNodeKeyFromFile
+
 from digest_result import digest_plurality_vote_honest_result, digest_plurality_vote_dishonest_with_abort_result, digest_plurality_vote_robust_result
 
 load_dotenv()
@@ -24,6 +33,8 @@ load_dotenv()
 async def main():
 
     cluster_id = os.getenv("NILLION_CLUSTER_ID")
+    grpc_endpoint = os.getenv("NILLION_GRPC")
+    chain_id = os.getenv("NILLION_CHAIN_ID")
 
     while True:
 
@@ -99,6 +110,12 @@ async def main():
     userkey = getUserKeyFromFile(os.getenv("NILLION_USERKEY_PATH_PARTY_1"))
     nodekey = getNodeKeyFromFile(os.getenv("NILLION_NODEKEY_PATH_PARTY_1"))
     general_client = create_nillion_client(userkey, nodekey)
+    general_payments_config = create_payments_config(chain_id, grpc_endpoint)
+    general_payments_client = LedgerClient(general_payments_config)
+    general_payments_wallet = LocalWallet(
+        PrivateKey(bytes.fromhex(os.getenv("NILLION_WALLET_PRIVATE_KEY"))),
+        prefix="nillion",
+    )
 
     # #############################
     # # 1.1 Owner initialization  #
@@ -150,9 +167,17 @@ async def main():
 
     # Store program in the Network
     print(f"Storing program in the network: {program_name}")
-    # action_id = await owner.store_program(
+    # Get cost quote, then pay for operation to store program
+    receipt_store_program = await pay(
+        general_client,
+        nillion.Operation.store_program(),
+        general_payments_wallet,
+        general_payments_client,
+        cluster_id,
+    )
+
     action_id = await general_client.store_program(
-        cluster_id, program_name, program_mir_path
+        cluster_id, program_name, program_mir_path, receipt_store_program
     )
     print("action_id is: ", action_id)
     # program_id = owner.user_id + "/" + program_name
@@ -197,12 +222,6 @@ async def main():
                 v_vote_dic["v"+str(v)+"_c"+str(c)] = v_c_vote
                 c += 1
         v_to_be_store_secrets = nillion.Secrets(v_vote_dic)
-        
-        ###########################################
-        # 4.1 Bind voter to party in the program  #
-        ###########################################
-        v_bindings = nillion.ProgramBindings(program_id)
-        v_bindings.add_input_party("Voter"+str(v), voter_v.party_id)
 
         ###########################################
         # 4.2 Set compute permissions to owner    #
@@ -214,10 +233,19 @@ async def main():
             general_client.user_id: {program_id},
         })
 
+        # Get cost quote, then pay for operation to store the secret
+        receipt_store = await pay(
+            voter_v,
+            nillion.Operation.store_secrets(v_to_be_store_secrets),
+            general_payments_wallet,
+            general_payments_client,
+            cluster_id,
+        )
+
         # Store in the network
         print("Storing vote by voter "+str(v)+f": {v_to_be_store_secrets}")
         store_id = await voter_v.store_secrets(
-            cluster_id, v_bindings, v_to_be_store_secrets, v_permissions
+            cluster_id, v_to_be_store_secrets, v_permissions, receipt_store
         )
         store_ids.append(store_id)
         print(f"Stored vote by voter "+str(v)+f" with store_id ={store_id}")
@@ -256,7 +284,16 @@ async def main():
     print(f"Computing using program {program_id}")
     print(f"Stored secrets: {store_ids}")
     print(f"Provided secret: {to_be_used_in_computation}")
-    
+
+    # Get cost quote, then pay for operation to compute
+    receipt_compute = await pay(
+        general_client,
+        nillion.Operation.compute(program_id, to_be_used_in_computation),
+        general_payments_wallet,
+        general_payments_client,
+        cluster_id,
+    )
+
     # Owner can execute the computation
     # compute_id = await owner.compute(
     compute_id = await general_client.compute(
@@ -265,6 +302,7 @@ async def main():
         store_ids,
         to_be_used_in_computation,
         nillion.PublicVariables({}),
+        receipt_compute
     )
 
     print(f"Computation sent to the network, compute_id = {compute_id}")

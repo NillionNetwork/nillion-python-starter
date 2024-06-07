@@ -100,17 +100,17 @@ async def main():
     compute_bindings.add_input_party(party_name, party_id)
     compute_bindings.add_output_party(party_name, party_id)
 
+    # Create a computation time secret to use
+    computation_time_secrets = nillion.Secrets({"my_int2": nillion.SecretInteger(10)})
+
     # Get cost quote, then pay for operation to compute
     receipt_compute = await pay(
         client,
-        nillion.Operation.compute(program_id, stored_secret),
+        nillion.Operation.compute(program_id, computation_time_secrets),
         payments_wallet,
         payments_client,
         cluster_id,
     )
-
-    # Create a computation time secret to use
-    computation_time_secrets = nillion.Secrets({"my_int2": nillion.SecretInteger(10)})
 
     # Compute, passing all params including the receipt that shows proof of payment
     uuid = await client.compute(

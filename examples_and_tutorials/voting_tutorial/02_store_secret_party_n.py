@@ -14,8 +14,16 @@ from config import (
     CONFIG_N_PARTIES
 )
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
-from helpers.nillion_client_helper import create_nillion_client
+from cosmpy.aerial.client import LedgerClient
+from cosmpy.aerial.wallet import LocalWallet
+from cosmpy.crypto.keypairs import PrivateKey
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
+from helpers.nillion_client_helper import (
+    create_nillion_client,
+    pay,
+    create_payments_config,
+)
 from helpers.nillion_keypath_helper import getUserKeyFromFile, getNodeKeyFromFile
 
 load_dotenv()
@@ -41,6 +49,8 @@ args = parser.parse_args()
 # Bob and Charlie store their votes in the network
 async def main():
     cluster_id = os.getenv("NILLION_CLUSTER_ID")
+    grpc_endpoint = os.getenv("NILLION_GRPC")
+    chain_id = os.getenv("NILLION_CHAIN_ID")
     
     # start a list of store ids to keep track of stored secrets
     store_ids = []
@@ -59,6 +69,15 @@ async def main():
             getUserKeyFromFile(party_info["userkey_file"]), 
             getNodeKeyFromFile(party_info["nodekey_file"])
         )
+
+        # Create payments config and set up Nillion wallet with a private key to pay for operations
+        payments_config_n = create_payments_config(chain_id, grpc_endpoint)
+        payments_client_n = LedgerClient(payments_config_n)
+        payments_wallet_n = LocalWallet(
+            PrivateKey(bytes.fromhex(os.getenv("NILLION_WALLET_PRIVATE_KEY"))),
+            prefix="nillion",
+        )
+
         party_id_n = client_n.party_id
         user_id_n = client_n.user_id
         party_name = party_info["party_name"]
@@ -73,16 +92,6 @@ async def main():
         stored_secret = nillion.Secrets(secret_votes)
 
         ###########################################
-        # 4.1 Bind voter to party in the program  #
-        ###########################################
-        # Create input bindings for the specific voting program by program id
-        secret_bindings = nillion.ProgramBindings(args.program_id)
-
-        # Add the respective input party to say who will provide the input to the program
-        secret_bindings.add_input_party(party_role, party_id_n)
-        print(f"\n🔗 {party_name} sets bindings so that the secret can be input to a specific program (program_id: {args.program_id}) by a specific party (party_id: {party_id_n})")
-
-        ###########################################
         # 4.2 Set compute permissions to owner    #
         ###########################################
         # Create permissions object with default permissions for the current user
@@ -95,9 +104,18 @@ async def main():
         permissions.add_compute_permissions(compute_permissions)
         print(f"\n👍 {party_name} gives compute permissions on their secret to Alice's user_id: {args.user_id_1}")
 
+        # Get cost quote, then pay for operation to store the secret
+        receipt_store = await pay(
+            client_n,
+            nillion.Operation.store_secrets(stored_secret),
+            payments_wallet_n,
+            payments_client_n,
+            cluster_id,
+        )
+
         # Store the permissioned secret
         store_id = await client_n.store_secrets(
-            cluster_id, secret_bindings, stored_secret, permissions
+            cluster_id, stored_secret, permissions, receipt_store
         )
 
         store_ids.append(store_id)

@@ -17,9 +17,18 @@ from config import (
     CONFIG_N_PARTIES
 )
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
-from helpers.nillion_client_helper import create_nillion_client
+from cosmpy.aerial.client import LedgerClient
+from cosmpy.aerial.wallet import LocalWallet
+from cosmpy.crypto.keypairs import PrivateKey
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
+from helpers.nillion_client_helper import (
+    create_nillion_client,
+    pay,
+    create_payments_config,
+)
 from helpers.nillion_keypath_helper import getUserKeyFromFile, getNodeKeyFromFile
+
 from digest_result import digest_plurality_vote_honest_result, digest_plurality_vote_dishonest_with_abort_result, digest_plurality_vote_robust_result
 
 
@@ -48,6 +57,8 @@ args = parser.parse_args()
 
 async def main():
     cluster_id = os.getenv("NILLION_CLUSTER_ID")
+    grpc_endpoint = os.getenv("NILLION_GRPC")
+    chain_id = os.getenv("NILLION_CHAIN_ID")
 
     #####################################
     # 1. Parties initialization         #
@@ -60,6 +71,12 @@ async def main():
     client_alice = create_nillion_client(
         getUserKeyFromFile(CONFIG_PARTY_1["userkey_file"]), 
         getNodeKeyFromFile(CONFIG_PARTY_1["nodekey_file"])
+    )
+    payments_config = create_payments_config(chain_id, grpc_endpoint)
+    payments_client = LedgerClient(payments_config)
+    payments_wallet = LocalWallet(
+        PrivateKey(bytes.fromhex(os.getenv("NILLION_WALLET_PRIVATE_KEY"))),
+        prefix="nillion",
     )
     party_id_alice = client_alice.party_id
 
@@ -105,6 +122,15 @@ async def main():
     # The output party reads the result of the blind computation
     compute_bindings.add_output_party("OutParty", party_id_alice)
 
+    # Get cost quote, then pay for operation to compute
+    receipt_compute = await pay(
+        client_alice,
+        nillion.Operation.compute(args.program_id, compute_time_secrets),
+        payments_wallet,
+        payments_client,
+        cluster_id,
+    )
+
     print(f"Computing using program {args.program_id}")
 
     # Compute on the secret with all store ids. Note that there are no compute time secrets or public variables
@@ -114,6 +140,7 @@ async def main():
         list(party_ids_to_store_ids.values()), # Bob and Charlie's stored secrets
         compute_time_secrets, # Alice's computation time secret
         nillion.PublicVariables({}),
+        receipt_compute
     )
 
     # Print compute result
