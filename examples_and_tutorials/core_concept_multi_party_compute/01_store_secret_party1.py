@@ -65,6 +65,11 @@ async def main():
     print('Stored program. action_id:', action_id)
     print('Stored program_id:', program_id)
 
+    # Create a permissions object to attach to the stored secret
+    permissions = nillion.Permissions.default_for_user(client_1.user_id)
+    permissions.add_compute_permissions({client_1.user_id: {program_id}})
+
+
     ##### STORE SECRETS
     print("-----STORE SECRETS")
 
@@ -85,7 +90,7 @@ async def main():
 
     # 1st Party stores a secret
     store_id_1 = await client_1.store_secrets(
-        cluster_id, stored_secret_1, None, receipt_store
+        cluster_id, stored_secret_1, permissions, receipt_store
     )
     secrets_string = ", ".join(f"{key}: {value}" for key, value in CONFIG_PARTY_1["secrets"].items())
     print(f"\n🎉1️⃣ Party {CONFIG_PARTY_1['party_name']} stored {secrets_string} at store id: {store_id_1}")
