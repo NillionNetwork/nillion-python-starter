@@ -35,10 +35,11 @@ The [`bootstrap-local-environment.sh`](./bootstrap-local-environment.sh) file us
     - python client path: `/Users/steph/.nilup/sdks/vABCD/py_nillion_client-0.1.1-cp37-abi3-macosx_11_0_arm64.whl`
     - nada path: `/Users/steph/.nilup/sdks/vABCD/py_nillion_client-0.1.1-cp37-abi3-macosx_11_0_arm64.whl`
 
-2.  Set nillion version
+2.  Set nillion version and initialise it (you only need to initialise on your first time installing/using)
 
 ```bash
 nilup use {version}
+nilup init
 ```
 
 3. Change directories into this branch of this repo
