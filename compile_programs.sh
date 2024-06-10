@@ -26,8 +26,8 @@ echo "Now try running an example:"
 
 echo "----------single party compute --------------"
 
-echo "Code for single party compute lives in the examples_and_tutorials/core_concept_client_single_party_compute folder"
-echo "📋 to run single party compute - addition_simple program: 'cd examples_and_tutorials/core_concept_client_single_party_compute && python3 addition_simple.py'"
+echo "Code for single party compute lives in the examples_and_tutorials/core_concept_single_party_compute folder"
+echo "📋 to run single party compute - addition_simple program: 'cd examples_and_tutorials/core_concept_single_party_compute && python3 addition_simple.py'"
 
 echo "----------multi party compute --------------"
 
