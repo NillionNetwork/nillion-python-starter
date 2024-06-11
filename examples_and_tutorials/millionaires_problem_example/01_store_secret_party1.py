@@ -24,7 +24,7 @@ async def main():
     millionaires_program_name = "millionaires"
     
     # Note: check out the code for the full millionaires program in the programs folder
-    program_mir_path = "millionaires.nada.bin"
+    program_mir_path=f"../../programs-compiled/{CONFIG_PROGRAM_NAME}.nada.bin"
 
     # Store millionaires program in the network
     print(f"Storing program in the network: {millionaires_program_name}")
