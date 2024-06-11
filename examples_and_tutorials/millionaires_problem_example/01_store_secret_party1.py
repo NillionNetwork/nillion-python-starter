@@ -5,6 +5,7 @@ import pytest
 
 from dotenv import load_dotenv
 from config import (
+    CONFIG_PROGRAM_NAME,
     CONFIG_PARTY_1
 )
 
