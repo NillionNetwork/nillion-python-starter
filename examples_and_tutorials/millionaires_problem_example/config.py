@@ -2,6 +2,7 @@ import os
 import py_nillion_client as nillion
 from dotenv import load_dotenv
 load_dotenv()
+CONFIG_PROGRAM_NAME="millionaires"
 
 # Alice
 CONFIG_PARTY_1={
