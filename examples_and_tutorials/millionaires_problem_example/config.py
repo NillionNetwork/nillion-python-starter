@@ -2,6 +2,7 @@ import os
 import py_nillion_client as nillion
 from dotenv import load_dotenv
 load_dotenv()
+CONFIG_PROGRAM_NAME="millionaires"
 
 # Alice
 CONFIG_PARTY_1={
@@ -29,4 +30,3 @@ CONFIG_N_PARTIES=[
         "secret_name": "charlie_salary",
         "secret_value": 12000,
     },
-]
