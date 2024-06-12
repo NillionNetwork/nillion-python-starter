@@ -30,3 +30,4 @@ CONFIG_N_PARTIES=[
         "secret_name": "charlie_salary",
         "secret_value": 12000,
     },
+]
