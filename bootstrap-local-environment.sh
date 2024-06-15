@@ -28,8 +28,8 @@ echo "Updating your ${ENV_TO_UPDATE} files with nillion-devnet environment info.
 echo "--------------------"
 time_limit=160
 while true; do
-    # Use 'wait' to check if the log file contains the string
-    if grep "cluster is running, bootnode is at" "$OUTFILE"; then
+    # Use 'wait' to check if the log file contains the last string output by nillion-devnet
+    if grep "environment file written" "$OUTFILE"; then
         break
     fi
 
@@ -44,16 +44,40 @@ done
 echo "ℹ️ Cluster has been STARTED (see $OUTFILE)"
 cat "$OUTFILE"
 
-# grep cluster info from nillion-devnet
-CLUSTER_ID=$(grep "cluster id is" "$OUTFILE" | awk '{print $5}');
-BOOT_MULTIADDR=$(grep "cluster is running, bootnode is at" "$OUTFILE" | awk '{print $8}');
-JSON_RPC=$(grep "nilchain JSON RPC available at" "$OUTFILE" | awk '{print $7}');
-GRPC=$(grep "nilchain gRPC available at" "$OUTFILE" | awk '{print $6}');
-CHAIN_DIR=$(grep 'starting nilchain node in:' "$OUTFILE" | awk -F'"' '{print $2}')
-WEBSOCKET=$(grep 'websocket:' "$OUTFILE" | awk '{print $3}');
+# Extract the path from the line and store it in NILUP_ENV_DIR
+NILUP_ENV_DIR=$(grep 'environment file written to' "$OUTFILE" | awk -F' to ' '{print $2}')
 
-# Retrieve the wallet private key
-WALLET_PRIVATE_KEY=$(echo "y" | "$CHAIN_DIR/bin/nilchaind" keys export stash --home "$CHAIN_DIR" --keyring-backend test --unsafe --unarmored-hex)
+get_value_from_nillion_env() {
+    # Check if the correct number of arguments are provided
+    if [ "$#" -ne 2 ]; then
+        echo "Usage: get_value_from_nillion_env <file_path> <key>"
+        return 1
+    fi
+
+    # Get the file path and key from the arguments
+    local FILE_PATH=$1
+    local KEY=$2
+
+    # Get the value of the specified key, trimming any whitespace
+    local VALUE=$(grep "^$KEY=" "$FILE_PATH" | cut -d'=' -f2 | xargs)
+
+    # Check if the key was found
+    if [ -z "$VALUE" ]; then
+        echo "Key $KEY not found in $FILE_PATH"
+        return 1
+    fi
+
+    # Output the value
+    echo "$VALUE"
+}
+
+# grep cluster info from nillion-devnet
+CLUSTER_ID=$(get_value_from_nillion_env "$NILUP_ENV_DIR" "NILLION_CLUSTER_ID")
+BOOT_MULTIADDR=$(get_value_from_nillion_env "$NILUP_ENV_DIR" "NILLION_BOOTNODE_MULTIADDRESS")
+JSON_RPC=$(get_value_from_nillion_env "$NILUP_ENV_DIR" "NILLION_NILCHAIN_JSON_RPC")
+GRPC=$(get_value_from_nillion_env "$NILUP_ENV_DIR" "NILLION_NILCHAIN_GRPC")
+WEBSOCKET=$(get_value_from_nillion_env "$NILUP_ENV_DIR" "NILLION_BOOTNODE_WEBSOCKET")
+WALLET_PRIVATE_KEY=$(get_value_from_nillion_env "$NILUP_ENV_DIR" "NILLION_NILCHAIN_PRIVATE_KEY_0")
 
 # update or add an environment variable to one or more files
 update_env() {
