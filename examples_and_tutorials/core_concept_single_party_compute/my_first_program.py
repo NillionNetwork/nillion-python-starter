@@ -13,7 +13,7 @@ from helpers.nillion_keypath_helper import getUserKeyFromFile, getNodeKeyFromFil
 load_dotenv()
 
 
-# 1 Party running simple addition on 1 stored secret and 1 compute time secret
+# 1 Party running your first program on 1 stored secret and 1 compute time secret
 async def main():
     cluster_id = os.getenv("NILLION_CLUSTER_ID")
     userkey = getUserKeyFromFile(os.getenv("NILLION_USERKEY_PATH_PARTY_1"))
