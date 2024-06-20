@@ -67,7 +67,7 @@ async def main():
     secret_bindings.add_input_party(party_0_name, party_id)
     secret_bindings.add_input_party(party_1_name, party_id)
 
-    # Give core_concept_permissions to owner to compute with my vote
+    # Give core_concept_permissions to the owner to compute with my vote
     secret_permissions = nillion.Permissions.default_for_user(user_id)
     secret_permissions.add_compute_permissions({
         user_id: {program_id},

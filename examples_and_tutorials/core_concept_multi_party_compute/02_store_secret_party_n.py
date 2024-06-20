@@ -86,7 +86,7 @@ async def main(args = None):
         
     party_ids_to_store_ids = ' '.join([f'{party_id}:{store_id}' for party_id, store_id in zip(party_ids, store_ids)])
 
-    print("\n📋⬇️ Copy and run the following command to run multi party computation using the secrets")
+    print("\n📋⬇️ Copy and run the following command to run multi-party computation using the secrets")
     print(f"\npython3 03_multi_party_compute.py --store_id_1 {args.store_id_1} --party_ids_to_store_ids {party_ids_to_store_ids}")
     return [args.store_id_1, party_ids_to_store_ids]
 

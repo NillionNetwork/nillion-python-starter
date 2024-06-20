@@ -8,7 +8,7 @@ Before running through examples, `./bootstrap-local-environment.sh` creates user
 4. The writer revokes secret permissions by rewriting them
 5. The reader tries to retrieve the secret, but no longer has access to it
 
-To run through the example flow, simply run the python scripts in order. The output of a script will show you what to run next. Below gives the structure of the commands needed.
+To run through the example flow, simply run the python scripts in order. The output of a script will show you what to run next. Below is the structure of the commands needed.
 
 ```shell
 python3 01_fetch_reader_userid.py
