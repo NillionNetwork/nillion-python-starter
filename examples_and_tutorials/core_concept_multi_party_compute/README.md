@@ -49,4 +49,4 @@ cd ../..
 python3 01_store_secret_party1.py
 ```
 
-5. Follow the cli directions to run part 2 and 3 of the example.
+5. Follow the cli directions to run parts 2 and 3 of the example.
