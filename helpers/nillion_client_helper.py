@@ -1,9 +1,7 @@
 import os
 import py_nillion_client as nillion
 
-from cosmpy.aerial.client import LedgerClient, NetworkConfig
-from cosmpy.aerial.wallet import LocalWallet
-from cosmpy.crypto.keypairs import PrivateKey
+from cosmpy.aerial.client import NetworkConfig
 from cosmpy.aerial.tx import Transaction
 from cosmpy.aerial.client.utils import prepare_and_broadcast_basic_transaction
 from cosmpy.crypto.address import Address
@@ -26,7 +24,7 @@ async def pay(
 ) -> nillion.PaymentReceipt:
     print("Getting quote for operation...")
     quote = await client.request_price_quote(cluster_id, operation)
-    print(f"Quote cost is {quote.cost} unil")
+    print(f"Quote cost is {quote.cost.total} unil")
     address = str(Address(payments_wallet.public_key(), "nillion"))
     message = nillion.create_payments_message(quote, address)
     tx = Transaction()
@@ -36,7 +34,7 @@ async def pay(
     )
     submitted_tx.wait_to_complete()
     print(
-        f"Submitting payment receipt {quote.cost} unil, tx hash {submitted_tx.tx_hash}"
+        f"Submitting payment receipt {quote.cost.total} unil, tx hash {submitted_tx.tx_hash}"
     )
     return nillion.PaymentReceipt(quote, submitted_tx.tx_hash)
 
