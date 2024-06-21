@@ -5,6 +5,7 @@ import os
 import sys
 import pytest
 
+from py_nillion_client import NodeKey, UserKey
 from dotenv import load_dotenv
 from cosmpy.aerial.client import LedgerClient
 from cosmpy.aerial.wallet import LocalWallet
@@ -16,10 +17,9 @@ from helpers.nillion_client_helper import (
     pay,
     create_payments_config,
 )
-from helpers.nillion_keypath_helper import getUserKeyFromFile, getNodeKeyFromFile
 
-load_dotenv()
-
+home = os.getenv("HOME")
+load_dotenv(f"{home}/Library/Application Support/nillion.nillion/nillion-devnet.env")
 
 async def main(args = None):
     parser = argparse.ArgumentParser(
@@ -34,10 +34,11 @@ async def main(args = None):
     args = parser.parse_args(args)
 
     cluster_id = os.getenv("NILLION_CLUSTER_ID")
-    grpc_endpoint = os.getenv("NILLION_GRPC")
-    chain_id = os.getenv("NILLION_CHAIN_ID")
-    userkey = getUserKeyFromFile(os.getenv("NILLION_USERKEY_PATH_PARTY_2"))
-    nodekey = getNodeKeyFromFile(os.getenv("NILLION_NODEKEY_PATH_PARTY_2"))
+    grpc_endpoint = os.getenv("NILLION_NILCHAIN_GRPC")
+    chain_id = os.getenv("NILLION_NILCHAIN_CHAIN_ID")
+    seed_2 = "seed_2"
+    userkey = UserKey.from_seed(seed_2)
+    nodekey = NodeKey.from_seed(seed_2)
 
     # Writer Nillion client
     writer = create_nillion_client(userkey, nodekey)
@@ -48,7 +49,7 @@ async def main(args = None):
     payments_config = create_payments_config(chain_id, grpc_endpoint)
     payments_client = LedgerClient(payments_config)
     payments_wallet = LocalWallet(
-        PrivateKey(bytes.fromhex(os.getenv("NILLION_WALLET_PRIVATE_KEY"))),
+        PrivateKey(bytes.fromhex(os.getenv("NILLION_NILCHAIN_PRIVATE_KEY_0"))),
         prefix="nillion",
     )
 
@@ -78,7 +79,7 @@ async def main(args = None):
     # Get cost quote, then pay for operation to store the secret
     receipt_store = await pay(
         writer,
-        nillion.Operation.store_secrets(secrets_object),
+        nillion.Operation.store_values(secrets_object),
         payments_wallet,
         payments_client,
         cluster_id,
@@ -86,7 +87,7 @@ async def main(args = None):
 
     # Writer stores the permissioned secret, resulting in the secret's store id
     print(f"ℹ️  Storing permissioned secret: {secrets_object}")
-    store_id = await writer.store_secrets(
+    store_id = await writer.store_values(
         cluster_id, secrets_object, permissions, receipt_store
     )
 

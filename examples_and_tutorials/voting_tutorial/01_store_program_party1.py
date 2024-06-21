@@ -10,13 +10,12 @@ import py_nillion_client as nillion
 import os
 import sys
 from dotenv import load_dotenv
-from config import (
-    CONFIG_PARTY_1
-)
 
 from cosmpy.aerial.client import LedgerClient
 from cosmpy.aerial.wallet import LocalWallet
 from cosmpy.crypto.keypairs import PrivateKey
+
+from py_nillion_client import NodeKey, UserKey
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 from helpers.nillion_client_helper import (
@@ -24,15 +23,15 @@ from helpers.nillion_client_helper import (
     pay,
     create_payments_config,
 )
-from helpers.nillion_keypath_helper import getUserKeyFromFile, getNodeKeyFromFile
 
-load_dotenv()
+home = os.getenv("HOME")
+load_dotenv(f"{home}/Library/Application Support/nillion.nillion/nillion-devnet.env")
 
 # Alice stores the voting program in the network
 async def main():
     cluster_id = os.getenv("NILLION_CLUSTER_ID")
-    grpc_endpoint = os.getenv("NILLION_GRPC")
-    chain_id = os.getenv("NILLION_CHAIN_ID")
+    grpc_endpoint = os.getenv("NILLION_NILCHAIN_GRPC")
+    chain_id = os.getenv("NILLION_NILCHAIN_CHAIN_ID")
 
     while True:
 
@@ -89,15 +88,16 @@ async def main():
     #############################
 
     # Create client
+    alice_seed = "alice_seed"
     client_alice = create_nillion_client(
-        getUserKeyFromFile(CONFIG_PARTY_1["userkey_file"]), getNodeKeyFromFile(CONFIG_PARTY_1["nodekey_file"])
+        UserKey.from_seed(alice_seed), NodeKey.from_seed(alice_seed)
     )
 
     # Create payments config and set up Nillion wallet with a private key to pay for operations
     payments_config = create_payments_config(chain_id, grpc_endpoint)
     payments_client = LedgerClient(payments_config)
     payments_wallet = LocalWallet(
-        PrivateKey(bytes.fromhex(os.getenv("NILLION_WALLET_PRIVATE_KEY"))),
+        PrivateKey(bytes.fromhex(os.getenv("NILLION_NILCHAIN_PRIVATE_KEY_0"))),
         prefix="nillion",
     )
 

@@ -6,6 +6,7 @@ import sys
 import pytest
 import importlib
 
+from py_nillion_client import NodeKey, UserKey
 from dotenv import load_dotenv
 
 from cosmpy.aerial.client import LedgerClient
@@ -23,10 +24,9 @@ from helpers.nillion_client_helper import (
     pay,
     create_payments_config,
 )
-from helpers.nillion_keypath_helper import getUserKeyFromFile, getNodeKeyFromFile
 
-load_dotenv()
-
+home = os.getenv("HOME")
+load_dotenv(f"{home}/Library/Application Support/nillion.nillion/nillion-devnet.env")
 
 async def main(args=None):
     parser = argparse.ArgumentParser(
@@ -51,20 +51,21 @@ async def main(args=None):
     args = parser.parse_args(args)
 
     cluster_id = os.getenv("NILLION_CLUSTER_ID")
-    grpc_endpoint = os.getenv("NILLION_GRPC")
-    chain_id = os.getenv("NILLION_CHAIN_ID")
+    grpc_endpoint = os.getenv("NILLION_NILCHAIN_GRPC")
+    chain_id = os.getenv("NILLION_NILCHAIN_CHAIN_ID")
 
+    alice_seed = "alice_seed"
     # Alice initializes a client
     client_alice = create_nillion_client(
-        getUserKeyFromFile(CONFIG_PARTY_1["userkey_file"]),
-        getNodeKeyFromFile(CONFIG_PARTY_1["nodekey_alternate_file"]),
+        UserKey.from_seed(alice_seed),
+        NodeKey.from_seed(alice_seed),
     )
     party_id_alice = client_alice.party_id
 
     payments_config = create_payments_config(chain_id, grpc_endpoint)
     payments_client = LedgerClient(payments_config)
     payments_wallet = LocalWallet(
-        PrivateKey(bytes.fromhex(os.getenv("NILLION_WALLET_PRIVATE_KEY"))),
+        PrivateKey(bytes.fromhex(os.getenv("NILLION_NILCHAIN_PRIVATE_KEY_0"))),
         prefix="nillion",
     )
 

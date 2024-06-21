@@ -4,6 +4,7 @@ import os
 import sys
 import pytest
 
+from py_nillion_client import NodeKey, UserKey
 from dotenv import load_dotenv
 
 from cosmpy.aerial.client import LedgerClient
@@ -16,20 +17,20 @@ from helpers.nillion_client_helper import (
     pay,
     create_payments_config,
 )
-from helpers.nillion_keypath_helper import getUserKeyFromFile, getNodeKeyFromFile
 
-load_dotenv()
-
+home = os.getenv("HOME")
+load_dotenv(f"{home}/Library/Application Support/nillion.nillion/nillion-devnet.env")
 
 # This python script stores the tiny_secret_addition_complete program in the network, store secrets, and compute
 async def main():
     # 0. The bootstrap-local-environment.sh script put nillion-devnet config variables into the .env file
     # Get cluster_id, gprc endpoint, chain id, user_key,node_key from the .env file
     cluster_id = os.getenv("NILLION_CLUSTER_ID")
-    grpc_endpoint = os.getenv("NILLION_GRPC")
-    chain_id = os.getenv("NILLION_CHAIN_ID")
-    userkey = getUserKeyFromFile(os.getenv("NILLION_USERKEY_PATH_PARTY_1"))
-    nodekey = getNodeKeyFromFile(os.getenv("NILLION_NODEKEY_PATH_PARTY_1"))
+    grpc_endpoint = os.getenv("NILLION_NILCHAIN_GRPC")
+    chain_id = os.getenv("NILLION_NILCHAIN_CHAIN_ID")
+    seed = "my_seed"
+    userkey = UserKey.from_seed((seed))
+    nodekey = NodeKey.from_seed((seed))
 
     # ✅ 1. Initialize NillionClient against nillion-devnet
     # Create Nillion Client for user
@@ -48,7 +49,7 @@ async def main():
     payments_config = create_payments_config(chain_id, grpc_endpoint)
     payments_client = LedgerClient(payments_config)
     payments_wallet = LocalWallet(
-        PrivateKey(bytes.fromhex(os.getenv("NILLION_WALLET_PRIVATE_KEY"))),
+        PrivateKey(bytes.fromhex(os.getenv("NILLION_NILCHAIN_PRIVATE_KEY_0"))),
         prefix="nillion",
     )
 
@@ -90,13 +91,13 @@ async def main():
     # ✅ 5. Pay for and store the secret in the network and print the returned store_id
     receipt_store = await pay(
         client,
-        nillion.Operation.store_secrets(new_secret),
+        nillion.Operation.store_values(new_secret),
         payments_wallet,
         payments_client,
         cluster_id,
     )
     # Store a secret
-    store_id = await client.store_secrets(
+    store_id = await client.store_values(
         cluster_id, new_secret, permissions, receipt_store
     )
     print(f"Computing using program {program_id}")

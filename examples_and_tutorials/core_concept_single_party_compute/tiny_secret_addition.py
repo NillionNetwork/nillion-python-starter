@@ -3,24 +3,25 @@ import os
 import sys
 import pytest
 
+from py_nillion_client import NodeKey, UserKey
 from dotenv import load_dotenv
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 from helpers.nillion_client_helper import create_nillion_client
-from helpers.nillion_keypath_helper import getUserKeyFromFile, getNodeKeyFromFile
 
-load_dotenv()
-
+home = os.getenv("HOME")
+load_dotenv(f"{home}/Library/Application Support/nillion.nillion/nillion-devnet.env")
 
 # Complete the 🎯 TODOs to store the tiny_secret_addition program in the network, store secrets, and compute
 async def main():
     # 0. The bootstrap-local-environment.sh script put nillion-devnet config variables into the .env file
     # Get cluster_id, user_key, and node_key from the .env file
     cluster_id = os.getenv("NILLION_CLUSTER_ID")
-    grpc_endpoint = os.getenv("NILLION_GRPC")
-    chain_id = os.getenv("NILLION_CHAIN_ID")
-    userkey = getUserKeyFromFile(os.getenv("NILLION_USERKEY_PATH_PARTY_1"))
-    nodekey = getNodeKeyFromFile(os.getenv("NILLION_NODEKEY_PATH_PARTY_1"))
+    grpc_endpoint = os.getenv("NILLION_NILCHAIN_GRPC")
+    chain_id = os.getenv("NILLION_NILCHAIN_CHAIN_ID")
+    seed = "my_seed"
+    userkey = UserKey.from_seed((seed))
+    nodekey = NodeKey.from_seed((seed))
 
     # 🎯 TODO 1. Initialize NillionClient against nillion-devnet
     # Create Nillion Client for user

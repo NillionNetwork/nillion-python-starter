@@ -3,17 +3,19 @@ import os
 import sys
 import pytest
 
+from py_nillion_client import NodeKey, UserKey
 from dotenv import load_dotenv
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 from helpers.nillion_client_helper import create_nillion_client
-from helpers.nillion_keypath_helper import getUserKeyFromFile, getNodeKeyFromFile
 
-load_dotenv()
+home = os.getenv("HOME")
+load_dotenv(f"{home}/Library/Application Support/nillion.nillion/nillion-devnet.env")
 
 async def main():
-    userkey = getUserKeyFromFile(os.getenv("NILLION_USERKEY_PATH_PARTY_1"))
-    nodekey = getNodeKeyFromFile(os.getenv("NILLION_NODEKEY_PATH_PARTY_1"))
+    seed_1 = "seed_1"
+    userkey = UserKey.from_seed((seed_1))
+    nodekey = NodeKey.from_seed((seed_1))
     
     # Reader Nillion client
     reader = create_nillion_client(userkey, nodekey)

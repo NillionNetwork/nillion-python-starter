@@ -9,6 +9,7 @@ import asyncio
 import py_nillion_client as nillion
 import os
 import sys
+from py_nillion_client import NodeKey, UserKey
 from dotenv import load_dotenv
 from config import (
     CONFIG
@@ -24,17 +25,17 @@ from helpers.nillion_client_helper import (
     pay,
     create_payments_config,
 )
-from helpers.nillion_keypath_helper import getUserKeyFromFile, getNodeKeyFromFile
 
 from digest_result import digest_plurality_vote_honest_result, digest_plurality_vote_dishonest_with_abort_result, digest_plurality_vote_robust_result
 
-load_dotenv()
+home = os.getenv("HOME")
+load_dotenv(f"{home}/Library/Application Support/nillion.nillion/nillion-devnet.env")
 
 async def main():
 
     cluster_id = os.getenv("NILLION_CLUSTER_ID")
-    grpc_endpoint = os.getenv("NILLION_GRPC")
-    chain_id = os.getenv("NILLION_CHAIN_ID")
+    grpc_endpoint = os.getenv("NILLION_NILCHAIN_GRPC")
+    chain_id = os.getenv("NILLION_NILCHAIN_CHAIN_ID")
 
     while True:
 
@@ -107,13 +108,14 @@ async def main():
     ######################################
     # 1.0 General client initialization  #
     ######################################
-    userkey = getUserKeyFromFile(os.getenv("NILLION_USERKEY_PATH_PARTY_1"))
-    nodekey = getNodeKeyFromFile(os.getenv("NILLION_NODEKEY_PATH_PARTY_1"))
+    seed = "my_seed"
+    userkey = UserKey.from_seed(seed)
+    nodekey = NodeKey.from_seed(seed)
     general_client = create_nillion_client(userkey, nodekey)
     general_payments_config = create_payments_config(chain_id, grpc_endpoint)
     general_payments_client = LedgerClient(general_payments_config)
     general_payments_wallet = LocalWallet(
-        PrivateKey(bytes.fromhex(os.getenv("NILLION_WALLET_PRIVATE_KEY"))),
+        PrivateKey(bytes.fromhex(os.getenv("NILLION_NILCHAIN_PRIVATE_KEY_0"))),
         prefix="nillion",
     )
 
@@ -221,7 +223,7 @@ async def main():
                 v_c_vote = nillion.SecretUnsignedInteger(v_c_vote_value)
                 v_vote_dic["v"+str(v)+"_c"+str(c)] = v_c_vote
                 c += 1
-        v_to_be_store_secrets = nillion.Secrets(v_vote_dic)
+        v_to_be_store_values = nillion.Secrets(v_vote_dic)
 
         ###########################################
         # 4.2 Set compute permissions to owner    #
@@ -236,16 +238,16 @@ async def main():
         # Get cost quote, then pay for operation to store the secret
         receipt_store = await pay(
             voter_v,
-            nillion.Operation.store_secrets(v_to_be_store_secrets),
+            nillion.Operation.store_values(v_to_be_store_values),
             general_payments_wallet,
             general_payments_client,
             cluster_id,
         )
 
         # Store in the network
-        print("Storing vote by voter "+str(v)+f": {v_to_be_store_secrets}")
-        store_id = await voter_v.store_secrets(
-            cluster_id, v_to_be_store_secrets, v_permissions, receipt_store
+        print("Storing vote by voter "+str(v)+f": {v_to_be_store_values}")
+        store_id = await voter_v.store_values(
+            cluster_id, v_to_be_store_values, v_permissions, receipt_store
         )
         store_ids.append(store_id)
         print(f"Stored vote by voter "+str(v)+f" with store_id ={store_id}")

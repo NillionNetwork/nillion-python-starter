@@ -1,6 +1,7 @@
 import os
 from dotenv import load_dotenv
-load_dotenv()
+home = os.getenv("HOME")
+load_dotenv(f"{home}/Library/Application Support/nillion.nillion/nillion-devnet.env")
 
 CONFIG = {
     "nr_candidates": 2,
@@ -15,8 +16,7 @@ CONFIG_CANDIDATES=[
 
 # Alice
 CONFIG_PARTY_1={
-    "userkey_file": os.getenv("NILLION_USERKEY_PATH_PARTY_1"),
-    "nodekey_file": os.getenv("NILLION_NODEKEY_PATH_PARTY_1"),
+    "seed": "alice_seed",
     "party_name": "Alice",
     "party_role": "Voter0",
     "secret_votes": {
@@ -28,8 +28,7 @@ CONFIG_PARTY_1={
 # Bob and Charlie
 CONFIG_N_PARTIES=[
     {
-        "userkey_file": os.getenv("NILLION_USERKEY_PATH_PARTY_2"),
-        "nodekey_file": os.getenv("NILLION_NODEKEY_PATH_PARTY_2"),
+        "seed": "bob_seed",
         "party_name": "Bob",
         "party_role": "Voter1",
         "secret_votes": {
@@ -38,8 +37,7 @@ CONFIG_N_PARTIES=[
         },
     },
     {
-        "userkey_file": os.getenv("NILLION_USERKEY_PATH_PARTY_3"),
-        "nodekey_file": os.getenv("NILLION_NODEKEY_PATH_PARTY_3"),
+        "seed": "charlie_seed",
         "party_name": "Charlie",
         "party_role": "Voter2",
         "secret_votes": {

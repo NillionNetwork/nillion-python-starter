@@ -6,6 +6,7 @@ import os
 import sys
 import pytest
 
+from py_nillion_client import NodeKey, UserKey
 from dotenv import load_dotenv
 from cosmpy.aerial.client import LedgerClient
 from cosmpy.aerial.wallet import LocalWallet
@@ -17,9 +18,10 @@ from helpers.nillion_client_helper import (
     pay,
     create_payments_config,
 )
-from helpers.nillion_keypath_helper import getUserKeyFromFile, getNodeKeyFromFile
 
-load_dotenv()
+home = os.getenv("HOME")
+load_dotenv(f"{home}/Library/Application Support/nillion.nillion/nillion-devnet.env")
+
 
 fetch_reader_userid = importlib.import_module("01_fetch_reader_userid")
 store_permissioned_secret = importlib.import_module("02_store_permissioned_secret")
@@ -28,9 +30,9 @@ revoke_read_permissions = importlib.import_module("04_revoke_read_permissions")
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 from helpers.nillion_client_helper import create_nillion_client
-from helpers.nillion_keypath_helper import getUserKeyFromFile, getNodeKeyFromFile
 
-load_dotenv()
+home = os.getenv("HOME")
+load_dotenv(f"{home}/Library/Application Support/nillion.nillion/nillion-devnet.env")
 
 async def main(args = None):
     parser = argparse.ArgumentParser(
@@ -45,10 +47,11 @@ async def main(args = None):
     args = parser.parse_args(args)
 
     cluster_id = os.getenv("NILLION_CLUSTER_ID")
-    grpc_endpoint = os.getenv("NILLION_GRPC")
-    chain_id = os.getenv("NILLION_CHAIN_ID")
-    userkey = getUserKeyFromFile(os.getenv("NILLION_USERKEY_PATH_PARTY_1"))
-    nodekey = getNodeKeyFromFile(os.getenv("NILLION_NODEKEY_PATH_PARTY_5"))
+    grpc_endpoint = os.getenv("NILLION_NILCHAIN_GRPC")
+    chain_id = os.getenv("NILLION_NILCHAIN_CHAIN_ID")
+    seed_1 = "seed_1"
+    userkey = UserKey.from_seed(seed_1)
+    nodekey = NodeKey.from_seed(seed_1)
     
     # Reader Nillion client
     reader = create_nillion_client(userkey, nodekey)
@@ -58,14 +61,14 @@ async def main(args = None):
     payments_config = create_payments_config(chain_id, grpc_endpoint)
     payments_client = LedgerClient(payments_config)
     payments_wallet = LocalWallet(
-        PrivateKey(bytes.fromhex(os.getenv("NILLION_WALLET_PRIVATE_KEY"))),
+        PrivateKey(bytes.fromhex(os.getenv("NILLION_NILCHAIN_PRIVATE_KEY_0"))),
         prefix="nillion",
     )
 
     # Get cost quote, then pay for operation to retrieve the secret
     receipt_store = await pay(
         reader,
-        nillion.Operation.retrieve_secret(),
+        nillion.Operation.retrieve_value(),
         payments_wallet,
         payments_client,
         cluster_id,
@@ -73,10 +76,10 @@ async def main(args = None):
 
     try:
         secret_name = "my_int1"
-        await reader.retrieve_secret(cluster_id, args.store_id, secret_name, receipt_store)
+        await reader.retrieve_value(cluster_id, args.store_id, secret_name, receipt_store)
         print(f"⛔ FAIL: {reader_user_id} user id with revoked permissions was allowed to access secret", file=sys.stderr)
     except Exception as e:
-        if str(e) == "retrieving secret: the user is not authorized to access the secret":
+        if str(e) == "retrieving value: the user is not authorized to access the secret":
             print(f"🦄 Success: After user permissions were revoked, {reader_user_id} was not allowed to access secret", file=sys.stderr)
         else:
             raise(e)

@@ -5,6 +5,7 @@ import os
 import sys
 import pytest
 
+from py_nillion_client import NodeKey, UserKey
 from dotenv import load_dotenv
 from config import CONFIG_N_PARTIES
 
@@ -20,8 +21,8 @@ from helpers.nillion_client_helper import (
 )
 from helpers.nillion_keypath_helper import getUserKeyFromFile, getNodeKeyFromFile
 
-load_dotenv()
-
+home = os.getenv("HOME")
+load_dotenv(f"{home}/Library/Application Support/nillion.nillion/nillion-devnet.env")
 
 # Bob and Charlie store their salaries in the network
 async def main(args=None):
@@ -44,17 +45,18 @@ async def main(args=None):
     args = parser.parse_args(args)
 
     cluster_id = os.getenv("NILLION_CLUSTER_ID")
-    grpc_endpoint = os.getenv("NILLION_GRPC")
-    chain_id = os.getenv("NILLION_CHAIN_ID")
+    grpc_endpoint = os.getenv("NILLION_NILCHAIN_GRPC")
+    chain_id = os.getenv("NILLION_NILCHAIN_CHAIN_ID")
 
     # start a list of store ids to keep track of stored secrets
     store_ids = []
     party_ids = []
 
     for party_info in CONFIG_N_PARTIES:
+        party_seed = party_info["party_name"] + "_seed"
         client_n = create_nillion_client(
-            getUserKeyFromFile(party_info["userkey_file"]),
-            getNodeKeyFromFile(party_info["nodekey_file"]),
+            UserKey.from_seed(party_seed),
+            NodeKey.from_seed(party_seed),
         )
         party_id_n = client_n.party_id
         user_id_n = client_n.user_id
@@ -62,7 +64,7 @@ async def main(args=None):
         payments_config_n = create_payments_config(chain_id, grpc_endpoint)
         payments_client_n = LedgerClient(payments_config_n)
         payments_wallet_n = LocalWallet(
-            PrivateKey(bytes.fromhex(os.getenv("NILLION_WALLET_PRIVATE_KEY"))),
+            PrivateKey(bytes.fromhex(os.getenv("NILLION_NILCHAIN_PRIVATE_KEY_0"))),
             prefix="nillion",
         )
 
@@ -89,13 +91,13 @@ async def main(args=None):
 
         receipt_store = await pay(
             client_n,
-            nillion.Operation.store_secrets(stored_secret),
+            nillion.Operation.store_values(stored_secret),
             payments_wallet_n,
             payments_client_n,
             cluster_id,
         )
         # Store the permissioned secret
-        store_id = await client_n.store_secrets(
+        store_id = await client_n.store_values(
             cluster_id, stored_secret, permissions, receipt_store
         )
 

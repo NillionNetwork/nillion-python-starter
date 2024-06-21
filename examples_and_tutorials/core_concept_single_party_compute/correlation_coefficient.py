@@ -9,11 +9,13 @@ import asyncio
 import py_nillion_client as nillion
 import os
 import sys
+from py_nillion_client import NodeKey, UserKey
 from dotenv import load_dotenv
 import random
 from math import sqrt
 import pytest
 
+from py_nillion_client import NodeKey, UserKey
 from dotenv import load_dotenv
 
 from cosmpy.aerial.client import LedgerClient
@@ -26,18 +28,18 @@ from helpers.nillion_client_helper import (
     pay,
     create_payments_config,
 )
-from helpers.nillion_keypath_helper import getUserKeyFromFile, getNodeKeyFromFile
 
-load_dotenv()
-
+home = os.getenv("HOME")
+load_dotenv(f"{home}/Library/Application Support/nillion.nillion/nillion-devnet.env")
 
 # 1 Party running simple addition on 1 stored secret and 1 compute time secret
 async def main():
     cluster_id = os.getenv("NILLION_CLUSTER_ID")
-    grpc_endpoint = os.getenv("NILLION_GRPC")
-    chain_id = os.getenv("NILLION_CHAIN_ID")
-    userkey = getUserKeyFromFile(os.getenv("NILLION_USERKEY_PATH_PARTY_1"))
-    nodekey = getNodeKeyFromFile(os.getenv("NILLION_NODEKEY_PATH_PARTY_1"))
+    grpc_endpoint = os.getenv("NILLION_NILCHAIN_GRPC")
+    chain_id = os.getenv("NILLION_NILCHAIN_CHAIN_ID")
+    seed = "my_seed"
+    userkey = UserKey.from_seed((seed))
+    nodekey = NodeKey.from_seed((seed))
     client = create_nillion_client(userkey, nodekey)
     party_id = client.party_id
     user_id = client.user_id
@@ -50,7 +52,7 @@ async def main():
     payments_config = create_payments_config(chain_id, grpc_endpoint)
     payments_client = LedgerClient(payments_config)
     payments_wallet = LocalWallet(
-        PrivateKey(bytes.fromhex(os.getenv("NILLION_WALLET_PRIVATE_KEY"))),
+        PrivateKey(bytes.fromhex(os.getenv("NILLION_NILCHAIN_PRIVATE_KEY_0"))),
         prefix="nillion",
     )
 
@@ -118,13 +120,13 @@ async def main():
     # Get cost quote, then pay for operation to store the secret
     receipt_store_0 = await pay(
         client,
-        nillion.Operation.store_secrets(party_0_secrets),
+        nillion.Operation.store_values(party_0_secrets),
         payments_wallet,
         payments_client,
         cluster_id,
     )
 
-    store_id = await client.store_secrets(
+    store_id = await client.store_values(
         cluster_id, party_0_secrets, secret_permissions, receipt_store_0
     )
     store_ids.append(store_id)
@@ -132,14 +134,14 @@ async def main():
 
     receipt_store_1 = await pay(
         client,
-        nillion.Operation.store_secrets(party_1_secrets),
+        nillion.Operation.store_values(party_1_secrets),
         payments_wallet,
         payments_client,
         cluster_id,
     )
 
     print(f"Storing party 1: {party_1_secrets}")
-    store_id = await client.store_secrets(
+    store_id = await client.store_values(
         cluster_id, party_1_secrets, secret_permissions, receipt_store_1
     )
     store_ids.append(store_id)

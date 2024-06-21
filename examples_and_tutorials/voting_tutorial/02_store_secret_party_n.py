@@ -9,6 +9,7 @@ import asyncio
 import py_nillion_client as nillion
 import os
 import sys
+from py_nillion_client import NodeKey, UserKey
 from dotenv import load_dotenv
 from config import (
     CONFIG_N_PARTIES
@@ -24,9 +25,9 @@ from helpers.nillion_client_helper import (
     pay,
     create_payments_config,
 )
-from helpers.nillion_keypath_helper import getUserKeyFromFile, getNodeKeyFromFile
 
-load_dotenv()
+home = os.getenv("HOME")
+load_dotenv(f"{home}/Library/Application Support/nillion.nillion/nillion-devnet.env")
 
 parser = argparse.ArgumentParser(
     description="Create a secret on the Nillion network with set read/retrieve permissions"
@@ -49,8 +50,8 @@ args = parser.parse_args()
 # Bob and Charlie store their votes in the network
 async def main():
     cluster_id = os.getenv("NILLION_CLUSTER_ID")
-    grpc_endpoint = os.getenv("NILLION_GRPC")
-    chain_id = os.getenv("NILLION_CHAIN_ID")
+    grpc_endpoint = os.getenv("NILLION_NILCHAIN_GRPC")
+    chain_id = os.getenv("NILLION_NILCHAIN_CHAIN_ID")
     
     # start a list of store ids to keep track of stored secrets
     store_ids = []
@@ -65,16 +66,17 @@ async def main():
         #############################
         # 1.2 Voters initialization #
         #############################
+        seed = party_info["seed"]
         client_n = create_nillion_client(
-            getUserKeyFromFile(party_info["userkey_file"]), 
-            getNodeKeyFromFile(party_info["nodekey_file"])
+            UserKey.from_seed(seed),
+            NodeKey.from_seed(seed)
         )
 
         # Create payments config and set up Nillion wallet with a private key to pay for operations
         payments_config_n = create_payments_config(chain_id, grpc_endpoint)
         payments_client_n = LedgerClient(payments_config_n)
         payments_wallet_n = LocalWallet(
-            PrivateKey(bytes.fromhex(os.getenv("NILLION_WALLET_PRIVATE_KEY"))),
+            PrivateKey(bytes.fromhex(os.getenv("NILLION_NILCHAIN_PRIVATE_KEY_0"))),
             prefix="nillion",
         )
 
@@ -107,14 +109,14 @@ async def main():
         # Get cost quote, then pay for operation to store the secret
         receipt_store = await pay(
             client_n,
-            nillion.Operation.store_secrets(stored_secret),
+            nillion.Operation.store_values(stored_secret),
             payments_wallet_n,
             payments_client_n,
             cluster_id,
         )
 
         # Store the permissioned secret
-        store_id = await client_n.store_secrets(
+        store_id = await client_n.store_values(
             cluster_id, stored_secret, permissions, receipt_store
         )
 

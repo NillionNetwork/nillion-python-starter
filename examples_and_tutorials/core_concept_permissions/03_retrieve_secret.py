@@ -5,6 +5,7 @@ import os
 import sys
 import pytest
 
+from py_nillion_client import NodeKey, UserKey
 from dotenv import load_dotenv
 from cosmpy.aerial.client import LedgerClient
 from cosmpy.aerial.wallet import LocalWallet
@@ -16,9 +17,9 @@ from helpers.nillion_client_helper import (
     pay,
     create_payments_config,
 )
-from helpers.nillion_keypath_helper import getUserKeyFromFile, getNodeKeyFromFile
 
-load_dotenv()
+home = os.getenv("HOME")
+load_dotenv(f"{home}/Library/Application Support/nillion.nillion/nillion-devnet.env")
 
 async def main(args = None):
     parser = argparse.ArgumentParser(
@@ -40,10 +41,11 @@ async def main(args = None):
     args = parser.parse_args(args)
 
     cluster_id = os.getenv("NILLION_CLUSTER_ID")
-    grpc_endpoint = os.getenv("NILLION_GRPC")
-    chain_id = os.getenv("NILLION_CHAIN_ID")
-    userkey = getUserKeyFromFile(os.getenv("NILLION_USERKEY_PATH_PARTY_1"))
-    nodekey = getNodeKeyFromFile(os.getenv("NILLION_NODEKEY_PATH_PARTY_3"))
+    grpc_endpoint = os.getenv("NILLION_NILCHAIN_GRPC")
+    chain_id = os.getenv("NILLION_NILCHAIN_CHAIN_ID")
+    seed_1 = "seed_1"
+    userkey = UserKey.from_seed(seed_1)
+    nodekey = NodeKey.from_seed(seed_1)
 
     # Reader Nillion client
     reader = create_nillion_client(userkey, nodekey)
@@ -53,14 +55,14 @@ async def main(args = None):
     payments_config = create_payments_config(chain_id, grpc_endpoint)
     payments_client = LedgerClient(payments_config)
     payments_wallet = LocalWallet(
-        PrivateKey(bytes.fromhex(os.getenv("NILLION_WALLET_PRIVATE_KEY"))),
+        PrivateKey(bytes.fromhex(os.getenv("NILLION_NILCHAIN_PRIVATE_KEY_0"))),
         prefix="nillion",
     )
 
     # Get cost quote, then pay for operation to retrieve the secret
     receipt_store = await pay(
         reader,
-        nillion.Operation.retrieve_secret(),
+        nillion.Operation.retrieve_value(),
         payments_wallet,
         payments_client,
         cluster_id,
@@ -68,7 +70,7 @@ async def main(args = None):
 
     # Reader retrieves the named secret by store id
     print(f"Retrieving secret as reader: {reader_user_id}")
-    result = await reader.retrieve_secret(cluster_id, args.store_id, args.secret_name, receipt_store)
+    result = await reader.retrieve_value(cluster_id, args.store_id, args.secret_name, receipt_store)
 
     print(f"🦄 Retrieved {args.secret_name} secret, value = {result[1].value}", file=sys.stderr)
     print("\n\nRun the following command to revoke the reader's retrieve permissions to the secret")
