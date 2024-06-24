@@ -1,0 +1,16 @@
+---
+program: public_variables
+inputs:
+  secrets:
+    A:
+      SecretInteger: "3"
+    C:
+      SecretInteger: "3"
+  public_variables:
+    B:
+      Integer: "3"
+    D:
+      Integer: "3"
+expected_outputs:
+  O:
+    SecretInteger: "30"

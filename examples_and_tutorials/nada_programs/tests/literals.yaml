@@ -1,0 +1,12 @@
+---
+program: literals
+inputs:
+  secrets:
+    A:
+      SecretInteger: "3"
+    C:
+      SecretInteger: "3"
+  public_variables: {}
+expected_outputs:
+  O:
+    SecretInteger: "915"

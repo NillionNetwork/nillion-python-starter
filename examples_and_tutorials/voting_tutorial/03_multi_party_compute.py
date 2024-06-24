@@ -32,7 +32,7 @@ from helpers.nillion_client_helper import (
 from digest_result import digest_plurality_vote_honest_result, digest_plurality_vote_dishonest_with_abort_result, digest_plurality_vote_robust_result
 
 home = os.getenv("HOME")
-load_dotenv(f"{home}/Library/Application Support/nillion.nillion/nillion-devnet.env")
+load_dotenv(f"{home}/.config/nillion/nillion-devnet.env")
 
 parser = argparse.ArgumentParser(
     description="Create a secret on the Nillion network with set read/retrieve permissions"

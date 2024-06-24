@@ -25,7 +25,7 @@ from helpers.nillion_client_helper import (
 )
 
 home = os.getenv("HOME")
-load_dotenv(f"{home}/Library/Application Support/nillion.nillion/nillion-devnet.env")
+load_dotenv(f"{home}/.config/nillion/nillion-devnet.env")
 
 # Alice stores the voting program in the network
 async def main():
@@ -40,7 +40,7 @@ async def main():
         # either 'digest_plurality_vote_honest_result()' or 'digest_plurality_vote_dishonest_with_abort_result()' 
         # functions to digest the result.
         #
-        # Existing voting programs:
+        # Existing voting nada_programs:
         #
         # program_name = "voting_honest_1"  
         # program_name = "voting_honest_2"  

@@ -1,0 +1,16 @@
+---
+program: simple_sub
+inputs:
+  secrets:
+    D:
+      SecretInteger: "3"
+    A:
+      SecretInteger: "3"
+    B:
+      SecretInteger: "3"
+    C:
+      SecretInteger: "10"
+  public_variables: {}
+expected_outputs:
+  O:
+    SecretInteger: "-21"

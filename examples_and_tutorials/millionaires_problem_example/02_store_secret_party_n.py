@@ -22,7 +22,7 @@ from helpers.nillion_client_helper import (
 from helpers.nillion_keypath_helper import getUserKeyFromFile, getNodeKeyFromFile
 
 home = os.getenv("HOME")
-load_dotenv(f"{home}/Library/Application Support/nillion.nillion/nillion-devnet.env")
+load_dotenv(f"{home}/.config/nillion/nillion-devnet.env")
 
 # Bob and Charlie store their salaries in the network
 async def main(args=None):

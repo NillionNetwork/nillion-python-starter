@@ -18,7 +18,7 @@ from helpers.nillion_client_helper import (
 )
 
 home = os.getenv("HOME")
-load_dotenv(f"{home}/Library/Application Support/nillion.nillion/nillion-devnet.env")
+load_dotenv(f"{home}/.config/nillion/nillion-devnet.env")
 
 # 1 Party running simple addition on 1 stored secret and 1 compute time secret
 async def main():

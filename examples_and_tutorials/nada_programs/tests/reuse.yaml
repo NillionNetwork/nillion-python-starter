@@ -1,0 +1,14 @@
+---
+program: reuse
+inputs:
+  secrets:
+    B:
+      SecretInteger: "3"
+    A:
+      SecretInteger: "3"
+    C:
+      SecretInteger: "3"
+  public_variables: {}
+expected_outputs:
+  R:
+    SecretInteger: "18"

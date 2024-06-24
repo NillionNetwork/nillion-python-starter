@@ -1,0 +1,12 @@
+---
+program: multiplication_simple
+inputs:
+  secrets:
+    my_int1:
+      SecretInteger: "3"
+    my_int2:
+      SecretInteger: "3"
+  public_variables: {}
+expected_outputs:
+  my_output:
+    SecretInteger: "9"

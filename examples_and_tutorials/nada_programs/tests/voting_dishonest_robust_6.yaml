@@ -1,0 +1,64 @@
+---
+program: voting_dishonest_robust_6
+inputs:
+  secrets:
+    v2_c0:
+      SecretUnsignedInteger: "3"
+    v2_c1:
+      SecretUnsignedInteger: "3"
+    v0_c1:
+      SecretUnsignedInteger: "3"
+    v0_c0:
+      SecretUnsignedInteger: "3"
+    v1_c1:
+      SecretUnsignedInteger: "3"
+    v1_c0:
+      SecretUnsignedInteger: "3"
+  public_variables: {}
+expected_outputs:
+  if_prod_cheat_open_v1_c0:
+    SecretUnsignedInteger: "3"
+  check_prod_v2_c1:
+    SecretUnsignedInteger: "2"
+  if_prod_cheat_open_v2_c0:
+    SecretUnsignedInteger: "3"
+  final_vote_count_c0:
+    SecretUnsignedInteger: "9"
+  final_vote_count_c1:
+    SecretUnsignedInteger: "9"
+  check_sum_v0:
+    SecretUnsignedInteger: "6"
+  check_prod_v0_c0:
+    SecretUnsignedInteger: "2"
+  if_prod_cheat_open_v2_c1:
+    SecretUnsignedInteger: "3"
+  check_prod_v0_c1:
+    SecretUnsignedInteger: "2"
+  check_prod_v1_c1:
+    SecretUnsignedInteger: "2"
+  if_sum_cheat_open_v2_c0:
+    SecretUnsignedInteger: "3"
+  check_prod_v2_c0:
+    SecretUnsignedInteger: "2"
+  if_sum_cheat_open_v2_c1:
+    SecretUnsignedInteger: "3"
+  if_prod_cheat_open_v0_c0:
+    SecretUnsignedInteger: "3"
+  if_prod_cheat_open_v0_c1:
+    SecretUnsignedInteger: "3"
+  if_sum_cheat_open_v1_c1:
+    SecretUnsignedInteger: "3"
+  if_sum_cheat_open_v0_c1:
+    SecretUnsignedInteger: "3"
+  check_sum_v2:
+    SecretUnsignedInteger: "6"
+  check_sum_v1:
+    SecretUnsignedInteger: "6"
+  if_prod_cheat_open_v1_c1:
+    SecretUnsignedInteger: "3"
+  check_prod_v1_c0:
+    SecretUnsignedInteger: "2"
+  if_sum_cheat_open_v0_c0:
+    SecretUnsignedInteger: "3"
+  if_sum_cheat_open_v1_c0:
+    SecretUnsignedInteger: "3"

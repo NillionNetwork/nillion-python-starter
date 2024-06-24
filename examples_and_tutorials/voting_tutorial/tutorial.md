@@ -67,7 +67,7 @@ Under this assumption, **all** the above voting systems can be reduced to **one*
 
 Let us start with a simple program with 3 voters and 2 candidates. Recall that the following program can be applied to any type of voting system described in the previous [chapter](#voting-systems).
 
-Program: [voting_honest_1.py](../../programs/voting_honest_1.py)
+Program: [voting_honest_1.py](../nada_programs/src/voting_honest_1.py)
 ```python 
 """
 PROGRAM 1
@@ -166,7 +166,7 @@ We can make use of the Python run-time `for` loop to unroll the variables and cr
 
 Below, program 2 shows how we could use compiled-time `for` loops to assist us creating all parties, input votes and building the computation section. 
 
-Program: [voting_honest_2.py](../../programs/voting_honest_2.py)
+Program: [voting_honest_2.py](../nada_programs/src/voting_honest_2.py)
 ```python
 """
 PROGRAM 2
@@ -492,7 +492,7 @@ Similarly, we can utilize compiled-time `for` loops and **Python functions** to 
 
 >💡 In addition to compiled-time `for` loops, leveraging **Python functions** can lead to more organized and cleaner code. Python functions are executed by the interpreter during compilation and cannot rely on runtime variables. In contrast, **Nada functions** rely on run-time variables and are only executed during run-time. This distinction becomes apparent when comparing with the example provided in program 3.
 
-Program: [voting_dishonest_abort_5.py](../../programs/voting_dishonest_abort_5.py)
+Program: [voting_dishonest_abort_5.py](../nada_programs/src/voting_dishonest_abort_5.py)
 ```python
 """
 PROGRAM 5
@@ -709,7 +709,7 @@ Then, we output the cheating conditions `comp_v1_sum`, `comp_v1_c0_prod` and `co
 
 Below, we put together the above two checks with our protocol. For readability purposes, we use a function `return_val_if_any_true(list_of_bool, val)` which returns the value `val` if at least on boolean in the list is false.
 
-Program: [voting_dishonest_robust_6.py](../../programs/voting_dishonest_robust_6.py)
+Program: [voting_dishonest_robust_6.py](../nada_programs/src/voting_dishonest_robust_6.py)
 ```python
 """
 PROGRAM 6 

@@ -29,7 +29,7 @@ from helpers.nillion_client_helper import (
 from digest_result import digest_plurality_vote_honest_result, digest_plurality_vote_dishonest_with_abort_result, digest_plurality_vote_robust_result
 
 home = os.getenv("HOME")
-load_dotenv(f"{home}/Library/Application Support/nillion.nillion/nillion-devnet.env")
+load_dotenv(f"{home}/.config/nillion/nillion-devnet.env")
 
 async def main():
 
@@ -44,7 +44,7 @@ async def main():
         # either 'digest_plurality_vote_honest_result()' or 'digest_plurality_vote_dishonest_with_abort_result()' 
         # functions above to digest the result.
         #
-        # Existing voting programs:
+        # Existing voting nada_programs:
         #
         # program_name = "voting_honest_1"  
         # program_name = "voting_honest_2"  
@@ -160,7 +160,7 @@ async def main():
     # 2. Storing program                #
     #####################################
     
-    # Note: do not forget to compile the programs and store the corresponding .nada.bin file.
+    # Note: do not forget to compile the nada_programs and store the corresponding .nada.bin file.
     program_mir_path = f"../../programs-compiled/{program_name}.nada.bin"
     if os.path.exists(program_mir_path):
         None

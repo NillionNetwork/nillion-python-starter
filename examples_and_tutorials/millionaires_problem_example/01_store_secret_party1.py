@@ -20,7 +20,7 @@ from helpers.nillion_client_helper import (
 )
 
 home = os.getenv("HOME")
-load_dotenv(f"{home}/Library/Application Support/nillion.nillion/nillion-devnet.env")
+load_dotenv(f"{home}/.config/nillion/nillion-devnet.env")
 
 # Alice stores the millionaires program in the network
 async def main():
@@ -35,8 +35,8 @@ async def main():
 
     millionaires_program_name = "millionaires"
 
-    # Note: check out the code for the full millionaires program in the programs folder
-    program_mir_path = "../../programs-compiled/millionaires.nada.bin"
+    # Note: check out the code for the full millionaires program in the nada_programs folder
+    program_mir_path = "../../nada_programs-compiled/millionaires.nada.bin"
 
     payments_config = create_payments_config(chain_id, grpc_endpoint)
     payments_client = LedgerClient(payments_config)

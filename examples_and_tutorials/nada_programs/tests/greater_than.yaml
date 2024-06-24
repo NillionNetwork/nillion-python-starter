@@ -1,0 +1,16 @@
+---
+program: greater_than
+inputs:
+  secrets:
+    A:
+      SecretInteger: "3"
+    B:
+      SecretInteger: "3"
+    D:
+      SecretInteger: "3"
+    C:
+      SecretInteger: "3"
+  public_variables: {}
+expected_outputs:
+  my_output:
+    SecretBoolean: true

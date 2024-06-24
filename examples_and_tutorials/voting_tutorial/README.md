@@ -30,7 +30,7 @@ In the single file version, the different roles are played by a single entity (`
     5. (Real environment:) Voters send their their party IDs and store IDs to the owner.
     6. Owner compute voting system using votes from voters.
 
-Also, we present a function [`digest_plurality_vote_robust_result()`](digest_result.py) that digests the result output by the [voting_dishonest_robust_6.py](../../programs/voting_dishonest_robust_6.py).
+Also, we present a function [`digest_plurality_vote_robust_result()`](digest_result.py) that digests the result output by the [voting_dishonest_robust_6.py](../nada_programs/src/voting_dishonest_robust_6.py).
 
 ### Run
 
@@ -84,4 +84,4 @@ The script will provide the command to perform step 3.
 python3 03_multi_party_compute.py --program_id {program_id} --party_ids_to_store_ids {party_ids_to_store_ids}
 ```
 
-Also, we present a function [`digest_plurality_vote_robust_result()`](digest_result.py) that digests the result output by the [voting_dishonest_robust_6.py](../../programs/voting_dishonest_robust_6.py).
+Also, we present a function [`digest_plurality_vote_robust_result()`](digest_result.py) that digests the result output by the [voting_dishonest_robust_6.py](../nada_programs/src/voting_dishonest_robust_6.py).

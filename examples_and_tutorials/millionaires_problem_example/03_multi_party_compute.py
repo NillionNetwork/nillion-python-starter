@@ -26,7 +26,7 @@ from helpers.nillion_client_helper import (
 )
 
 home = os.getenv("HOME")
-load_dotenv(f"{home}/Library/Application Support/nillion.nillion/nillion-devnet.env")
+load_dotenv(f"{home}/.config/nillion/nillion-devnet.env")
 
 async def main(args=None):
     parser = argparse.ArgumentParser(

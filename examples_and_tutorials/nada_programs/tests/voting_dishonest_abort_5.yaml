@@ -1,0 +1,40 @@
+---
+program: voting_dishonest_abort_5
+inputs:
+  secrets:
+    v0_c0:
+      SecretUnsignedInteger: "3"
+    v2_c1:
+      SecretUnsignedInteger: "3"
+    v2_c0:
+      SecretUnsignedInteger: "3"
+    v0_c1:
+      SecretUnsignedInteger: "3"
+    v1_c0:
+      SecretUnsignedInteger: "10"
+    v1_c1:
+      SecretUnsignedInteger: "3"
+  public_variables: {}
+expected_outputs:
+  final_vote_count_c1:
+    SecretUnsignedInteger: "9"
+  check_sum_v0:
+    SecretUnsignedInteger: "6"
+  check_prod_v1_c0:
+    SecretUnsignedInteger: "72"
+  check_sum_v1:
+    SecretUnsignedInteger: "13"
+  check_prod_v0_c1:
+    SecretUnsignedInteger: "2"
+  final_vote_count_c0:
+    SecretUnsignedInteger: "16"
+  check_prod_v2_c1:
+    SecretUnsignedInteger: "2"
+  check_prod_v2_c0:
+    SecretUnsignedInteger: "2"
+  check_prod_v0_c0:
+    SecretUnsignedInteger: "2"
+  check_sum_v2:
+    SecretUnsignedInteger: "6"
+  check_prod_v1_c1:
+    SecretUnsignedInteger: "2"

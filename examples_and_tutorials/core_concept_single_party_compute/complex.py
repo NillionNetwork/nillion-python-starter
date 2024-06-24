@@ -19,7 +19,7 @@ from helpers.nillion_client_helper import (
 )
 
 home = os.getenv("HOME")
-load_dotenv(f"{home}/Library/Application Support/nillion.nillion/nillion-devnet.env")
+load_dotenv(f"{home}/.config/nillion/nillion-devnet.env")
 
 # 1 Party running complex program on 5 stored secrets and 1 runtime secret
 async def main():
