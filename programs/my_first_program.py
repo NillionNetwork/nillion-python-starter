@@ -6,7 +6,14 @@ def nada_main():
     my_int1 = SecretInteger(Input(name="my_int1", party=party1))
     my_int2 = SecretInteger(Input(name="my_int2", party=party1))
 
-    # write the computation for your program here - use my_int1 and my_int2 as inputs
-    # make sure you change the output below to be your new output
+    #A voting logic in nada, the result will be 1 if my_int1 has the majority
 
-    return [Output(my_int1, "my_output", party1)]
+    total_votes = my_int1 + my_int2
+    cutoff = total_votes // 2
+
+    majority = my_int1 > cutoff
+
+    result = majority.if_else(1, 0)
+
+
+    return [Output(result, "voting_result", party1)]
