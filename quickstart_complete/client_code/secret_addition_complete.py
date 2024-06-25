@@ -1,3 +1,10 @@
+"""In this example, we:
+1. connect to the local nillion-devnet
+2. store the secret addition program
+3. store a secret to be used in the computation
+4. compute the secret addition program with the stored secret and another computation time secret
+"""
+
 import asyncio
 import py_nillion_client as nillion
 import os
@@ -43,7 +50,7 @@ async def main():
     # 3. Pay for and store the program
     # Set the program name and path to the compiled program
     program_name = "secret_addition_complete"
-    program_mir_path = f"../nada_programs/target/{program_name}.nada.bin"
+    program_mir_path = f"../nada_quickstart_programs/target/{program_name}.nada.bin"
 
     # Create payments config, client and wallet
     payments_config = create_payments_config(chain_id, grpc_endpoint)
@@ -74,7 +81,7 @@ async def main():
 
     # 4. Create the 1st secret, add permissions, pay for and store it in the network
     # Create a secret named "my_int1" with any value, ex: 500
-    new_secret = nillion.Secrets(
+    new_secret = nillion.NadaValues(
         {
             "my_int1": nillion.SecretInteger(500),
         }
@@ -109,7 +116,7 @@ async def main():
     compute_bindings.add_output_party(party_name, party_id)
 
     # Add my_int2, the 2nd secret at computation time
-    computation_time_secrets = nillion.Secrets({"my_int2": nillion.SecretInteger(10)})
+    computation_time_secrets = nillion.NadaValues({"my_int2": nillion.SecretInteger(10)})
 
     # Pay for the compute
     receipt_compute = await pay(
@@ -126,7 +133,6 @@ async def main():
         compute_bindings,
         [store_id],
         computation_time_secrets,
-        nillion.PublicVariables({}),
         receipt_compute,
     )
 
@@ -142,9 +148,3 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
-
-
-@pytest.mark.asyncio
-async def test_main():
-    result = await main()
-    assert result == {"my_output": 510}

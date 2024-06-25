@@ -3,8 +3,9 @@
 nillion-venv/
 permissions/.nillion-config.json
 examples_and_tutorials/nada_programs/target
-quickstart_complete/nada_programs/target
+quickstart_complete/nada_quickstart_programs/target
 .env
+.idea
 .DS_Store
 *.key
 

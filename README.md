@@ -4,4 +4,4 @@ This is an EXPERIMENTAL PAYMENTS ENABLED BRANCH of python starter repo for build
 
 Welcome to the start of your Nillion developer journey.
 
-This repo corresponds to the Nillion Python quickstart. To get started with Nillion head over to the [Python QuickStart docs](https://docs.nillion.com/python-quickstart). 
+This repo corresponds to the Nillion Python quickstart. To get started with Nillion head over to the [Python QuickStart docs](https://docs.nillion.com/python-quickstart) and follow the quickstart guide. 
