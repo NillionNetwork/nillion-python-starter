@@ -1,12 +1,23 @@
 from nada_dsl import *
 
-
 def nada_main():
-    party1 = Party(name="Party1")
-    my_int1 = SecretInteger(Input(name="my_int1", party=party1))
-    my_int2 = SecretInteger(Input(name="my_int2", party=party1))
+    num_voters = 5
+    candidate_ids = [1, 2]
 
-    # write the computation for your program here - use my_int1 and my_int2 as inputs
-    # make sure you change the output below to be your new output
+    parties = [Party(name=f"Voter{i+1}") for i in range(num_voters)]
+    votes = [SecretInteger(Input(name=f"vote{i+1}", party=parties[i])) for i in range(num_voters)]
+    candidate_votes = {cid: SecretInteger(0) for cid in candidate_ids}
 
-    return [Output(my_int1, "my_output", party1)]
+    def validate_vote(vote, candidate_ids):
+        is_valid = SecretInteger(0)
+        for cid in candidate_ids:
+            is_valid = is_valid + vote.eq(cid)
+        return is_valid.gt(0)
+
+    for vote in votes:
+        valid_vote = validate_vote(vote, candidate_ids)
+        for cid in candidate_ids:
+            candidate_votes[cid] = candidate_votes[cid] + vote.eq(cid) * valid_vote
+
+    outputs = [Output(candidate_votes[cid], f"candidate{cid}_votes") for cid in candidate_ids]
+    return outputs
