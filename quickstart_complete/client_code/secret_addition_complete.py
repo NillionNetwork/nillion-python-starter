@@ -21,13 +21,14 @@ from cosmpy.crypto.keypairs import PrivateKey
 home = os.getenv("HOME")
 load_dotenv(f"{home}/.config/nillion/nillion-devnet.env")
 
+#load_dotenv
+
 async def main():
     # 1. Initial setup
     # 1.1. Get cluster_id, grpc_endpoint, & chain_id from the .env file
     cluster_id = os.getenv("NILLION_CLUSTER_ID")
     grpc_endpoint = os.getenv("NILLION_NILCHAIN_GRPC")
     chain_id = os.getenv("NILLION_NILCHAIN_CHAIN_ID")
-    print(os.getenv("NILLION_NILCHAIN_PRIVATE_KEY_0"))
     # 1.2 pick a seed and generate user and node keys
     seed = "my_seed"
     userkey = UserKey.from_seed(seed)
