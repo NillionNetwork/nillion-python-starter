@@ -18,8 +18,10 @@ from cosmpy.aerial.client import LedgerClient
 from cosmpy.aerial.wallet import LocalWallet
 from cosmpy.crypto.keypairs import PrivateKey
 
-home = os.getenv("HOME")
-load_dotenv(f"{home}/.config/nillion/nillion-devnet.env")
+#home = os.getenv("HOME")
+#load_dotenv(f"{home}/.config/nillion/nillion-devnet.env")
+
+load_dotenv()
 
 async def main():
     # 1. Initial setup
@@ -27,7 +29,7 @@ async def main():
     cluster_id = os.getenv("NILLION_CLUSTER_ID")
     grpc_endpoint = os.getenv("NILLION_NILCHAIN_GRPC")
     chain_id = os.getenv("NILLION_NILCHAIN_CHAIN_ID")
-
+    print(os.getenv("NILLION_NILCHAIN_PRIVATE_KEY_0"))
     # 1.2 pick a seed and generate user and node keys
     seed = "my_seed"
     userkey = UserKey.from_seed(seed)
@@ -56,7 +58,7 @@ async def main():
     # Pay to store the program and obtain a receipt of the payment
     receipt_store_program = await pay(
         client,
-        nillion.Operation.store_program(),
+        nillion.Operation.store_program(program_mir_path),
         payments_wallet,
         payments_client,
         cluster_id,
@@ -91,7 +93,7 @@ async def main():
     # Pay for and store the secret in the network and print the returned store_id
     receipt_store = await pay(
         client,
-        nillion.Operation.store_values(new_secret),
+        nillion.Operation.store_values(new_secret, ttl_days=5),
         payments_wallet,
         payments_client,
         cluster_id,
