@@ -13,8 +13,8 @@ def nada_main():
     my_int1 = SecretInteger(Input(name="my_int1", party=party1))
     my_int2 = SecretInteger(Input(name="my_int2", party=party1))
 
-    # Securely compute the LCM using the lcm function
+
     result = lcm(my_int1, my_int2)
 
-    # Output the result securely
+
     return [Output(result, "my_output", party1)]
