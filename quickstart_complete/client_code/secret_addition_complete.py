@@ -12,7 +12,7 @@ import os
 
 from py_nillion_client import NodeKey, UserKey
 from dotenv import load_dotenv
-from nillion_python_helpers import pay, create_nillion_client, create_payments_config
+from nillion_python_helpers import get_quote_and_pay, create_nillion_client, create_payments_config
 
 from cosmpy.aerial.client import LedgerClient
 from cosmpy.aerial.wallet import LocalWallet
@@ -53,7 +53,7 @@ async def main():
     )
 
     # Pay to store the program and obtain a receipt of the payment
-    receipt_store_program = await pay(
+    receipt_store_program = await get_quote_and_pay(
         client,
         nillion.Operation.store_program(program_mir_path),
         payments_wallet,
@@ -88,7 +88,7 @@ async def main():
     permissions.add_compute_permissions({client.user_id: {program_id}})
 
     # Pay for and store the secret in the network and print the returned store_id
-    receipt_store = await pay(
+    receipt_store = await get_quote_and_pay(
         client,
         nillion.Operation.store_values(new_secret, ttl_days=5),
         payments_wallet,
@@ -111,7 +111,7 @@ async def main():
     computation_time_secrets = nillion.NadaValues({"my_int2": nillion.SecretInteger(10)})
 
     # Pay for the compute
-    receipt_compute = await pay(
+    receipt_compute = await get_quote_and_pay(
         client,
         nillion.Operation.compute(program_id, computation_time_secrets),
         payments_wallet,
