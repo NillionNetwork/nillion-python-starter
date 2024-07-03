@@ -18,10 +18,9 @@ from cosmpy.aerial.client import LedgerClient
 from cosmpy.aerial.wallet import LocalWallet
 from cosmpy.crypto.keypairs import PrivateKey
 
-#home = os.getenv("HOME")
-#load_dotenv(f"{home}/.config/nillion/nillion-devnet.env")
+home = os.getenv("HOME")
+load_dotenv(f"{home}/.config/nillion/nillion-devnet.env")
 
-load_dotenv()
 async def main():
     # 1. Initial setup
     # 1.1. Get cluster_id, grpc_endpoint, & chain_id from the .env file
