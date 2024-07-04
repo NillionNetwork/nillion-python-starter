@@ -14,6 +14,7 @@ def nada_main():
     # Add the intermediate result to my_int3 from party2
     final_result = intermediate_result + my_int3
 
+
     # Output the final result to both parties
     return [Output(final_result, "final_output_party1", party1),
             Output(final_result, "final_output_party2", party2)]
