@@ -4,7 +4,6 @@ from nada_ai import nn
 class MyNN(nn.Module):
 
     def __init__(self) -> None:
-        """Model with multiple layers and activations"""
         super().__init__()
         
         # Convolutional layers
@@ -15,7 +14,7 @@ class MyNN(nn.Module):
         self.pool = nn.AvgPool2d(kernel_size=2, stride=2)
         
         # Fully connected layers
-        self.fc1 = nn.Linear(in_features=16*4*4, out_features=32)  # Updated to match flattened size
+        self.fc1 = nn.Linear(in_features=16*4*4, out_features=32)
         self.fc2 = nn.Linear(in_features=32, out_features=2)
 
         # Activation function
