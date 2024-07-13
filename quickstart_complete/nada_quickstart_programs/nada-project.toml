@@ -5,3 +5,15 @@ authors = [""]
 [[programs]]
 path = "src/secret_addition_complete.py"
 prime_size = 128
+
+[[programs]]
+path = "src/lenders_borrowers.py"
+prime_size = 128
+
+[[programs]]
+path = "src/logistic_regression.py"
+prime_size = 128
+
+[[programs]]
+path = "src/nlp.py"
+prime_size = 128
