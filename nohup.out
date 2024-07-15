@@ -1,0 +1,15 @@
+ℹ️ cluster id is 9e68173f-9c23-4acc-ba81-4f079b639964
+ℹ️ using 256 bit prime
+ℹ️ storing state in /tmp/.tmpXfmcox (79.95Gbs available)
+🏃 starting nilchain node in: /tmp/.tmpXfmcox/nillion-chain
+⛓  nilchain JSON RPC available at http://127.0.0.1:48102
+⛓  nilchain REST API available at http://localhost:26650
+⛓  nilchain gRPC available at localhost:26649
+🏃 starting node 12D3KooWMvw1hEqm7EWSDEyqTb6pNetUVkepahKY6hixuAuMZfJS
+⏳ waiting until bootnode is up...
+🏃 starting node 12D3KooWAiwGZUwSUaT2bYVxGS8jmfMrfsanZYkHwH3uL7WJPsFq
+🏃 starting node 12D3KooWM3hsAswc7ZT6VpwQ1TCZU4GCYY55nLhcsxCcfjuixW57
+👛 funding nilchain keys
+📝 nillion CLI configuration written to /root/.config/nillion/nillion-cli.yaml
+🌄 environment file written to /root/.config/nillion/nillion-devnet.env
+⚠️ shutting down...

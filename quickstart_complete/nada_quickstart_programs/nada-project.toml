@@ -17,3 +17,8 @@ prime_size = 128
 [[programs]]
 path = "src/nlp.py"
 prime_size = 128
+
+
+[[programs]]
+path = "src/modular_exponentiation.py"
+prime_size = 128
