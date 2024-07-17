@@ -1,18 +1,18 @@
 from nada_dsl import *
-
 def nada_main():
 
     party1 = Party(name="Party1")
 
-    my_int1 = SecretInteger(Input(name="my_int1", party=party1))
+    # Define a list of secret integers as inputs
+    secret_integers = [
+        SecretInteger(Input(name=f"int{i+1}", party=party1)) 
+        for i in range(5)  # Let's assume we are taking 5 integers for simplicity
+    ]
 
-    my_int2 = SecretInteger(Input(name="my_int2", party=party1))
-    
-    my_int3 = SecretInteger(Input(name="my_int3", party=party1))
+    # Calculate the sum of the secret integers
+    total_sum = sum(secret_integers)
 
-    sum_int = my_int1 + my_int2 + my_int3
-    
-    product_int = my_int1 * my_int2 * my_int3
+    # Calculate the average
+    average = total_sum / len(secret_integers)
 
-    return [Output(sum_int, "sum_output", party1), 
-            Output(product_int, "product_output", party1)]
+    return [Output(average, "average_output", party1)]
