@@ -1,0 +1,8 @@
+ℹ️ cluster id is 9e68173f-9c23-4acc-ba81-4f079b639964
+ℹ️ using 256 bit prime
+ℹ️ storing state in /tmp/.tmp1eGYZV (77.82Gbs available)
+🏃 starting nilchain node in: /tmp/.tmp1eGYZV/nillion-chain
+Error: launching nilchain proxy
+
+Caused by:
+    Address in use (os error 98)
