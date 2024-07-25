@@ -1,14 +1,14 @@
 import requests
 
 
-GITHUB_TOKEN = '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'
-REPO_OWNER = 'therealhamad'
+GITHUB_TOKEN = 'github-token'
+REPO_OWNER = 'owner_name'
 REPO_NAME = 'nillion-python-starter'
 
 def get_pull_requests(owner, repo):
     url = f"https://api.github.com/repos/{owner}/{repo}/pulls"
     headers = {
-        'Authorization': f'token {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}',
+        'Authorization': f'token {github-token}',
         'Accept': 'application/vnd.github.v3+json'
     }
     response = requests.get(url, headers=headers)
