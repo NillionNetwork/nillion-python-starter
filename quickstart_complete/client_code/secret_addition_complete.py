@@ -48,6 +48,11 @@ async def main():
     program_name = "secret_addition_complete"
     program_mir_path = f"../nada_quickstart_programs/target/{program_name}.nada.bin"
 
+    # Adding funds to the client balance so the upcoming operations can be paid for
+    funds_amount = 1000
+    print(f"💰  Adding some funds to the client balance: {funds_amount}")
+    await client.add_funds(funds_amount)
+
     # 3. Store the program
     print("-----STORE PROGRAM")
 
@@ -101,6 +106,9 @@ async def main():
     result = await client.retrieve_compute_results(compute_id).invoke()
     print(f"✅  Compute complete for compute_id {compute_id}")
     print(f"🖥️  The result is {result}")
+    balance = await client.balance()
+    print(f"💰  Final client balance: {balance.balance}")
+    client.close()
     return result
 
 
