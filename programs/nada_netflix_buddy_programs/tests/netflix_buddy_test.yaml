@@ -1,0 +1,30 @@
+---
+program: netflix_buddy
+inputs:
+  RomanceP2:
+    SecretInteger: "3"
+  HorrorP2:
+    SecretInteger: "3"
+  ActionP1:
+    SecretInteger: "3"
+  ThrillerP1:
+    SecretInteger: "3"
+  ComedyP2:
+    SecretInteger: "3"
+  RomanceP1:
+    SecretInteger: "3"
+  HorrorP1:
+    SecretInteger: "3"
+  DramaP2:
+    SecretInteger: "3"
+  ActionP2:
+    SecretInteger: "3"
+  ComedyP1:
+    SecretInteger: "3"
+  DramaP1:
+    SecretInteger: "3"
+  ThrillerP2:
+    SecretInteger: "3"
+expected_outputs:
+  buddy_score:
+    SecretInteger: "3"
