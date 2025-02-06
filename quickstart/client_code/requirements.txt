@@ -1,0 +1,12 @@
+langchain==0.2.6
+langchain-chroma==0.1.2
+langchain-community==0.2.6
+langchain-core==0.2.11
+langchain-huggingface==0.0.3
+langchain-text-splitters==0.2.2
+langsmith==0.1.83
+py-nillion-client
+nada-dsl
+nillion-python-helpers
+python-dotenv==1.0.0
+cosmpy>=0.9.2
